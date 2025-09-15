@@ -131,6 +131,7 @@ body::before {
     letter-spacing: 0.5px;
     text-align: center;
     font-size: 0.7rem;
+    display: block;
 }
 
 @keyframes pulse {
@@ -174,6 +175,35 @@ body::before {
     visibility: hidden;
     transform: translateY(-50%) translateX(100px);
     pointer-events: none;
+}
+
+/* 獨立的手機版聯絡按鈕文字顯示規則 - 最高優先級 */
+@media screen and (max-width: 768px) {
+    body .contact-float-btn .btn-text {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        font-size: 0.6rem !important;
+        line-height: 1.1 !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    body .contact-float-btn .btn-text {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        font-size: 0.55rem !important;
+        line-height: 1.1 !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
+    }
 }
 
 /* 手機版隱藏狀態特殊處理 */
@@ -1009,13 +1039,7 @@ body::before {
         gap: 4px;
     }
     
-    .contact-float-btn .btn-text {
-        display: block !important;
-        font-size: 0.6rem;
-        line-height: 1.1;
-        text-align: center;
-        white-space: nowrap;
-    }
+    /* 手機版文字樣式已移至獨立規則 */
     
     .contact-float-btn i {
         font-size: 1.2rem;
@@ -1049,13 +1073,7 @@ body::before {
         gap: 3px;
     }
     
-    .contact-float-btn .btn-text {
-        display: block !important;
-        font-size: 0.55rem;
-        line-height: 1.1;
-        text-align: center;
-        white-space: nowrap;
-    }
+    /* 手機版文字樣式已移至獨立規則 */
     
     .contact-float-btn i {
         font-size: 1.1rem;

@@ -662,6 +662,14 @@ function initContactToggle() {
             contactBtn.style.display = 'flex';
             contactBtn.style.visibility = 'visible';
             contactBtn.style.opacity = '1';
+            
+            // 強制確保文字在手機版上顯示
+            const btnText = contactBtn.querySelector('.btn-text');
+            if (btnText) {
+                btnText.style.display = 'block';
+                btnText.style.visibility = 'visible';
+                btnText.style.opacity = '1';
+            }
         }
     }
     
@@ -669,7 +677,10 @@ function initContactToggle() {
     ensureMobileVisibility();
     
     // 監聽視窗大小改變
-    window.addEventListener('resize', ensureMobileVisibility);
+    window.addEventListener('resize', () => {
+        ensureMobileVisibility();
+        forceMobileContactText();
+    });
     
     toggleBtn.addEventListener('click', () => {
         const isCurrentlyHidden = contactBtn.classList.contains('hidden');
@@ -692,6 +703,27 @@ function initContactToggle() {
     });
 }
 
+// 強制顯示手機版聯絡按鈕文字
+function forceMobileContactText() {
+    const contactBtn = document.getElementById('contactBtn');
+    const btnText = contactBtn ? contactBtn.querySelector('.btn-text') : null;
+    
+    if (btnText && window.innerWidth <= 768) {
+        // 強制設定樣式
+        btnText.style.cssText = `
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            font-size: ${window.innerWidth <= 480 ? '0.55rem' : '0.6rem'} !important;
+            line-height: 1.1 !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.5px !important;
+        `;
+    }
+}
+
 // 頁面載入完成後執行
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化各種功能
@@ -703,6 +735,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initBackToTop();
     initContactToggle();
     checkMeetingStatus();
+    
+    // 強制顯示手機版文字
+    forceMobileContactText();
     
     // 每秒更新倒數計時器
     setInterval(updateCountdown, 1000);
