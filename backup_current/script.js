@@ -268,38 +268,172 @@ function setReminder() {
     // 計算下一個週四的日期
     const nextThursday = getNextThursday();
     
-    // 設定提醒時間為週四早上6:30
-    const reminderTime = new Date(nextThursday);
-    reminderTime.setHours(6, 30, 0, 0);
-    
+    // 顯示提醒時間選項
+    showReminderTimeOptions(nextThursday);
+}
+
+// 顯示提醒時間選項
+function showReminderTimeOptions(meetingDate) {
+    const reminderOptions = [
+        { 
+            text: '⏰ 15分鐘前提醒', 
+            time: { hours: 6, minutes: 45 },
+            description: '會議開始前15分鐘'
+        },
+        { 
+            text: '⏰ 30分鐘前提醒', 
+            time: { hours: 6, minutes: 30 },
+            description: '會議開始前30分鐘'
+        },
+        { 
+            text: '⏰ 1小時前提醒', 
+            time: { hours: 6, minutes: 0 },
+            description: '會議開始前1小時'
+        },
+        { 
+            text: '⏰ 前一天晚上提醒', 
+            time: { hours: 22, minutes: 0 },
+            description: '會議前一天晚上10點'
+        }
+    ];
+
+    // 創建選項對話框
+    const dialog = document.createElement('div');
+    dialog.className = 'reminder-time-dialog';
+    dialog.innerHTML = `
+        <div class="dialog-overlay">
+            <div class="dialog-content">
+                <h3>⏰ 選擇提醒時間</h3>
+                <p>請選擇您希望的提醒時間：</p>
+                <div class="reminder-time-options">
+                    ${reminderOptions.map((option, index) => `
+                        <button class="reminder-time-btn" data-index="${index}">
+                            <div class="option-text">${option.text}</div>
+                            <div class="option-desc">${option.description}</div>
+                        </button>
+                    `).join('')}
+                </div>
+                <button class="dialog-close-btn">取消</button>
+            </div>
+        </div>
+    `;
+
+    // 添加樣式
+    dialog.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10000;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    `;
+
+    // 添加選項樣式
+    const style = document.createElement('style');
+    style.textContent = `
+        .reminder-time-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .reminder-time-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        .reminder-time-btn:hover {
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            transform: translateY(-2px);
+        }
+        .option-text {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .option-desc {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+    `;
+    document.head.appendChild(style);
+
+    document.body.appendChild(dialog);
+
+    // 添加事件監聽器
+    dialog.querySelectorAll('.reminder-time-btn').forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            const option = reminderOptions[index];
+            const reminderTime = new Date(meetingDate);
+            reminderTime.setHours(option.time.hours, option.time.minutes, 0, 0);
+            
+            // 如果是前一天晚上，調整日期
+            if (option.time.hours === 22) {
+                reminderTime.setDate(meetingDate.getDate() - 1);
+            }
+            
+            processReminder(reminderTime, option.text);
+            dialog.remove();
+        });
+    });
+
+    dialog.querySelector('.dialog-close-btn').addEventListener('click', () => {
+        dialog.remove();
+    });
+
+    // 點擊背景關閉
+    dialog.querySelector('.dialog-overlay').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) {
+            dialog.remove();
+        }
+    });
+}
+
+// 處理提醒設定
+function processReminder(reminderTime, reminderType) {
     // 首先嘗試使用Web Share API分享到手機內建提醒
     if (navigator.share) {
-        shareToNativeReminder(reminderTime);
+        shareToNativeReminder(reminderTime, reminderType);
     } else if ('Notification' in window) {
         // 如果不支援分享，嘗試通知API
         if (Notification.permission === 'granted') {
-            scheduleNotification(reminderTime);
+            scheduleNotification(reminderTime, reminderType);
         } else if (Notification.permission !== 'denied') {
             Notification.requestPermission().then(permission => {
                 if (permission === 'granted') {
-                    scheduleNotification(reminderTime);
+                    scheduleNotification(reminderTime, reminderType);
                 } else {
-                    showCalendarReminder(reminderTime);
+                    showCalendarReminder(reminderTime, reminderType);
                 }
             });
         } else {
-            showCalendarReminder(reminderTime);
+            showCalendarReminder(reminderTime, reminderType);
         }
     } else {
         // 最後備用方案：日曆提醒
-        showCalendarReminder(reminderTime);
+        showCalendarReminder(reminderTime, reminderType);
     }
 }
 
 // 分享到手機內建提醒功能
-function shareToNativeReminder(reminderTime) {
+function shareToNativeReminder(reminderTime, reminderType = '30分鐘前提醒') {
+    const timeStr = reminderTime.getHours() < 12 ? 
+        `早上${reminderTime.getHours()}:${reminderTime.getMinutes().toString().padStart(2, '0')}` : 
+        `晚上${reminderTime.getHours()}:${reminderTime.getMinutes().toString().padStart(2, '0')}`;
+    
     const reminderText = `華地產鑽石分會 - 每週四例會提醒
-時間：${reminderTime.getFullYear()}年${reminderTime.getMonth() + 1}月${reminderTime.getDate()}日 早上6:30
+提醒類型：${reminderType}
+提醒時間：${reminderTime.getFullYear()}年${reminderTime.getMonth() + 1}月${reminderTime.getDate()}日 ${timeStr}
 會議時間：早上7:00-8:45
 會議ID：883 8417 6239
 Zoom連結：https://us06web.zoom.us/j/88384176239
@@ -314,12 +448,12 @@ Zoom連結：https://us06web.zoom.us/j/88384176239
 
     navigator.share(shareData)
         .then(() => {
-            showNotification('已分享到手機！請選擇「提醒事項」、「備忘錄」或「鬧鐘」應用來設定提醒', 'success');
+            showNotification(`已分享到手機！請選擇「提醒事項」、「備忘錄」或「鬧鐘」應用來設定${reminderType}`, 'success');
         })
         .catch((error) => {
             console.log('分享失敗:', error);
             // 如果分享失敗，嘗試其他方法
-            showNativeReminderOptions(reminderTime);
+            showNativeReminderOptions(reminderTime, reminderType);
         });
 }
 
@@ -628,20 +762,24 @@ function showReminderOptionsDialog(options, reminderText) {
 }
 
 // 排程通知
-function scheduleNotification(reminderTime) {
+function scheduleNotification(reminderTime, reminderType = '30分鐘前提醒') {
     const now = new Date();
     const timeUntilReminder = reminderTime.getTime() - now.getTime();
     
     if (timeUntilReminder > 0) {
         setTimeout(() => {
             new Notification('華地產鑽石分會提醒', {
-                body: '會議將在15分鐘後開始！請準備參加每週四例會。',
+                body: `會議提醒：${reminderType}！請準備參加每週四例會。`,
                 icon: 'https://house123.bni-checkin.com/og-image.jpg',
                 tag: 'bni-meeting-reminder'
             });
         }, timeUntilReminder);
         
-        showNotification('提醒已設定！將在週四早上6:30通知您', 'success');
+        const timeStr = reminderTime.getHours() < 12 ? 
+            `早上${reminderTime.getHours()}:${reminderTime.getMinutes().toString().padStart(2, '0')}` : 
+            `晚上${reminderTime.getHours()}:${reminderTime.getMinutes().toString().padStart(2, '0')}`;
+        
+        showNotification(`提醒已設定！將在${timeStr}通知您`, 'success');
     } else {
         showNotification('提醒時間已過，請等待下次會議', 'info');
     }
@@ -955,11 +1093,130 @@ function initMarquee() {
     });
 }
 
+// 防抖動函數
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+
+// 載入狀態管理
+function showLoadingState() {
+    const loadingState = document.getElementById('loadingState');
+    if (loadingState) {
+        loadingState.classList.add('show');
+    }
+}
+
+function hideLoadingState() {
+    const loadingState = document.getElementById('loadingState');
+    if (loadingState) {
+        loadingState.classList.remove('show');
+    }
+}
+
+// 會議進行中狀態管理
+function updateMeetingStatus() {
+    const nextThursday = getNextThursday();
+    const now = new Date();
+    
+    // 設定會議時間為週四早上7點到8:45
+    const meetingStart = new Date(nextThursday);
+    meetingStart.setHours(7, 0, 0, 0);
+    
+    const meetingEnd = new Date(nextThursday);
+    meetingEnd.setHours(8, 45, 0, 0);
+    
+    const countdownTimer = document.getElementById('countdownTimer');
+    const meetingStatus = document.getElementById('meetingStatus');
+    const progressFill = document.getElementById('progressFill');
+    const meetingRemaining = document.getElementById('meetingRemaining');
+    
+    if (now >= meetingStart && now <= meetingEnd) {
+        // 會議進行中
+        if (countdownTimer) countdownTimer.style.display = 'none';
+        if (meetingStatus) meetingStatus.style.display = 'block';
+        
+        // 計算會議進度
+        const totalDuration = meetingEnd.getTime() - meetingStart.getTime();
+        const elapsed = now.getTime() - meetingStart.getTime();
+        const progress = Math.min((elapsed / totalDuration) * 100, 100);
+        
+        if (progressFill) {
+            progressFill.style.width = `${progress}%`;
+        }
+        
+        // 計算剩餘時間
+        const remaining = meetingEnd.getTime() - now.getTime();
+        const remainingMinutes = Math.ceil(remaining / (1000 * 60));
+        
+        if (meetingRemaining) {
+            if (remainingMinutes > 0) {
+                meetingRemaining.textContent = `會議進行中，剩餘 ${remainingMinutes} 分鐘`;
+            } else {
+                meetingRemaining.textContent = '會議即將結束';
+            }
+        }
+    } else {
+        // 會議未開始或已結束
+        if (countdownTimer) countdownTimer.style.display = 'flex';
+        if (meetingStatus) meetingStatus.style.display = 'none';
+    }
+}
+
+// 改善的錯誤處理
+function showUserFriendlyError() {
+    showNotification('複製功能暫時無法使用，請手動複製文字', 'info');
+}
+
+// 改善的複製功能
+function copyMeetingId() {
+    const meetingId = '883 8417 6239';
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(meetingId).then(() => {
+            showNotification('會議ID已複製到剪貼板！', 'success');
+        }).catch(err => {
+            console.error('複製失敗:', err);
+            showUserFriendlyError();
+            fallbackCopyTextToClipboard(meetingId);
+        });
+    } else {
+        fallbackCopyTextToClipboard(meetingId);
+    }
+}
+
+// 改善的複製功能
+function copyHuaMeetingId() {
+    const meetingId = '863 5853 7640';
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(meetingId).then(() => {
+            showNotification('華地產會議ID已複製到剪貼板！', 'success');
+        }).catch(err => {
+            console.error('複製失敗:', err);
+            showUserFriendlyError();
+            fallbackCopyTextToClipboard(meetingId);
+        });
+    } else {
+        fallbackCopyTextToClipboard(meetingId);
+    }
+}
+
 // 頁面載入完成後執行
 document.addEventListener('DOMContentLoaded', function() {
+    // 顯示載入狀態
+    showLoadingState();
+    
     // 初始化各種功能
     updateMeetingDate();
     updateCountdown();
+    updateMeetingStatus();
     initSmoothScrolling();
     initNavbarScrollEffect();
     initCardHoverEffects();
@@ -973,8 +1230,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // 強制顯示手機版文字
     forceMobileContactText();
     
-    // 每秒更新倒數計時器
-    setInterval(updateCountdown, 1000);
+    // 隱藏載入狀態
+    setTimeout(() => {
+        hideLoadingState();
+    }, 1000);
+    
+    // 使用防抖動的滾動事件
+    const debouncedScrollHandler = debounce(() => {
+        // 滾動相關的處理
+    }, 100);
+    
+    window.addEventListener('scroll', debouncedScrollHandler);
+    
+    // 每秒更新倒數計時器和會議狀態
+    setInterval(() => {
+        updateCountdown();
+        updateMeetingStatus();
+    }, 1000);
     
     // 每小時更新一次日期（防止跨日）
     setInterval(updateMeetingDate, 3600000);
@@ -990,10 +1262,10 @@ document.addEventListener('keydown', function(e) {
         showNotification('快捷鍵：Ctrl+/ 顯示幫助', 'info');
     }
     
-    // Ctrl + 1-4 快速導航
-    if (e.ctrlKey && e.key >= '1' && e.key <= '4') {
+    // Ctrl + 1-6 快速導航
+    if (e.ctrlKey && e.key >= '1' && e.key <= '6') {
         e.preventDefault();
-        const sections = ['meeting', 'resources', 'invite', 'faq'];
+        const sections = ['meeting', 'resources', 'members', 'news', 'invite', 'faq'];
         const sectionIndex = parseInt(e.key) - 1;
         if (sections[sectionIndex]) {
             smoothScrollTo(sections[sectionIndex]);

@@ -24,6 +24,51 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- 結構化數據 (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "華地產鑽石分會",
+        "description": "聚集全台灣最專注在包租代管、房地產產業的專業人士，每週四線上例會，付出者收穫，共好利他。",
+        "url": "https://house123.bni-checkin.com/",
+        "logo": "https://house123.bni-checkin.com/og-image.jpg",
+        "foundingDate": "2024",
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "TW",
+            "addressRegion": "台灣"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "資訊長",
+            "name": "蔡濬瑒",
+            "url": "https://line.me/R/ti/p/@030nlnho"
+        },
+        "memberOf": {
+            "@type": "Organization",
+            "name": "BNI (Business Network International)"
+        },
+        "event": {
+            "@type": "Event",
+            "name": "華地產鑽石分會 - 每週四例會",
+            "description": "每週四早上7:00-8:45的線上例會，聚集房地產產業專業人士",
+            "startDate": "2024-01-01T07:00:00+08:00",
+            "endDate": "2024-01-01T08:45:00+08:00",
+            "eventStatus": "https://schema.org/EventScheduled",
+            "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+            "location": {
+                "@type": "VirtualLocation",
+                "url": "https://us06web.zoom.us/j/88384176239"
+            },
+            "organizer": {
+                "@type": "Organization",
+                "name": "華地產鑽石分會"
+            }
+        }
+    }
+    </script>
 </head>
 <body>
 
@@ -54,6 +99,8 @@
             <div class="nav-menu">
                 <a href="#meeting" class="nav-link">會議資訊</a>
                 <a href="#resources" class="nav-link">資源連結</a>
+                <a href="#members" class="nav-link">成員介紹</a>
+                <a href="#news" class="nav-link">最新消息</a>
                 <a href="#invite" class="nav-link">邀請來賓</a>
                 <a href="#faq" class="nav-link">常見問題</a>
             </div>
@@ -71,19 +118,19 @@
                     <h2 class="honor-title">🏆 金質獎榮譽榜</h2>
                     <div class="honor-content">
                         <div class="honor-item">
-                            <img src="https://i.postimg.cc/x8XRPBM4/image.jpg" alt="一金質獎章-何青馨" class="honor-image" onclick="openImageModal(this.src, '一金質獎章-何青馨')">
+                            <img src="https://i.postimg.cc/x8XRPBM4/image.jpg" alt="一金質獎章-何青馨獲獎照片" class="honor-image" loading="lazy" role="button" tabindex="0" aria-label="點擊查看何青馨一金質獎章大圖" onclick="openImageModal(this.src, '一金質獎章-何青馨')">
                             <div class="honor-text">
                                 <h3>一金質獎章-何青馨</h3>
                             </div>
                         </div>
                         <div class="honor-item">
-                            <img src="https://i.postimg.cc/kXtsR3nV/image.jpg" alt="十二金質獎-洪怡芳" class="honor-image" onclick="openImageModal(this.src, '十二金質獎-洪怡芳')">
+                            <img src="https://i.postimg.cc/kXtsR3nV/image.jpg" alt="十二金質獎-洪怡芳獲獎照片" class="honor-image" loading="lazy" role="button" tabindex="0" aria-label="點擊查看洪怡芳十二金質獎大圖" onclick="openImageModal(this.src, '十二金質獎-洪怡芳')">
                             <div class="honor-text">
                                 <h3>十二金質獎-洪怡芳</h3>
                             </div>
                         </div>
                         <div class="honor-item">
-                            <img src="https://i.postimg.cc/8kYwCPVQ/image.jpg" alt="一金質獎章-邱碩鈺" class="honor-image" onclick="openImageModal(this.src, '一金質獎章-邱碩鈺')">
+                            <img src="https://i.postimg.cc/8kYwCPVQ/image.jpg" alt="一金質獎章-邱碩鈺獲獎照片" class="honor-image" loading="lazy" role="button" tabindex="0" aria-label="點擊查看邱碩鈺一金質獎章大圖" onclick="openImageModal(this.src, '一金質獎章-邱碩鈺')">
                             <div class="honor-text">
                                 <h3>一金質獎章-邱碩鈺</h3>
                             </div>
@@ -119,6 +166,22 @@
                                 <span class="countdown-number" id="seconds">00</span>
                                 <span class="countdown-label">秒</span>
                             </div>
+                        </div>
+                        
+                        <!-- 會議進行中狀態 -->
+                        <div class="meeting-status" id="meetingStatus" style="display: none;">
+                            <div class="meeting-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                                <p class="meeting-remaining" id="meetingRemaining">會議進行中...</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 載入狀態 -->
+                        <div class="loading-state" id="loadingState">
+                            <div class="loading-spinner"></div>
+                            <p>載入中...</p>
                         </div>
                     </div>
                     <div class="meeting-links">
@@ -210,6 +273,83 @@
                             <i class="fas fa-handshake"></i>
                             進入匹配系統
                         </a>
+                    </div>
+                    <div class="resource-card">
+                        <h3>👥 會員介紹</h3>
+                        <p>認識華地產鑽石分會成員</p>
+                        <a href="#members" class="btn btn-outline" onclick="smoothScrollTo('members')">
+                            <i class="fas fa-users"></i>
+                            查看成員
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 成員介紹區塊 -->
+        <section id="members" class="members-section">
+            <div class="container">
+                <h2 class="section-title">👥 華地產鑽石分會成員</h2>
+                <div class="members-grid">
+                    <div class="member-card">
+                        <div class="member-avatar">
+                            <img src="https://i.postimg.cc/x8XRPBM4/image.jpg" alt="何青馨" loading="lazy">
+                        </div>
+                        <div class="member-info">
+                            <h3>何青馨</h3>
+                            <p class="member-title">一金質獎章得主</p>
+                            <p class="member-description">專精於房地產投資與包租代管業務，擁有豐富的實戰經驗</p>
+                        </div>
+                    </div>
+                    <div class="member-card">
+                        <div class="member-avatar">
+                            <img src="https://i.postimg.cc/kXtsR3nV/image.jpg" alt="洪怡芳" loading="lazy">
+                        </div>
+                        <div class="member-info">
+                            <h3>洪怡芳</h3>
+                            <p class="member-title">十二金質獎得主</p>
+                            <p class="member-description">房地產行銷專家，擅長建商合作與危老改建專案</p>
+                        </div>
+                    </div>
+                    <div class="member-card">
+                        <div class="member-avatar">
+                            <img src="https://i.postimg.cc/8kYwCPVQ/image.jpg" alt="邱碩鈺" loading="lazy">
+                        </div>
+                        <div class="member-info">
+                            <h3>邱碩鈺</h3>
+                            <p class="member-title">一金質獎章得主</p>
+                            <p class="member-description">買房導客KOL，擁有強大的客戶導流能力</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 最新消息區塊 -->
+        <section id="news" class="news-section">
+            <div class="container">
+                <h2 class="section-title">📢 最新消息</h2>
+                <div class="news-timeline">
+                    <div class="news-item">
+                        <div class="news-date">2025年1月</div>
+                        <div class="news-content">
+                            <h3>🎉 網站功能全面升級</h3>
+                            <p>新增暗色模式、會議進行中狀態顯示、多種提醒時間選項等功能，提供更好的用戶體驗。</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">2024年12月</div>
+                        <div class="news-content">
+                            <h3>🏆 金質獎榮譽榜更新</h3>
+                            <p>恭喜何青馨、洪怡芳、邱碩鈺獲得金質獎章，感謝他們的傑出表現！</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">2024年11月</div>
+                        <div class="news-content">
+                            <h3>📱 手機版優化完成</h3>
+                            <p>針對手機用戶進行全面優化，提升在各種螢幕尺寸下的使用體驗。</p>
+                        </div>
                     </div>
                 </div>
             </div>
