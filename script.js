@@ -66,7 +66,8 @@ function copyInviteText() {
 如果你對房地產有興趣，或正在經營這條路，
 真的推薦你來感受一下這裡的氛圍。
 
-📌 想參加的話，可以幫我填寫這份連結🔗https://forms.gle/phH9QDgLBMiL1Uo96
+📌 想參加的話，可以幫我填寫這份連結
+🔗https://sky770825.github.io/Hua-Real-Estate/invite
 我會幫你完成報名，並在線上等你一起來！`;
 
     // 使用現代瀏覽器的 Clipboard API
@@ -880,39 +881,87 @@ function openImageModal(imageSrc, imageTitle) {
     // 添加到頁面
     document.body.appendChild(modal);
     
-    // 添加事件監聽器
+    // 添加事件監聽器 - 關閉按鈕
     const closeBtn = modal.querySelector('.modal-close');
-    closeBtn.addEventListener('click', () => {
+    
+    // 使用多種事件類型確保點擊能被捕捉
+    const closeModalHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         closeImageModal(modal);
-    });
+    };
+    
+    closeBtn.addEventListener('click', closeModalHandler);
+    closeBtn.addEventListener('mousedown', closeModalHandler);
+    closeBtn.addEventListener('touchstart', closeModalHandler);
     
     // 點擊背景關閉
-    modal.addEventListener('click', (e) => {
+    const backgroundClickHandler = (e) => {
         if (e.target === modal) {
+            e.preventDefault();
+            e.stopPropagation();
             closeImageModal(modal);
         }
-    });
+    };
+    
+    modal.addEventListener('click', backgroundClickHandler);
+    modal.addEventListener('mousedown', backgroundClickHandler);
     
     // ESC鍵關閉
-    document.addEventListener('keydown', function escHandler(e) {
+    const escHandler = (e) => {
         if (e.key === 'Escape') {
+            e.preventDefault();
             closeImageModal(modal);
-            document.removeEventListener('keydown', escHandler);
         }
-    });
+    };
+    
+    document.addEventListener('keydown', escHandler);
+    
+    // 將事件處理器存儲在模態框上，以便清理
+    modal.closeModalHandler = closeModalHandler;
+    modal.backgroundClickHandler = backgroundClickHandler;
+    modal.escHandler = escHandler;
     
     // 防止背景滾動
     document.body.style.overflow = 'hidden';
+    
+    // 確保模態框立即獲得焦點
+    setTimeout(() => {
+        modal.focus();
+    }, 100);
 }
 
 function closeImageModal(modal) {
     if (modal && modal.parentNode) {
+        // 移除所有事件監聽器
+        const closeBtn = modal.querySelector('.modal-close');
+        if (closeBtn && modal.closeModalHandler) {
+            closeBtn.removeEventListener('click', modal.closeModalHandler);
+            closeBtn.removeEventListener('mousedown', modal.closeModalHandler);
+            closeBtn.removeEventListener('touchstart', modal.closeModalHandler);
+        }
+        
+        if (modal.backgroundClickHandler) {
+            modal.removeEventListener('click', modal.backgroundClickHandler);
+            modal.removeEventListener('mousedown', modal.backgroundClickHandler);
+        }
+        
+        // 移除ESC鍵監聽器
+        if (modal.escHandler) {
+            document.removeEventListener('keydown', modal.escHandler);
+        }
+        
+        // 添加關閉動畫
         modal.style.animation = 'fadeIn 0.3s ease reverse';
+        
         setTimeout(() => {
-            if (modal.parentNode) {
+            if (modal && modal.parentNode) {
                 modal.remove();
                 // 恢復背景滾動
                 document.body.style.overflow = 'auto';
+                
+                // 確保頁面重新獲得焦點
+                document.body.focus();
             }
         }, 300);
     }
