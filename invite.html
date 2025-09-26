@@ -16,12 +16,14 @@
             line-height: 1.6;
             color: #333;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         .hero {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 100px 0;
+            padding: 60px 0;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -50,8 +52,91 @@
             font-size: 3.5rem;
             margin-bottom: 20px;
             font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
             animation: fadeInUp 1s ease-out;
+        }
+        
+        .bni-text {
+            background: linear-gradient(135deg, #ff0000 0%, #ff3333 30%, #ff6666 60%, #ff9999 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            text-shadow: 
+                0 0 2px rgba(255,0,0,0.4),
+                2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .huadi-text {
+            background: linear-gradient(135deg, #d97706 0%, #ea580c 30%, #f97316 60%, #fb923c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            text-shadow: 
+                0 0 2px rgba(217,119,6,0.4),
+                2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .online-text {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+        
+        .diamond-text {
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 30%, #9ca3af 50%, #6b7280 70%, #374151 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            animation: diamondShine 3s ease-in-out infinite;
+            position: relative;
+        }
+        
+        @keyframes diamondShine {
+            0%, 100% {
+                text-shadow: 
+                    0 0 5px rgba(255,255,255,0.3),
+                    0 0 10px rgba(255,255,255,0.2),
+                    0 0 15px rgba(255,255,255,0.1);
+                filter: brightness(1);
+            }
+            25% {
+                text-shadow: 
+                    0 0 8px rgba(255,255,255,0.6),
+                    0 0 16px rgba(255,255,255,0.4),
+                    0 0 24px rgba(255,255,255,0.2),
+                    0 0 32px rgba(255,255,255,0.1);
+                filter: brightness(1.2);
+            }
+            50% {
+                text-shadow: 
+                    0 0 12px rgba(255,255,255,0.8),
+                    0 0 24px rgba(255,255,255,0.6),
+                    0 0 36px rgba(255,255,255,0.4),
+                    0 0 48px rgba(255,255,255,0.2);
+                filter: brightness(1.5);
+            }
+            75% {
+                text-shadow: 
+                    0 0 8px rgba(255,255,255,0.6),
+                    0 0 16px rgba(255,255,255,0.4),
+                    0 0 24px rgba(255,255,255,0.2),
+                    0 0 32px rgba(255,255,255,0.1);
+                filter: brightness(1.2);
+            }
+        }
+        
+        
+        .chapter-text {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
         }
         
         .hero .subtitle {
@@ -59,6 +144,27 @@
             margin-bottom: 40px;
             opacity: 0.9;
             animation: fadeInUp 1s ease-out 0.2s both;
+        }
+        
+        .highlight-text {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #fff176 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            animation: highlightPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes highlightPulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% {
+                transform: scale(1.05);
+                filter: brightness(1.3);
+            }
         }
         
         .cta-button {
@@ -75,6 +181,9 @@
             animation: fadeInUp 1s ease-out 0.4s both;
             position: relative;
             overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            margin-top: 10px;
         }
         
         .cta-button::before {
@@ -107,8 +216,12 @@
             text-align: center;
             font-size: 2.5rem;
             margin-bottom: 60px;
-            color: #2c3e50;
+            background: linear-gradient(135deg, #2c3e50 0%, #667eea 50%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             position: relative;
+            font-weight: 700;
         }
         
         .section-title::after {
@@ -219,6 +332,8 @@
             left: 0;
             top: 8px;
         }
+        
+        .benefits {
             padding: 100px 0;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
@@ -234,6 +349,9 @@
         .benefits-text h2 {
             font-size: 2.5rem;
             margin-bottom: 30px;
+            color: #ffffff;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         
         .benefits-list {
@@ -284,6 +402,12 @@
         .cta-section h2 {
             font-size: 3rem;
             margin-bottom: 30px;
+            color: #ffffff;
+            font-weight: 800;
+            text-shadow: 
+                0 0 5px rgba(255,255,255,0.4),
+                0 0 10px rgba(255,255,255,0.2),
+                2px 2px 4px rgba(0,0,0,0.3);
         }
         
         .cta-section p {
@@ -313,99 +437,470 @@
             }
         }
         
-        @media (max-width: 768px) {
-            .hero {
-                padding: 60px 0;
-            }
-            
+        @media (max-width: 1024px) and (min-width: 769px) {
             .hero h1 {
-                font-size: 2.2rem;
-                margin-bottom: 15px;
-                line-height: 1.2;
+                font-size: 3rem;
             }
             
             .hero .subtitle {
-                font-size: 1rem;
-                margin-bottom: 30px;
-                padding: 0 10px;
-                line-height: 1.4;
+                font-size: 1.3rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 35px;
+            }
+            
+            .resources-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                padding: 50px 0;
+                background: linear-gradient(135deg, #4a69bd 0%, #6c5ce7 100%);
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+                line-height: 1.3;
+                font-weight: 800;
+                text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+            }
+            
+            .bni-text {
+                background: linear-gradient(135deg, #ff0000 0%, #ff3333 30%, #ff6666 60%, #ff9999 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 800;
+                text-shadow: 
+                    0 0 4px rgba(255,0,0,0.6),
+                    0 0 8px rgba(255,0,0,0.4),
+                    0 0 12px rgba(255,0,0,0.2),
+                    2px 2px 4px rgba(0,0,0,0.5),
+                    4px 4px 8px rgba(0,0,0,0.3),
+                    6px 6px 12px rgba(0,0,0,0.2);
+                filter: drop-shadow(0 0 6px rgba(255,0,0,0.3));
+            }
+            
+            .huadi-text {
+                background: linear-gradient(135deg, #d97706 0%, #ea580c 30%, #f97316 60%, #fb923c 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 700;
+                text-shadow: 
+                    0 0 4px rgba(217,119,6,0.6),
+                    0 0 8px rgba(217,119,6,0.4),
+                    0 0 12px rgba(217,119,6,0.2),
+                    2px 2px 4px rgba(0,0,0,0.5),
+                    4px 4px 8px rgba(0,0,0,0.3),
+                    6px 6px 12px rgba(0,0,0,0.2);
+                filter: drop-shadow(0 0 6px rgba(217,119,6,0.3));
+            }
+            
+            .online-text {
+                background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 600;
+            }
+            
+            .diamond-text {
+                background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 30%, #9ca3af 50%, #6b7280 70%, #374151 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 700;
+                animation: diamondShine 3s ease-in-out infinite;
+                position: relative;
+            }
+            
+            .chapter-text {
+                background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 600;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.2rem;
+                margin-bottom: 35px;
+                padding: 0 15px;
+                line-height: 1.5;
+                font-weight: 500;
+                opacity: 0.95;
+            }
+            
+            .highlight-text {
+                background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #fff176 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 600;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+                animation: highlightPulse 2s ease-in-out infinite;
             }
             
             .cta-button {
-                padding: 15px 30px;
-                font-size: 1.1rem;
-                margin: 10px;
+                padding: 18px 35px;
+                font-size: 1.2rem;
+                margin: 15px;
+                border-radius: 45px;
+                font-weight: 700;
+                min-height: 56px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 5px;
             }
             
             .features {
-                padding: 60px 0;
+                padding: 70px 0;
+                background: #f8fafc;
             }
             
             .section-title {
-                font-size: 2rem;
-                margin-bottom: 40px;
-                padding: 0 10px;
+                font-size: 2.2rem;
+                margin-bottom: 45px;
+                padding: 0 15px;
+                font-weight: 700;
+                background: linear-gradient(135deg, #1a202c 0%, #4a69bd 50%, #6c5ce7 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
             
             .features-grid {
                 grid-template-columns: 1fr;
+                gap: 30px;
+                margin-top: 45px;
+                padding: 0 15px;
+            }
+            
+            .feature-card {
+                padding: 35px 25px;
+                margin: 0;
+                border-radius: 25px;
+                box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+                background: white;
+                border: 1px solid #e2e8f0;
+            }
+            
+            .feature-icon {
+                font-size: 3.5rem;
+                margin-bottom: 20px;
+            }
+            
+            .feature-card h3 {
+                font-size: 1.4rem;
+                margin-bottom: 15px;
+                color: #2d3748;
+                font-weight: 600;
+            }
+            
+            .feature-card p {
+                font-size: 1rem;
+                line-height: 1.7;
+                color: #4a5568;
+            }
+            
+            .benefits {
+                padding: 70px 0;
+                background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            }
+            
+            .benefits-content {
+                grid-template-columns: 1fr;
+                gap: 35px;
+                padding: 0 15px;
+            }
+            
+            .benefits-text h2 {
+                font-size: 2.2rem;
+                margin-bottom: 30px;
+                text-align: center;
+                color: #ffffff;
+                font-weight: 800;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            }
+            
+            .benefits-list {
+                padding: 0;
+            }
+            
+            .benefits-list li {
+                margin-bottom: 18px;
+                font-size: 1.1rem;
+                line-height: 1.7;
+                padding-left: 35px;
+                font-weight: 500;
+            }
+            
+            .highlight-box {
+                padding: 30px 25px;
+                margin: 0;
+                border-radius: 20px;
+                background: rgba(255,255,255,0.15);
+                backdrop-filter: blur(15px);
+            }
+            
+            .highlight-box h3 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+                font-weight: 600;
+            }
+            
+            .highlight-box p {
+                font-size: 1.05rem;
+                line-height: 1.7;
+                font-weight: 400;
+            }
+            
+            .cta-section {
+                padding: 70px 0;
+                background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            }
+            
+            .cta-section h2 {
+                font-size: 2rem;
+                margin-bottom: 25px;
+                padding: 0 20px;
+                line-height: 1.4;
+                font-weight: 800;
+                color: #ffffff;
+                text-shadow: 
+                    0 0 4px rgba(255,255,255,0.4),
+                    0 0 8px rgba(255,255,255,0.2),
+                    2px 2px 4px rgba(0,0,0,0.3);
+            }
+            
+            .cta-section p {
+                font-size: 1.15rem;
+                margin-bottom: 35px;
+                padding: 0 20px;
+                line-height: 1.6;
+                font-weight: 400;
+            }
+            
+            .resources-showcase {
+                padding: 60px 0;
+                background: #f8fafc;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin-top: 35px;
+                padding: 0 15px;
+            }
+            
+            .resource-category {
+                padding: 25px 20px;
+                margin: 0;
+                border-radius: 18px;
+                background: white;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+                border: 1px solid #e2e8f0;
+            }
+            
+            .resource-category h3 {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+                color: #2d3748;
+                font-weight: 600;
+            }
+            
+            .resource-category li {
+                padding: 6px 0;
+                font-size: 0.95rem;
+                line-height: 1.6;
+                color: #4a5568;
+            }
+            
+            .floating-elements::before,
+            .floating-elements::after {
+                width: 70px;
+                height: 70px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero {
+                padding: 40px 0;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+                margin-bottom: 18px;
+                line-height: 1.2;
+                font-weight: 800;
+            }
+            
+            .bni-text {
+                background: linear-gradient(135deg, #ff0000 0%, #ff3333 30%, #ff6666 60%, #ff9999 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 800;
+                text-shadow: 
+                    0 0 4px rgba(255,0,0,0.6),
+                    0 0 8px rgba(255,0,0,0.4),
+                    0 0 12px rgba(255,0,0,0.2),
+                    2px 2px 4px rgba(0,0,0,0.5),
+                    4px 4px 8px rgba(0,0,0,0.3),
+                    6px 6px 12px rgba(0,0,0,0.2);
+                filter: drop-shadow(0 0 6px rgba(255,0,0,0.3));
+            }
+            
+            .huadi-text {
+                background: linear-gradient(135deg, #d97706 0%, #ea580c 30%, #f97316 60%, #fb923c 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 700;
+                text-shadow: 
+                    0 0 4px rgba(217,119,6,0.6),
+                    0 0 8px rgba(217,119,6,0.4),
+                    0 0 12px rgba(217,119,6,0.2),
+                    2px 2px 4px rgba(0,0,0,0.5),
+                    4px 4px 8px rgba(0,0,0,0.3),
+                    6px 6px 12px rgba(0,0,0,0.2);
+                filter: drop-shadow(0 0 6px rgba(217,119,6,0.3));
+            }
+            
+            .online-text {
+                background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 600;
+            }
+            
+            .diamond-text {
+                background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 30%, #9ca3af 50%, #6b7280 70%, #374151 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 700;
+                animation: diamondShine 3s ease-in-out infinite;
+                position: relative;
+            }
+            
+            .chapter-text {
+                background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 600;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 30px;
+                padding: 0 20px;
+                line-height: 1.4;
+                font-weight: 500;
+            }
+            
+            .highlight-text {
+                background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #fff176 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 600;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+                animation: highlightPulse 2s ease-in-out infinite;
+            }
+            
+            .cta-button {
+                padding: 16px 30px;
+                font-size: 1.1rem;
+                border-radius: 40px;
+                font-weight: 700;
+                min-height: 52px;
+                margin: 10px;
+                margin-top: 5px;
+            }
+            
+            .features {
+                padding: 50px 0;
+            }
+            
+            .section-title {
+                font-size: 1.9rem;
+                margin-bottom: 35px;
+                padding: 0 20px;
+                font-weight: 700;
+                background: linear-gradient(135deg, #1a202c 0%, #4a69bd 50%, #6c5ce7 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            
+            .features-grid {
                 gap: 25px;
-                margin-top: 40px;
+                padding: 0 20px;
             }
             
             .feature-card {
                 padding: 30px 20px;
-                margin: 0 10px;
+                margin: 0;
+                border-radius: 20px;
             }
             
             .feature-icon {
                 font-size: 3rem;
-                margin-bottom: 15px;
+                margin-bottom: 18px;
             }
             
             .feature-card h3 {
                 font-size: 1.3rem;
                 margin-bottom: 12px;
+                font-weight: 600;
             }
             
             .feature-card p {
-                font-size: 0.9rem;
+                font-size: 0.95rem;
                 line-height: 1.6;
             }
             
             .benefits {
-                padding: 60px 0;
-            }
-            
-            .benefits-content {
-                grid-template-columns: 1fr;
-                gap: 30px;
+                padding: 50px 0;
             }
             
             .benefits-text h2 {
-                font-size: 2rem;
+                font-size: 1.9rem;
                 margin-bottom: 25px;
-                text-align: center;
-            }
-            
-            .benefits-list {
-                padding: 0 10px;
+                color: #ffffff;
+                font-weight: 800;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             }
             
             .benefits-list li {
-                margin-bottom: 15px;
                 font-size: 1rem;
+                margin-bottom: 15px;
                 line-height: 1.6;
+                padding-left: 30px;
+                font-weight: 500;
             }
             
             .highlight-box {
                 padding: 25px 20px;
-                margin: 0 10px;
+                margin: 0;
+                border-radius: 18px;
             }
             
             .highlight-box h3 {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
                 margin-bottom: 15px;
+                font-weight: 600;
             }
             
             .highlight-box p {
@@ -414,21 +909,26 @@
             }
             
             .cta-section {
-                padding: 60px 0;
+                padding: 50px 0;
             }
             
             .cta-section h2 {
-                font-size: 1.8rem;
-                margin-bottom: 20px;
-                padding: 0 15px;
+                font-size: 1.7rem;
+                padding: 0 25px;
                 line-height: 1.3;
+                font-weight: 800;
+                color: #ffffff;
+                text-shadow: 
+                    0 0 3px rgba(255,255,255,0.4),
+                    0 0 6px rgba(255,255,255,0.2),
+                    2px 2px 4px rgba(0,0,0,0.3);
             }
             
             .cta-section p {
-                font-size: 1.1rem;
-                margin-bottom: 30px;
-                padding: 0 15px;
+                font-size: 1.05rem;
+                padding: 0 25px;
                 line-height: 1.5;
+                font-weight: 400;
             }
             
             .resources-showcase {
@@ -436,120 +936,28 @@
             }
             
             .resources-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 15px;
+                grid-template-columns: 1fr;
+                gap: 18px;
                 margin-top: 30px;
+                padding: 0 20px;
             }
             
             .resource-category {
-                padding: 20px 15px;
+                padding: 22px 18px;
                 margin: 0;
+                border-radius: 16px;
             }
             
             .resource-category h3 {
-                font-size: 1.1rem;
+                font-size: 1.15rem;
                 margin-bottom: 12px;
+                font-weight: 600;
             }
             
             .resource-category li {
-                padding: 4px 0;
-                font-size: 0.85rem;
-                line-height: 1.4;
-            }
-            
-            .floating-elements::before,
-            .floating-elements::after {
-                width: 60px;
-                height: 60px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 1.8rem;
-                margin-bottom: 12px;
-            }
-            
-            .hero .subtitle {
+                padding: 5px 0;
                 font-size: 0.9rem;
-                margin-bottom: 25px;
-            }
-            
-            .cta-button {
-                padding: 12px 25px;
-                font-size: 1rem;
-                border-radius: 30px;
-            }
-            
-            .section-title {
-                font-size: 1.7rem;
-                margin-bottom: 35px;
-            }
-            
-            .feature-card {
-                padding: 25px 15px;
-                margin: 0 5px;
-            }
-            
-            .feature-icon {
-                font-size: 2.5rem;
-            }
-            
-            .feature-card h3 {
-                font-size: 1.2rem;
-            }
-            
-            .feature-card p {
-                font-size: 0.85rem;
-            }
-            
-            .benefits-text h2 {
-                font-size: 1.7rem;
-            }
-            
-            .benefits-list li {
-                font-size: 0.9rem;
-                margin-bottom: 12px;
-            }
-            
-            .highlight-box {
-                padding: 20px 15px;
-                margin: 0 5px;
-            }
-            
-            .cta-section h2 {
-                font-size: 1.5rem;
-                padding: 0 10px;
-            }
-            
-            .cta-section p {
-                font-size: 1rem;
-                padding: 0 10px;
-            }
-            
-            .resources-showcase {
-                padding: 40px 0;
-            }
-            
-            .resources-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-                margin-top: 25px;
-            }
-            
-            .resource-category {
-                padding: 15px 12px;
-            }
-            
-            .resource-category h3 {
-                font-size: 1rem;
-                margin-bottom: 10px;
-            }
-            
-            .resource-category li {
-                padding: 3px 0;
-                font-size: 0.8rem;
-                line-height: 1.3;
+                line-height: 1.5;
             }
         }
         
@@ -594,8 +1002,8 @@
     <section class="hero">
         <div class="floating-elements"></div>
         <div class="container">
-            <h1>BNI華地產線上鑽石分會</h1>
-            <p class="subtitle">全台唯一房地產主題式 BNI 分會・新分會會員成長速度全球前10名</p>
+            <h1><span class="bni-text">BNI</span><span class="huadi-text">華地產</span><span class="online-text">線上</span><span class="diamond-text">鑽石</span><span class="chapter-text">分會</span></h1>
+            <p class="subtitle">全台唯一<span class="highlight-text">房地產主題式</span> BNI 分會・新分會會員成長速度<span class="highlight-text">全球前10名</span></p>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLScKm2_Nzqao8v1wy0ZLMwLiGzA3as4Lh-RXginugjeMZ4gosg/viewform?usp=sharing&ouid=117191109196635337936" class="cta-button pulse" target="_blank">
                 🚀 加入高速成長的頂尖分會
             </a>
@@ -707,25 +1115,36 @@
             </div>
         </div>
     </section>
+
+    <section class="benefits">
         <div class="container">
             <div class="benefits-content">
                 <div class="benefits-text">
                     <h2>系統化的商務合作模式</h2>
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <a href="https://tw.news.yahoo.com/%E5%85%A8%E5%8F%B0%E5%94%AF-%E6%88%BF%E5%9C%B0%E7%94%A2%E4%B8%BB%E9%A1%8C%E5%BC%8Fbni%E5%88%86%E6%9C%83-%E8%97%8D%E5%A4%AA%E5%A4%AA%E9%A0%98%E8%BB%8D-%E8%8F%AF%E5%9C%B0%E7%94%A2-%E6%89%93%E9%80%A0%E6%88%BF%E5%9C%B0%E7%94%A2%E7%95%8C%E6%9C%80%E5%BC%B7-070320469.html" 
+                           target="_blank" 
+                           style="display: inline-block; background: linear-gradient(45deg, #ff6b6b, #ffa500); color: white; padding: 12px 25px; border-radius: 25px; text-decoration: none; font-weight: 600; font-size: 1rem; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); transition: all 0.3s ease;"
+                           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(255, 107, 107, 0.4)'"
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(255, 107, 107, 0.3)'">
+                            📰 雅虎新聞報導：全台唯一房地產主題式BNI分會
+                        </a>
+                    </div>
                     <ul class="benefits-list">
-                        <li>🚀 新分會會員成長速度全球前 10 名</li>
-                        <li>⚡ 已突破 100+ 位頂尖房地產會員</li>
-                        <li>💎 「合作不是靠情分，而是靠系統」- 藍太太</li>
+                        <li>🚀 新分會會員成長速度<span class="highlight-text">全球前 10 名</span></li>
+                        <li>⚡ 已突破 <span class="highlight-text">100+ 位頂尖房地產會員</span></li>
+                        <li>💎 「合作不是靠情分，而是靠<span class="highlight-text">系統</span>」- 藍太太</li>
                         <li>🔄 每週固定節奏更新進度、交換資源</li>
-                        <li>🎯 BNI「Givers Gain」核心價值，先付出再收穫</li>
-                        <li>📈 讓合作機會不再靠運氣，而是靠流程與節奏</li>
+                        <li>🎯 BNI「<span class="highlight-text">Givers Gain</span>」核心價值，先付出再收穫</li>
+                        <li>📈 讓合作機會不再靠運氣，而是靠<span class="highlight-text">流程與節奏</span></li>
                     </ul>
                 </div>
                 <div class="highlight-box">
                     <h3>🎯 適合對象</h3>
                     <p style="margin-top: 20px; font-size: 1.1rem; line-height: 1.8;">
-                        <strong>房地產上下游從業者：</strong>正在尋找真正可靠的合作系統與長期夥伴<br><br>
-                        <strong>老屋屋主：</strong>握有老屋但不知如何修繕處理，我們的資金、人才、改造與管理機制已為您準備好<br><br>
-                        <strong>想要進入房地產業：</strong>希望學習包租代管、房地產投資的專業人士
+                        <strong>房地產上下游從業者：</strong>正在尋找真正可靠的<span class="highlight-text">合作系統</span>與<span class="highlight-text">長期夥伴</span><br><br>
+                        <strong>老屋屋主：</strong>握有老屋但不知如何修繕處理，我們的<span class="highlight-text">資金、人才、改造與管理機制</span>已為您準備好<br><br>
+                        <strong>想要進入房地產業：</strong>希望學習<span class="highlight-text">包租代管、房地產投資</span>的專業人士
                     </p>
                 </div>
             </div>
@@ -734,8 +1153,8 @@
 
     <section class="cta-section">
         <div class="container">
-            <h2>準備好加入成長速度全球前10名的頂尖分會了嗎？</h2>
-            <p>100+ 位房地產菁英已經加入，這不是一場社交，而是一支真正要「打團體戰的 Power Team」！</p>
+            <h2>準備好加入成長速度<span class="highlight-text">全球前10名</span>的<span class="highlight-text">頂尖分會</span>了嗎？</h2>
+            <p><span class="highlight-text">100+ 位房地產菁英</span>已經加入，這不是一場社交，而是一支真正要「<span class="highlight-text">打團體戰的 Power Team</span>」！</p>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLScKm2_Nzqao8v1wy0ZLMwLiGzA3as4Lh-RXginugjeMZ4gosg/viewform?usp=sharing&ouid=117191109196635337936" class="cta-button" target="_blank">
                 📝 立即填寫報名表單
             </a>
@@ -744,6 +1163,12 @@
             </p>
         </div>
     </section>
+
+    <footer style="background: #1a202c; color: #718096; text-align: center; padding: 20px 0; font-size: 0.9rem;">
+        <div class="container">
+            <p>華地產鑽石分會 資訊組-蔡濬瑒製</p>
+        </div>
+    </footer>
 
     <script>
         // 添加滾動動畫效果
