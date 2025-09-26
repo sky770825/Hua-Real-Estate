@@ -278,15 +278,184 @@
             border-color: rgba(255, 215, 0, 1);
         }
         
+        .event-showcase {
+            padding: 40px 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .event-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .event-date-badge {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 30%, #ff6b6b 60%, #ff4757 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 50px;
+            margin-top: 0;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .event-date-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: badgeShine 3s ease-in-out infinite;
+        }
+        
+        @keyframes badgeShine {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+        
+        .date-number {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-right: 12px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .date-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        .event-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+        
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .event-card {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: white;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .event-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        
+        .event-card:hover .event-image {
+            transform: scale(1.05);
+        }
+        
+        .event-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: white;
+        }
+        
+        .event-card:hover .event-overlay {
+            opacity: 1;
+        }
+        
+        .event-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .event-overlay p {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        /* 模態框樣式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .close:hover {
+            color: #bbb;
+        }
+
         .features {
-            padding: 100px 0;
+            padding: 50px 0;
             background: #f8f9fa;
         }
         
         .section-title {
             text-align: center;
             font-size: 2.5rem;
-            margin-bottom: 60px;
+            margin-bottom: 0;
             background: linear-gradient(135deg, #2c3e50 0%, #667eea 50%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -295,14 +464,21 @@
             font-weight: 700;
         }
         
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            margin: 20px auto;
-            border-radius: 2px;
+        
+        .date-highlight {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 30%, #ff6b6b 60%, #ff4757 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 
+                2px 2px 0px #ff4757,
+                4px 4px 0px #ff3742,
+                6px 6px 0px #ff2f3a,
+                8px 8px 0px #ff2833,
+                10px 10px 0px #ff212c;
+            font-weight: 900;
+            position: relative;
+            display: inline-block;
         }
         
         .features-grid {
@@ -349,7 +525,7 @@
         }
         
         .resources-showcase {
-            padding: 80px 0;
+            padding: 40px 0;
             background: #f8f9fa;
         }
         
@@ -406,7 +582,7 @@
         }
         
         .benefits {
-            padding: 100px 0;
+            padding: 50px 0;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
         }
@@ -453,7 +629,7 @@
         }
         
         .cta-section {
-            padding: 100px 0;
+            padding: 50px 0;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             text-align: center;
             color: white;
@@ -743,8 +919,60 @@
                 text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             }
             
+            .event-showcase {
+                padding: 25px 0;
+            }
+            
+            .event-header {
+                margin-bottom: 15px;
+            }
+            
+            .event-date-badge {
+                padding: 5px 12px;
+                margin-top: 0;
+                border-radius: 40px;
+                box-shadow: 0 5px 18px rgba(255, 107, 107, 0.25);
+            }
+            
+            .date-number {
+                font-size: 1.5rem;
+                margin-right: 10px;
+            }
+            
+            .date-text {
+                font-size: 1.1rem;
+                font-weight: 700;
+            }
+            
+            .event-subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 30px;
+                padding: 0 15px;
+                line-height: 1.4;
+            }
+            
+            .event-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 0 15px;
+            }
+            
+            .event-card {
+                border-radius: 12px;
+            }
+            
+            .event-overlay p {
+                font-size: 0.9rem;
+            }
+            
+            .close {
+                top: 15px;
+                right: 25px;
+                font-size: 30px;
+            }
+
             .features {
-                padding: 50px 0;
+                padding: 25px 0;
                 background: #f8fafc;
             }
             
@@ -759,6 +987,22 @@
                 background-clip: text;
                 color: inherit; /* 備用顏色 */
                 line-height: 1.3;
+            }
+            
+            .date-highlight {
+                background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 30%, #ff6b6b 60%, #ff4757 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 
+                    1px 1px 0px #ff4757,
+                    2px 2px 0px #ff3742,
+                    3px 3px 0px #ff2f3a,
+                    4px 4px 0px #ff2833,
+                    5px 5px 0px #ff212c;
+                font-weight: 900;
+                position: relative;
+                display: inline-block;
             }
             
             .features-grid {
@@ -796,7 +1040,7 @@
             }
             
             .benefits {
-                padding: 50px 0;
+                padding: 25px 0;
                 background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
             }
             
@@ -858,7 +1102,7 @@
             }
             
             .cta-section {
-                padding: 50px 0;
+                padding: 25px 0;
                 background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
             }
             
@@ -884,7 +1128,7 @@
             }
             
             .resources-showcase {
-                padding: 50px 0;
+                padding: 25px 0;
                 background: #f8fafc;
             }
             
@@ -1121,8 +1365,59 @@
                 text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             }
             
+            .event-showcase {
+                padding: 20px 0;
+            }
+            
+            .event-header {
+                margin-bottom: 12px;
+            }
+            
+            .event-date-badge {
+                padding: 4px 10px;
+                margin-top: 0;
+                border-radius: 35px;
+                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
+            }
+            
+            .date-number {
+                font-size: 1.3rem;
+                margin-right: 8px;
+            }
+            
+            .date-text {
+                font-size: 1rem;
+                font-weight: 700;
+            }
+            
+            .event-subtitle {
+                font-size: 1rem;
+                margin-bottom: 25px;
+                padding: 0 20px;
+                line-height: 1.3;
+            }
+            
+            .event-grid {
+                gap: 15px;
+                padding: 0 20px;
+            }
+            
+            .event-card {
+                border-radius: 10px;
+            }
+            
+            .event-overlay p {
+                font-size: 0.85rem;
+            }
+            
+            .close {
+                top: 10px;
+                right: 20px;
+                font-size: 25px;
+            }
+
             .features {
-                padding: 40px 0;
+                padding: 20px 0;
             }
             
             .section-title {
@@ -1135,6 +1430,22 @@
                 -webkit-text-fill-color: transparent;
                 background-clip: text;
                 color: inherit; /* 備用顏色 */
+            }
+            
+            .date-highlight {
+                background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 30%, #ff6b6b 60%, #ff4757 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 
+                    1px 1px 0px #ff4757,
+                    2px 2px 0px #ff3742,
+                    3px 3px 0px #ff2f3a,
+                    4px 4px 0px #ff2833,
+                    5px 5px 0px #ff212c;
+                font-weight: 900;
+                position: relative;
+                display: inline-block;
             }
             
             .features-grid {
@@ -1166,7 +1477,7 @@
             }
             
             .benefits {
-                padding: 50px 0;
+                padding: 20px 0;
             }
             
             .benefits-text h2 {
@@ -1213,7 +1524,7 @@
             }
             
             .cta-section {
-                padding: 50px 0;
+                padding: 20px 0;
             }
             
             .cta-section h2 {
@@ -1236,7 +1547,7 @@
             }
             
             .resources-showcase {
-                padding: 50px 0;
+                padding: 20px 0;
             }
             
             .resources-grid {
@@ -1374,6 +1685,39 @@
             </a>
         </div>
     </section>
+
+    <section class="event-showcase">
+        <div class="container">
+            <div class="event-header">
+                <h2 class="section-title">10/2 華地產早會雙專講同台</h2>
+                <div class="event-date-badge">
+                    <span class="date-text">串連更多商機 共創合作未來</span>
+                </div>
+            </div>
+            <div class="event-grid">
+                <div class="event-card" onclick="openModal('https://i.postimg.cc/wBd979FW/1-0.jpg')">
+                    <img src="https://i.postimg.cc/wBd979FW/1-0.jpg" alt="專講預告 1" class="event-image">
+                    <div class="event-overlay">
+                        <span class="event-icon">🔍</span>
+                        <p>點擊放大</p>
+                    </div>
+                </div>
+                <div class="event-card" onclick="openModal('https://i.postimg.cc/Gp3bVg3F/2-0.jpg')">
+                    <img src="https://i.postimg.cc/Gp3bVg3F/2-0.jpg" alt="專講預告 2" class="event-image">
+                    <div class="event-overlay">
+                        <span class="event-icon">🔍</span>
+                        <p>點擊放大</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 圖片放大模態框 -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
 
     <section class="features">
         <div class="container">
@@ -1600,6 +1944,28 @@
             }
         `;
         document.head.appendChild(style);
+
+        // 圖片放大功能
+        function openModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImg.src = imageSrc;
+            document.body.style.overflow = 'hidden'; // 防止背景滾動
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // 恢復滾動
+        }
+
+        // 按ESC鍵關閉模態框
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
     </script>
 </body>
 </html>
