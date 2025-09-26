@@ -164,7 +164,61 @@
             line-height: 1.8;
         }
         
-        .benefits {
+        .resources-showcase {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .resource-category {
+            background: white;
+            padding: 30px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .resource-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border-left-color: #667eea;
+        }
+        
+        .resource-category h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .resource-category ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .resource-category li {
+            padding: 8px 0;
+            color: #555;
+            position: relative;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+        
+        .resource-category li::before {
+            content: '•';
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            top: 8px;
+        }
             padding: 100px 0;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
@@ -377,8 +431,30 @@
                 line-height: 1.5;
             }
             
-            .container {
-                padding: 0 15px;
+            .resources-showcase {
+                padding: 50px 0;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+                margin-top: 30px;
+            }
+            
+            .resource-category {
+                padding: 20px 15px;
+                margin: 0;
+            }
+            
+            .resource-category h3 {
+                font-size: 1.1rem;
+                margin-bottom: 12px;
+            }
+            
+            .resource-category li {
+                padding: 4px 0;
+                font-size: 0.85rem;
+                line-height: 1.4;
             }
             
             .floating-elements::before,
@@ -451,8 +527,29 @@
                 padding: 0 10px;
             }
             
-            .container {
-                padding: 0 10px;
+            .resources-showcase {
+                padding: 40px 0;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-top: 25px;
+            }
+            
+            .resource-category {
+                padding: 15px 12px;
+            }
+            
+            .resource-category h3 {
+                font-size: 1rem;
+                margin-bottom: 10px;
+            }
+            
+            .resource-category li {
+                padding: 3px 0;
+                font-size: 0.8rem;
+                line-height: 1.3;
             }
         }
         
@@ -507,33 +604,109 @@
 
     <section class="features">
         <div class="container">
-            <h2 class="section-title">為什麼選擇全台唯一的房地產主題 BNI 分會？</h2>
+            <h2 class="section-title">加入分會，您將獲得這些頂尖資源</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">👑</div>
-                    <h3>藍太太親自領軍</h3>
-                    <p>「一方生活」創辦人，短短幾年管理房源突破 1000 戶，台北最大共生公寓包租代管品牌</p>
-                </div>
-                <div class="feature-card">
                     <div class="feature-icon">🏠</div>
-                    <h3>全台唯一房地產主題</h3>
-                    <p>專為房地產上下游打造的 BNI 分會，產業資源完整整合</p>
+                    <h3>包租代管完整生態圈</h3>
+                    <p>涵蓋雙北、桃園、台中、台南、高雄等全台包租代管專業團隊，從房源開發到租客管理一條龍服務</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🚀</div>
-                    <h3>會員成長速度全球前 10 名</h3>
-                    <p>新分會會員成長速度驚人！已突破 100 位會員，創造 BNI 成長傳奇</p>
+                    <div class="feature-icon">🔧</div>
+                    <h3>裝修工程資源庫</h3>
+                    <p>室內設計師、統包工程、水電工班、油漆師傅、系統櫃廠商等完整施工團隊，讓您的物件快速上線</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🤝</div>
-                    <h3>完整上下游 Power Team</h3>
-                    <p>有人、有地、有資金，懂設計、會裝修、能代管、能銷售，一站式對接</p>
+                    <div class="feature-icon">💰</div>
+                    <h3>金融投資專業支援</h3>
+                    <p>房貸專家、理財顧問、保險規劃師，提供資金調度、投資策略、風險規劃等全方位財務諮詢</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚖️</div>
+                    <h3>法律建築專業團隊</h3>
+                    <p>專業律師、地政士、建築師、合法隔套顧問，協助處理契約、產權、法規等所有法務問題</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>行銷科技整合服務</h3>
+                    <p>社群行銷、廣告投放、網站建置、AI系統開發，幫您提升業務效率和市場競爭力</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>海外投資拓展機會</h3>
+                    <p>澳洲、新加坡、日本等海外房地產投資專家，協助您布局國際市場，分散投資風險</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="benefits">
+    <section class="resources-showcase">
+        <div class="container">
+            <h2 class="section-title">100+ 位會員為您提供的實戰資源</h2>
+            <div class="resources-grid">
+                <div class="resource-category">
+                    <h3>🏢 房源開發與管理</h3>
+                    <ul>
+                        <li>全台各區包租代管專業團隊</li>
+                        <li>法拍屋代標與投資機會</li>
+                        <li>危老都更整合開發資源</li>
+                        <li>合法隔套規劃與申請</li>
+                        <li>民宿旅宿營運管理</li>
+                    </ul>
+                </div>
+                <div class="resource-category">
+                    <h3>⚒️ 專業工程服務</h3>
+                    <ul>
+                        <li>室內設計與統包工程</li>
+                        <li>軟裝設計與空間改造</li>
+                        <li>水電工程與冷氣安裝</li>
+                        <li>系統櫃與建材供應</li>
+                        <li>清潔搬家與維修服務</li>
+                    </ul>
+                </div>
+                <div class="resource-category">
+                    <h3>💼 金融與法務</h3>
+                    <ul>
+                        <li>房貸與理財規劃諮詢</li>
+                        <li>保險與風險管理</li>
+                        <li>地政士與產權服務</li>
+                        <li>律師與契約審查</li>
+                        <li>稅務規劃與節稅策略</li>
+                    </ul>
+                </div>
+                <div class="resource-category">
+                    <h3>🌐 行銷科技</h3>
+                    <ul>
+                        <li>社群行銷與廣告投放</li>
+                        <li>網站建置與SEO優化</li>
+                        <li>短影音製作與代操</li>
+                        <li>AI系統與管理工具</li>
+                        <li>品牌設計與活動企劃</li>
+                    </ul>
+                </div>
+                <div class="resource-category">
+                    <h3>🌏 海外投資</h3>
+                    <ul>
+                        <li>澳洲房地產投資與移民</li>
+                        <li>新加坡置產與諮詢</li>
+                        <li>日本房產與旅宿開發</li>
+                        <li>東南亞市場拓展</li>
+                        <li>海外資產配置規劃</li>
+                    </ul>
+                </div>
+                <div class="resource-category">
+                    <h3>🎯 專業培訓</h3>
+                    <ul>
+                        <li>房地產投資實戰課程</li>
+                        <li>包租代管營運培訓</li>
+                        <li>買房議價與策略指導</li>
+                        <li>風水命理與空間規劃</li>
+                        <li>財商教育與理財規劃</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
         <div class="container">
             <div class="benefits-content">
                 <div class="benefits-text">
