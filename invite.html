@@ -146,6 +146,10 @@
             animation: fadeInUp 1s ease-out 0.2s both;
         }
         
+        .mobile-break {
+            display: none;
+        }
+        
         .highlight-text {
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #fff176 100%);
             -webkit-background-clip: text;
@@ -169,20 +173,35 @@
         
         .cta-button {
             display: inline-block;
-            background: linear-gradient(45deg, #ff6b6b, #ffa500);
-            color: white;
+            background: linear-gradient(135deg, 
+                #ffd700 0%, 
+                #ffed4e 15%, 
+                #ffd700 30%, 
+                #ffed4e 45%, 
+                #ffd700 60%, 
+                #ffed4e 75%, 
+                #ffd700 90%, 
+                #ffed4e 100%);
+            color: #8b4513;
             padding: 20px 40px;
             text-decoration: none;
             border-radius: 50px;
             font-size: 1.3rem;
-            font-weight: 600;
-            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+            font-weight: 700;
+            box-shadow: 
+                0 4px 15px rgba(255, 215, 0, 0.4),
+                0 8px 25px rgba(255, 215, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
-            animation: fadeInUp 1s ease-out 0.4s both;
+            animation: fadeInUp 1s ease-out 0.4s both, goldShine 3s ease-in-out infinite;
             position: relative;
             overflow: hidden;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            border: 2px solid rgba(255, 215, 0, 0.8);
+            cursor: pointer;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             margin-top: 10px;
         }
         
@@ -202,9 +221,22 @@
         }
         
         .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(255, 107, 107, 0.6);
-            background: linear-gradient(45deg, #ff5252, #ff9800);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 6px 20px rgba(255, 215, 0, 0.6),
+                0 12px 35px rgba(255, 215, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, 
+                #ffed4e 0%, 
+                #ffd700 15%, 
+                #ffed4e 30%, 
+                #ffd700 45%, 
+                #ffed4e 60%, 
+                #ffd700 75%, 
+                #ffed4e 90%, 
+                #ffd700 100%);
+            border-color: rgba(255, 215, 0, 1);
         }
         
         .features {
@@ -437,6 +469,26 @@
                 transform: translateY(0);
             }
         }
+
+        @keyframes goldShine {
+            0%, 100% {
+                box-shadow: 
+                    0 4px 15px rgba(255, 215, 0, 0.4),
+                    0 8px 25px rgba(255, 215, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+                filter: brightness(1);
+            }
+            50% {
+                box-shadow: 
+                    0 4px 15px rgba(255, 215, 0, 0.6),
+                    0 8px 25px rgba(255, 215, 0, 0.5),
+                    0 0 20px rgba(255, 215, 0, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+                filter: brightness(1.1);
+            }
+        }
         
         @media (max-width: 1024px) and (min-width: 769px) {
             .hero h1 {
@@ -562,6 +614,11 @@
                 line-height: 1.5;
                 font-weight: 500;
                 opacity: 0.95;
+                text-align: center;
+            }
+            
+            .mobile-break {
+                display: block;
             }
             
             .highlight-text {
@@ -597,6 +654,23 @@
                 align-items: center;
                 justify-content: center;
                 margin-top: 5px;
+                color: #8b4513 !important;
+                background: linear-gradient(135deg, 
+                    #ffd700 0%, 
+                    #ffed4e 15%, 
+                    #ffd700 30%, 
+                    #ffed4e 45%, 
+                    #ffd700 60%, 
+                    #ffed4e 75%, 
+                    #ffd700 90%, 
+                    #ffed4e 100%) !important;
+                box-shadow: 
+                    0 4px 15px rgba(255, 215, 0, 0.4),
+                    0 8px 25px rgba(255, 215, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+                border: 2px solid rgba(255, 215, 0, 0.8) !important;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             }
             
             .features {
@@ -893,6 +967,11 @@
                 padding: 0 20px;
                 line-height: 1.4;
                 font-weight: 500;
+                text-align: center;
+            }
+            
+            .mobile-break {
+                display: block;
             }
             
             .highlight-text {
@@ -925,6 +1004,23 @@
                 min-height: 52px;
                 margin: 10px;
                 margin-top: 5px;
+                color: #8b4513 !important;
+                background: linear-gradient(135deg, 
+                    #ffd700 0%, 
+                    #ffed4e 15%, 
+                    #ffd700 30%, 
+                    #ffed4e 45%, 
+                    #ffd700 60%, 
+                    #ffed4e 75%, 
+                    #ffd700 90%, 
+                    #ffed4e 100%) !important;
+                box-shadow: 
+                    0 4px 15px rgba(255, 215, 0, 0.4),
+                    0 8px 25px rgba(255, 215, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+                border: 2px solid rgba(255, 215, 0, 0.8) !important;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             }
             
             .features {
@@ -1174,7 +1270,7 @@
         <div class="floating-elements"></div>
         <div class="container">
             <h1><span class="bni-text">BNI</span><span class="huadi-text">華地產</span><span class="online-text">線上</span><span class="diamond-text">鑽石</span><span class="chapter-text">分會</span></h1>
-            <p class="subtitle">全台唯一<span class="highlight-text">房地產主題式</span> BNI 分會・新分會會員成長速度<span class="highlight-text">全球前10名</span></p>
+            <p class="subtitle">全台唯一<span class="highlight-text">房地產主題式</span> BNI 分會<br class="mobile-break">新分會會員成長速度<span class="highlight-text">全球前10名</span></p>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLScKm2_Nzqao8v1wy0ZLMwLiGzA3as4Lh-RXginugjeMZ4gosg/viewform?usp=sharing&ouid=117191109196635337936" class="cta-button pulse" target="_blank">
                 🚀 加入高速成長的頂尖分會
             </a>
