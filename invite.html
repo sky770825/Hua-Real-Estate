@@ -517,8 +517,23 @@
                 -webkit-text-fill-color: transparent;
                 background-clip: text;
                 font-weight: 700;
-                animation: diamondShine 3s ease-in-out infinite;
+                animation: diamondShineMobile 3s ease-in-out infinite;
                 position: relative;
+            }
+            
+            @keyframes diamondShineMobile {
+                0%, 100% {
+                    text-shadow: 
+                        0 0 3px rgba(255,255,255,0.2),
+                        0 0 6px rgba(255,255,255,0.1);
+                    filter: brightness(1);
+                }
+                50% {
+                    text-shadow: 
+                        0 0 5px rgba(255,255,255,0.4),
+                        0 0 10px rgba(255,255,255,0.2);
+                    filter: brightness(1.2);
+                }
             }
             
             .chapter-text {
@@ -545,7 +560,18 @@
                 background-clip: text;
                 font-weight: 600;
                 text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-                animation: highlightPulse 2s ease-in-out infinite;
+                animation: highlightPulseMobile 2s ease-in-out infinite;
+            }
+            
+            @keyframes highlightPulseMobile {
+                0%, 100% {
+                    transform: scale(1);
+                    filter: brightness(1);
+                }
+                50% {
+                    transform: scale(1.02);
+                    filter: brightness(1.2);
+                }
             }
             
             .cta-button {
@@ -789,8 +815,23 @@
                 -webkit-text-fill-color: transparent;
                 background-clip: text;
                 font-weight: 700;
-                animation: diamondShine 3s ease-in-out infinite;
+                animation: diamondShineMobile 3s ease-in-out infinite;
                 position: relative;
+            }
+            
+            @keyframes diamondShineMobile {
+                0%, 100% {
+                    text-shadow: 
+                        0 0 3px rgba(255,255,255,0.2),
+                        0 0 6px rgba(255,255,255,0.1);
+                    filter: brightness(1);
+                }
+                50% {
+                    text-shadow: 
+                        0 0 5px rgba(255,255,255,0.4),
+                        0 0 10px rgba(255,255,255,0.2);
+                    filter: brightness(1.2);
+                }
             }
             
             .chapter-text {
@@ -816,7 +857,18 @@
                 background-clip: text;
                 font-weight: 600;
                 text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-                animation: highlightPulse 2s ease-in-out infinite;
+                animation: highlightPulseMobile 2s ease-in-out infinite;
+            }
+            
+            @keyframes highlightPulseMobile {
+                0%, 100% {
+                    transform: scale(1);
+                    filter: brightness(1);
+                }
+                50% {
+                    transform: scale(1.02);
+                    filter: brightness(1.2);
+                }
             }
             
             .cta-button {
@@ -958,6 +1010,41 @@
                 padding: 5px 0;
                 font-size: 0.9rem;
                 line-height: 1.5;
+            }
+            
+            /* 手機版優化動態效果 - 減少模糊和干擾 */
+            .highlight-text {
+                animation: highlightPulseMobile 3s ease-in-out infinite;
+            }
+            
+            .diamond-text {
+                animation: diamondShineMobile 4s ease-in-out infinite;
+            }
+            
+            @keyframes highlightPulseMobile {
+                0%, 100% {
+                    transform: scale(1);
+                    filter: brightness(1);
+                }
+                50% {
+                    transform: scale(1.01);
+                    filter: brightness(1.1);
+                }
+            }
+            
+            @keyframes diamondShineMobile {
+                0%, 100% {
+                    text-shadow: 
+                        0 0 2px rgba(255,255,255,0.1),
+                        0 0 4px rgba(255,255,255,0.05);
+                    filter: brightness(1);
+                }
+                50% {
+                    text-shadow: 
+                        0 0 3px rgba(255,255,255,0.2),
+                        0 0 6px rgba(255,255,255,0.1);
+                    filter: brightness(1.1);
+                }
             }
         }
         
