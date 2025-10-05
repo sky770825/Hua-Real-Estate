@@ -31,7 +31,7 @@
             transition: all 0.3s ease;
         }
         
-        /* 不同手機尺寸 */
+        /* 不同手機尺寸 - 按照 iPhone 16 Pro Max 比例調整 */
         .mobile-frame.iphone-se {
             width: 320px;
             height: 568px;
@@ -70,6 +70,42 @@
         .mobile-frame.pixel-6 {
             width: 412px;
             height: 915px;
+        }
+        
+        /* 為每個設備設定對應的 iframe 尺寸 */
+        .mobile-frame.iphone-16 iframe {
+            width: 393px !important;
+            height: 852px !important;
+        }
+        
+        .mobile-frame.iphone-16-pro iframe {
+            width: 402px !important;
+            height: 877px !important;
+        }
+        
+        .mobile-frame.iphone-16-pro-max iframe {
+            width: 444px !important;
+            height: 963px !important;
+        }
+        
+        .mobile-frame.iphone-12 iframe {
+            width: 390px !important;
+            height: 844px !important;
+        }
+        
+        .mobile-frame.iphone-12-pro-max iframe {
+            width: 428px !important;
+            height: 926px !important;
+        }
+        
+        .mobile-frame.samsung-galaxy-s21 iframe {
+            width: 384px !important;
+            height: 854px !important;
+        }
+        
+        .mobile-frame.pixel-6 iframe {
+            width: 412px !important;
+            height: 915px !important;
         }
         
         /* 手機螢幕 */
@@ -789,6 +825,7 @@
         function updateDisplay() {
             const mobileFrame = document.querySelector('.mobile-frame');
             const deviceInfo = document.getElementById('deviceInfo');
+            const iframe = document.getElementById('mainContent');
             
             // 移除所有設備類別
             Object.keys(deviceConfigs).forEach(device => {
@@ -797,6 +834,13 @@
             
             // 添加當前設備類別
             mobileFrame.classList.add(currentDevice);
+            
+            // 更新 iframe 尺寸以匹配當前設備
+            const config = deviceConfigs[currentDevice];
+            if (iframe) {
+                iframe.style.width = `${config.width}px`;
+                iframe.style.height = `${config.height}px`;
+            }
             
             // 應用縮放
             mobileFrame.style.transform = `scale(${currentZoom})`;
@@ -807,7 +851,6 @@
             }
             
             // 更新設備資訊
-            const config = deviceConfigs[currentDevice];
             const dimensions = isLandscape ? 
                 `${config.height}×${config.width}px` : 
                 `${config.width}×${config.height}px`;
@@ -864,9 +907,12 @@
                 iframeBody.style.overflow = 'auto';
                 iframeBody.style.scrollbarWidth = 'none'; // Firefox
                 iframeBody.style.msOverflowStyle = 'none'; // IE and Edge
-                iframeBody.style.width = '100%';
                 iframeBody.style.margin = '0';
                 iframeBody.style.padding = '0';
+                
+                // 根據當前設備設定 body 寬度
+                const config = deviceConfigs[currentDevice];
+                const bodyWidth = config.width;
                 
                 // 添加 CSS 來隱藏 WebKit 滾輪並確保布局不受影響
                 const style = iframeDoc.createElement('style');
@@ -881,7 +927,7 @@
                         -ms-overflow-style: none;
                     }
                     body {
-                        width: 444px !important;  /* iPhone 16 Pro Max 寬度 */
+                        width: ${bodyWidth}px !important;  /* 動態設備寬度 */
                         margin: 0 !important;
                         padding: 0 !important;
                         box-sizing: border-box !important;

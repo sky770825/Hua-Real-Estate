@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNI華地產線上鑽石分會 - 新分會會員成長速度全球前10名</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .hero {
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(60, 60, 120, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(100, 40, 80, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(40, 80, 120, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #2c3e50 0%, #34495e 30%, #4a69bd 70%, #5f4bb6 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+            animation: heroShimmer 8s ease-in-out infinite;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="white" opacity="0.03"><circle cx="20" cy="20" r="2"/><circle cx="80" cy="40" r="1.5"/><circle cx="40" cy="80" r="1"/><circle cx="90" cy="90" r="2.5"/><circle cx="10" cy="60" r="1.8"/></svg>');
+            background-size: 200px 200px;
+            animation: heroStars 20s linear infinite;
+        }
+        
+        @keyframes heroShimmer {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes heroStars {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+            100% {
+                transform: translateX(-200px) translateY(-200px);
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .bni-text {
+            background: linear-gradient(135deg, #ff0000 0%, #ff3333 30%, #ff6666 60%, #ff9999 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            text-shadow: 
+                0 0 2px rgba(255,0,0,0.4),
+                2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .huadi-text {
+            background: linear-gradient(135deg, #d97706 0%, #ea580c 30%, #f97316 60%, #fb923c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            text-shadow: 
+                0 0 2px rgba(217,119,6,0.4),
+                2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .online-text {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+        
+        .diamond-text {
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 30%, #9ca3af 50%, #6b7280 70%, #374151 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            animation: diamondShine 3s ease-in-out infinite;
+            position: relative;
+        }
+        
+        @keyframes diamondShine {
+            0%, 100% {
+                text-shadow: 
+                    0 0 5px rgba(255,255,255,0.3),
+                    0 0 10px rgba(255,255,255,0.2),
+                    0 0 15px rgba(255,255,255,0.1);
+                filter: brightness(1);
+            }
+            25% {
+                text-shadow: 
+                    0 0 8px rgba(255,255,255,0.6),
+                    0 0 16px rgba(255,255,255,0.4),
+                    0 0 24px rgba(255,255,255,0.2),
+                    0 0 32px rgba(255,255,255,0.1);
+                filter: brightness(1.2);
+            }
+            50% {
+                text-shadow: 
+                    0 0 12px rgba(255,255,255,0.8),
+                    0 0 24px rgba(255,255,255,0.6),
+                    0 0 36px rgba(255,255,255,0.4),
+                    0 0 48px rgba(255,255,255,0.2);
+                filter: brightness(1.5);
+            }
+            75% {
+                text-shadow: 
+                    0 0 8px rgba(255,255,255,0.6),
+                    0 0 16px rgba(255,255,255,0.4),
+                    0 0 24px rgba(255,255,255,0.2),
+                    0 0 32px rgba(255,255,255,0.1);
+                filter: brightness(1.2);
+            }
+        }
+        
+        
+        .chapter-text {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+        
+        .mobile-break {
+            display: none;
+        }
+        
+        .highlight-text {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #fff176 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            animation: highlightPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes highlightPulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% {
+                transform: scale(1.05);
+                filter: brightness(1.3);
+            }
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, 
+                #ffd700 0%, 
+                #ffed4e 15%, 
+                #ffd700 30%, 
+                #ffed4e 45%, 
+                #ffd700 60%, 
+                #ffed4e 75%, 
+                #ffd700 90%, 
+                #ffed4e 100%);
+            color: #8b4513;
+            padding: 20px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            box-shadow: 
+                0 4px 15px rgba(255, 215, 0, 0.4),
+                0 8px 25px rgba(255, 215, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.4s both, goldShine 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            border: 2px solid rgba(255, 215, 0, 0.8);
+            cursor: pointer;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            margin-top: 10px;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .cta-button:hover::before {
+            left: 100%;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 6px 20px rgba(255, 215, 0, 0.6),
+                0 12px 35px rgba(255, 215, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, 
+                #ffed4e 0%, 
+                #ffd700 15%, 
+                #ffed4e 30%, 
+                #ffd700 45%, 
+                #ffed4e 60%, 
+                #ffd700 75%, 
+                #ffed4e 90%, 
+                #ffd700 100%);
+            border-color: rgba(255, 215, 0, 1);
+        }
+        
+        .event-showcase {
+            padding: 40px 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .event-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .event-date-badge {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 30%, #ff6b6b 60%, #ff4757 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 50px;
+            margin-top: 0;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .event-date-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: badgeShine 3s ease-in-out infinite;
+        }
+        
+        @keyframes badgeShine {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+        
+        .date-number {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-right: 12px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .date-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        .event-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+        
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .event-card {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: white;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .event-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        
+        .event-card:hover .event-image {
+            transform: scale(1.05);
+        }
+        
+        .event-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: white;
+        }
+        
+        .event-card:hover .event-overlay {
+            opacity: 1;
+        }
+        
+        .event-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .event-overlay p {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        /* 模態框樣式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .close:hover {
+            color: #bbb;
+        }
+
+        .features {
+            padding: 50px 0;
+            background: #f8f9fa;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.4rem;
+            margin-bottom: 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #667eea 50%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            font-weight: 700;
+        }
+        
+        
+        .date-highlight {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 30%, #ff6b6b 60%, #ff4757 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 
+                2px 2px 0px #ff4757,
+                4px 4px 0px #ff3742,
+                6px 6px 0px #ff2f3a,
+                8px 8px 0px #ff2833,
+                10px 10px 0px #ff212c;
+            font-weight: 900;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+        
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .feature-card p {
+            color: #7f8c8d;
+            line-height: 1.8;
+        }
+        
+        .resources-showcase {
+            padding: 40px 0;
+            background: #f8f9fa;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .resource-category {
+            background: white;
+            padding: 30px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .resource-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border-left-color: #667eea;
+        }
+        
+        .resource-category h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .resource-category ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .resource-category li {
+            padding: 8px 0;
+            color: #555;
+            position: relative;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+        
+        .resource-category li::before {
+            content: '•';
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            top: 6px;
+            font-size: 1rem;
+        }
+        
+        .benefits {
+            padding: 50px 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+        }
+        
+        .benefits-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .benefits-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #ffffff;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .benefits-list {
+            list-style: none;
+        }
+        
+        .benefits-list li {
+            margin-bottom: 20px;
+            padding-left: 30px;
+            position: relative;
+            font-size: 1.1rem;
+        }
+        
+        .benefits-list li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+        
+        .highlight-box {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .cta-section {
+            padding: 50px 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+        
+        .cta-section h2 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: #ffffff;
+            font-weight: 800;
+            text-shadow: 
+                0 0 5px rgba(255,255,255,0.4),
+                0 0 10px rgba(255,255,255,0.2),
+                2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .cta-section p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes goldShine {
+            0%, 100% {
+                box-shadow: 
+                    0 4px 15px rgba(255, 215, 0, 0.4),
+                    0 8px 25px rgba(255, 215, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+                filter: brightness(1);
+            }
+            50% {
+                box-shadow: 
+                    0 4px 15px rgba(255, 215, 0, 0.6),
+                    0 8px 25px rgba(255, 215, 0, 0.5),
+                    0 0 20px rgba(255, 215, 0, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+                filter: brightness(1.1);
+            }
+        }
+        
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 35px;
+            }
+            
+            .resources-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                padding: 50px 0;
+                background: 
+                    radial-gradient(circle at 20% 80%, rgba(60, 60, 120, 0.4) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(100, 40, 80, 0.3) 0%, transparent 50%),
+                    linear-gradient(135deg, #2c3e50 0%, #34495e 30%, #4a69bd 70%, #5f4bb6 100%);
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+                line-height: 1.3;
+                font-weight: 800;
+                text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+            }
+            
+            .bni-text {
+                background: linear-gradient(135deg, #ff0000 0%, #ff3333 30%, #ff6666 60%, #ff9999 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: #ff0000; /* 備用顏色 */
+                font-weight: 800;
+                text-shadow: 
+                    0 0 4px rgba(255,0,0,0.6),
+                    0 0 8px rgba(255,0,0,0.4),
+                    0 0 12px rgba(255,0,0,0.2),
+                    2px 2px 4px rgba(0,0,0,0.5),
+                    4px 4px 8px rgba(0,0,0,0.3),
+                    6px 6px 12px rgba(0,0,0,0.2);
+                filter: drop-shadow(0 0 6px rgba(255,0,0,0.3));
+            }
+            
+            .huadi-text {
+                background: linear-gradient(135deg, #d97706 0%, #ea580c 30%, #f97316 60%, #fb923c 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: #d97706; /* 備用顏色 */
+                font-weight: 800;
+                text-shadow: 
+                    0 0 4px rgba(217,119,6,0.6),
+                    0 0 8px rgba(217,119,6,0.4),
+                    0 0 12px rgba(217,119,6,0.2),
+                    2px 2px 4px rgba(0,0,0,0.5),
+                    4px 4px 8px rgba(0,0,0,0.3),
+                    6px 6px 12px rgba(0,0,0,0.2);
+                filter: drop-shadow(0 0 6px rgba(217,119,6,0.3));
+            }
+            
+            .online-text {
+                background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: inherit; /* 備用顏色 */
+                font-weight: 600;
+            }
+            
+            .diamond-text {
+                background: linear-gradient(135deg, #ffffff 0%, #f8fafc 20%, #e2e8f0 40%, #cbd5e0 60%, #a0aec0 80%, #718096 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: #ffffff; /* 備用顏色 */
+                font-weight: 800;
+                animation: diamondShineMobile 3s ease-in-out infinite;
+                position: relative;
+                text-shadow: 
+                    2px 2px 4px rgba(0,0,0,0.3),
+                    4px 4px 8px rgba(0,0,0,0.2),
+                    6px 6px 12px rgba(0,0,0,0.1);
+                filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+            }
+            
+            @keyframes diamondShineMobile {
+                0%, 100% {
+                    text-shadow: 
+                        0 0 3px rgba(255,255,255,0.2),
+                        0 0 6px rgba(255,255,255,0.1);
+                    filter: brightness(1);
+                }
+                50% {
+                    text-shadow: 
+                        0 0 5px rgba(255,255,255,0.4),
+                        0 0 10px rgba(255,255,255,0.2);
+                    filter: brightness(1.2);
+                }
+            }
+            
+            .chapter-text {
+                background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: inherit; /* 備用顏色 */
+                font-weight: 600;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.2rem;
+                margin-bottom: 35px;
+                padding: 0 15px;
+                line-height: 1.5;
+                font-weight: 500;
+                opacity: 0.95;
+                text-align: center;
+            }
+            
+            .mobile-break {
+                display: block;
+            }
+            
+            /* 手機版：BNI/華地產 採用純色並移除霧化效果 */
+            .bni-text {
+                background: none !important;
+                -webkit-background-clip: unset !important;
+                -webkit-text-fill-color: unset !important;
+                background-clip: unset !important;
+                color: #ff0000 !important; /* 亮紅 */
+                text-shadow: 
+                    1px 1px 0 #cc0000,
+                    2px 2px 0 #990000,
+                    3px 3px 0 #660000,
+                    4px 4px 8px rgba(0,0,0,0.3) !important;
+                filter: none !important;
+            }
+            .huadi-text {
+                background: none !important;
+                -webkit-background-clip: unset !important;
+                -webkit-text-fill-color: unset !important;
+                background-clip: unset !important;
+                color: #d97706 !important; /* 淺咖啡/琥珀色 */
+                text-shadow: 
+                    1px 1px 0 #b8650a,
+                    2px 2px 0 #9c5508,
+                    3px 3px 0 #804506,
+                    4px 4px 8px rgba(0,0,0,0.3) !important;
+                filter: none !important;
+            }
+
+            .highlight-text {
+                color: #ffd700 !important; /* 手機版使用純色確保可見 */
+                background: none !important; /* 移除漸層背景 */
+                -webkit-background-clip: unset !important;
+                -webkit-text-fill-color: unset !important;
+                background-clip: unset !important;
+                font-weight: 600;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+                animation: none !important;
+            }
+            
+            @keyframes highlightPulseMobile {
+                0%, 100% {
+                    transform: scale(1);
+                    filter: brightness(1);
+                }
+                50% {
+                    transform: scale(1.02);
+                    filter: brightness(1.2);
+                }
+            }
+            
+            .cta-button {
+                padding: 18px 35px;
+                font-size: 1.2rem;
+                margin: 15px;
+                border-radius: 45px;
+                font-weight: 800;
+                min-height: 56px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 5px;
+                color: #8b4513 !important;
+                background: linear-gradient(135deg, 
+                    #ffd700 0%, 
+                    #ffed4e 15%, 
+                    #ffd700 30%, 
+                    #ffed4e 45%, 
+                    #ffd700 60%, 
+                    #ffed4e 75%, 
+                    #ffd700 90%, 
+                    #ffed4e 100%) !important;
+                box-shadow: 
+                    0 4px 15px rgba(255, 215, 0, 0.4),
+                    0 8px 25px rgba(255, 215, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+                border: 2px solid rgba(255, 215, 0, 0.8) !important;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            }
+            
+            .event-showcase {
+                padding: 25px 0;
+            }
+            
+            .event-header {
+                margin-bottom: 15px;
+            }
+            
+            .event-date-badge {
+                padding: 5px 12px;
+                margin-top: 0;
+                border-radius: 40px;
+                box-shadow: 0 5px 18px rgba(255, 107, 107, 0.25);
+            }
+            
+            .date-number {
+                font-size: 1.5rem;
+                margin-right: 10px;
+            }
+            
+            .date-text {
+                font-size: 1.1rem;
+                font-weight: 700;
+            }
+            
+            .event-subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 30px;
+                padding: 0 15px;
+                line-height: 1.4;
+            }
+            
+            .event-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                padding: 0 15px;
+            }
+            
+            .event-card {
+                border-radius: 12px;
+            }
+            
+            .event-overlay p {
+                font-size: 0.9rem;
+            }
+            
+            .close {
+                top: 15px;
+                right: 25px;
+                font-size: 30px;
+            }
+
+            .features {
+                padding: 25px 0;
+                background: #f8fafc;
+            }
+            
+            .section-title {
+                font-size: 1.3rem; /* 增加0.1rem */
+                margin-bottom: 30px;
+                padding: 0 8px;
+                font-weight: 800;
+                background: linear-gradient(135deg, #1a202c 0%, #4a69bd 50%, #6c5ce7 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: inherit; /* 備用顏色 */
+                line-height: 1.2;
+                white-space: nowrap; /* 強制不換行 */
+            }
+            
+            .date-highlight {
+                background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 30%, #ff6b6b 60%, #ff4757 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 
+                    1px 1px 0px #ff4757,
+                    2px 2px 0px #ff3742,
+                    3px 3px 0px #ff2f3a,
+                    4px 4px 0px #ff2833,
+                    5px 5px 0px #ff212c;
+                font-weight: 900;
+                position: relative;
+                display: inline-block;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                margin-top: 30px;
+                padding: 0 8px;
+            }
+            
+            .feature-card {
+                padding: 20px 15px;
+                margin: 0;
+                border-radius: 20px;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+                background: white;
+                border: 1px solid #e2e8f0;
+            }
+            
+            .feature-icon {
+                font-size: 2.5rem;
+                margin-bottom: 12px;
+            }
+            
+            .feature-card h3 {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+                color: #2d3748;
+                font-weight: 600;
+            }
+            
+            .feature-card p {
+                font-size: 0.85rem;
+                line-height: 1.5;
+                color: #4a5568;
+            }
+            
+            .benefits {
+                padding: 25px 0;
+                background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            }
+            
+            .benefits-content {
+                grid-template-columns: 1fr;
+                gap: 25px;
+                padding: 0 8px;
+            }
+            
+            .benefits-text h2 {
+                font-size: 2.2rem;
+                margin-bottom: 30px;
+                text-align: center;
+                color: #ffffff;
+                font-weight: 800;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            }
+            
+            .benefits-list {
+                padding: 0;
+            }
+            
+            .benefits-list li {
+                margin-bottom: 15px;
+                font-size: 0.95rem;
+                line-height: 1.5;
+                padding-left: 20px;
+                font-weight: 500;
+                white-space: nowrap;
+                position: relative;
+            }
+            
+            .benefits-list li::before {
+                content: '✨';
+                position: absolute;
+                left: 0;
+                top: 0;
+                font-size: 1rem;
+            }
+            
+            .highlight-box {
+                padding: 30px 25px;
+                margin: 0;
+                border-radius: 20px;
+                background: rgba(255,255,255,0.15);
+                backdrop-filter: blur(15px);
+            }
+            
+            .highlight-box h3 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+                font-weight: 600;
+            }
+            
+            .highlight-box p {
+                font-size: 1.05rem;
+                line-height: 1.7;
+                font-weight: 400;
+            }
+            
+            .cta-section {
+                padding: 25px 0;
+                background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            }
+            
+            .cta-section h2 {
+                font-size: 2rem;
+                margin-bottom: 25px;
+                padding: 0 20px;
+                line-height: 1.4;
+                font-weight: 800;
+                color: #ffffff;
+                text-shadow: 
+                    0 0 4px rgba(255,255,255,0.4),
+                    0 0 8px rgba(255,255,255,0.2),
+                    2px 2px 4px rgba(0,0,0,0.3);
+            }
+            
+            .cta-section p {
+                font-size: 1.15rem;
+                margin-bottom: 35px;
+                padding: 0 20px;
+                line-height: 1.6;
+                font-weight: 400;
+            }
+            
+            .resources-showcase {
+                padding: 25px 0;
+                background: #f8fafc;
+            }
+            
+            .resources-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                margin-top: 25px;
+                padding: 0 8px;
+            }
+            
+            .resource-category {
+                padding: 18px 12px;
+                margin: 0;
+                border-radius: 15px;
+                background: white;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+                border: 1px solid #e2e8f0;
+            }
+            
+            .resource-category h3 {
+                font-size: 1rem;
+                margin-bottom: 10px;
+                color: #2d3748;
+                font-weight: 600;
+            }
+            
+            .resource-category li {
+                padding: 4px 0 4px 15px;
+                font-size: 0.8rem;
+                line-height: 1.4;
+                color: #4a5568;
+                position: relative;
+            }
+            
+            .resource-category li::before {
+                content: '•';
+                color: #667eea;
+                font-weight: bold;
+                position: absolute;
+                left: 0;
+                top: 4px;
+                font-size: 0.9rem;
+            }
+            
+            .floating-elements::before,
+            .floating-elements::after {
+                width: 70px;
+                height: 70px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero {
+                padding: 40px 0;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+                margin-bottom: 18px;
+                line-height: 1.2;
+                font-weight: 800;
+            }
+            
+            .bni-text {
+                background: linear-gradient(135deg, #ff0000 0%, #ff3333 30%, #ff6666 60%, #ff9999 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: #ff0000; /* 備用顏色 */
+                font-weight: 800;
+                text-shadow: 
+                    0 0 4px rgba(255,0,0,0.6),
+                    0 0 8px rgba(255,0,0,0.4),
+                    0 0 12px rgba(255,0,0,0.2),
+                    2px 2px 4px rgba(0,0,0,0.5),
+                    4px 4px 8px rgba(0,0,0,0.3),
+                    6px 6px 12px rgba(0,0,0,0.2);
+                filter: drop-shadow(0 0 6px rgba(255,0,0,0.3));
+            }
+            
+            .huadi-text {
+                background: linear-gradient(135deg, #d97706 0%, #ea580c 30%, #f97316 60%, #fb923c 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: #d97706; /* 備用顏色 */
+                font-weight: 800;
+                text-shadow: 
+                    0 0 4px rgba(217,119,6,0.6),
+                    0 0 8px rgba(217,119,6,0.4),
+                    0 0 12px rgba(217,119,6,0.2),
+                    2px 2px 4px rgba(0,0,0,0.5),
+                    4px 4px 8px rgba(0,0,0,0.3),
+                    6px 6px 12px rgba(0,0,0,0.2);
+                filter: drop-shadow(0 0 6px rgba(217,119,6,0.3));
+            }
+            
+            .online-text {
+                background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: inherit; /* 備用顏色 */
+                font-weight: 600;
+            }
+            
+            .diamond-text {
+                background: linear-gradient(135deg, #ffffff 0%, #f8fafc 20%, #e2e8f0 40%, #cbd5e0 60%, #a0aec0 80%, #718096 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: #ffffff; /* 備用顏色 */
+                font-weight: 800;
+                animation: diamondShineMobile 3s ease-in-out infinite;
+                position: relative;
+                text-shadow: 
+                    2px 2px 4px rgba(0,0,0,0.3),
+                    4px 4px 8px rgba(0,0,0,0.2),
+                    6px 6px 12px rgba(0,0,0,0.1);
+                filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+            }
+            
+            @keyframes diamondShineMobile {
+                0%, 100% {
+                    text-shadow: 
+                        0 0 3px rgba(255,255,255,0.2),
+                        0 0 6px rgba(255,255,255,0.1);
+                    filter: brightness(1);
+                }
+                50% {
+                    text-shadow: 
+                        0 0 5px rgba(255,255,255,0.4),
+                        0 0 10px rgba(255,255,255,0.2);
+                    filter: brightness(1.2);
+                }
+            }
+            
+            .chapter-text {
+                background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e6f3ff 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: inherit; /* 備用顏色 */
+                font-weight: 600;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 30px;
+                padding: 0 20px;
+                line-height: 1.4;
+                font-weight: 500;
+                text-align: center;
+            }
+            
+            .mobile-break {
+                display: block;
+            }
+            
+            /* 手機版：BNI/華地產 採用純色並移除霧化效果 */
+            .bni-text {
+                background: none !important;
+                -webkit-background-clip: unset !important;
+                -webkit-text-fill-color: unset !important;
+                background-clip: unset !important;
+                color: #ff0000 !important; /* 亮紅 */
+                text-shadow: 
+                    1px 1px 0 #cc0000,
+                    2px 2px 0 #990000,
+                    3px 3px 0 #660000,
+                    4px 4px 8px rgba(0,0,0,0.3) !important;
+                filter: none !important;
+            }
+            .huadi-text {
+                background: none !important;
+                -webkit-background-clip: unset !important;
+                -webkit-text-fill-color: unset !important;
+                background-clip: unset !important;
+                color: #d97706 !important; /* 淺咖啡/琥珀色 */
+                text-shadow: 
+                    1px 1px 0 #b8650a,
+                    2px 2px 0 #9c5508,
+                    3px 3px 0 #804506,
+                    4px 4px 8px rgba(0,0,0,0.3) !important;
+                filter: none !important;
+            }
+            
+            .highlight-text {
+                color: #ffd700 !important; /* 手機版使用純色確保可見 */
+                background: none !important; /* 移除漸層背景 */
+                -webkit-background-clip: unset !important;
+                -webkit-text-fill-color: unset !important;
+                background-clip: unset !important;
+                font-weight: 600;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+                animation: none !important;
+            }
+            
+            @keyframes highlightPulseMobile {
+                0%, 100% {
+                    transform: scale(1);
+                    filter: brightness(1);
+                }
+                50% {
+                    transform: scale(1.02);
+                    filter: brightness(1.2);
+                }
+            }
+            
+            .cta-button {
+                padding: 16px 30px;
+                font-size: 1.1rem;
+                border-radius: 40px;
+                font-weight: 800;
+                min-height: 52px;
+                margin: 10px;
+                margin-top: 5px;
+                color: #8b4513 !important;
+                background: linear-gradient(135deg, 
+                    #ffd700 0%, 
+                    #ffed4e 15%, 
+                    #ffd700 30%, 
+                    #ffed4e 45%, 
+                    #ffd700 60%, 
+                    #ffed4e 75%, 
+                    #ffd700 90%, 
+                    #ffed4e 100%) !important;
+                box-shadow: 
+                    0 4px 15px rgba(255, 215, 0, 0.4),
+                    0 8px 25px rgba(255, 215, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+                border: 2px solid rgba(255, 215, 0, 0.8) !important;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            }
+            
+            .event-showcase {
+                padding: 20px 0;
+            }
+            
+            .event-header {
+                margin-bottom: 12px;
+            }
+            
+            .event-date-badge {
+                padding: 4px 10px;
+                margin-top: 0;
+                border-radius: 35px;
+                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
+            }
+            
+            .date-number {
+                font-size: 1.3rem;
+                margin-right: 8px;
+            }
+            
+            .date-text {
+                font-size: 1rem;
+                font-weight: 700;
+            }
+            
+            .event-subtitle {
+                font-size: 1rem;
+                margin-bottom: 25px;
+                padding: 0 20px;
+                line-height: 1.3;
+            }
+            
+            .event-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                padding: 0 20px;
+            }
+            
+            .event-card {
+                border-radius: 10px;
+            }
+            
+            .event-overlay p {
+                font-size: 0.85rem;
+            }
+            
+            .close {
+                top: 10px;
+                right: 20px;
+                font-size: 25px;
+            }
+
+            .features {
+                padding: 20px 0;
+            }
+            
+            .section-title {
+                font-size: 1.2rem; /* 增加0.1rem */
+                margin-bottom: 25px;
+                padding: 0 8px;
+                font-weight: 800;
+                background: linear-gradient(135deg, #1a202c 0%, #4a69bd 50%, #6c5ce7 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: inherit; /* 備用顏色 */
+                line-height: 1.2;
+                white-space: nowrap; /* 強制不換行 */
+            }
+            
+            .date-highlight {
+                background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 30%, #ff6b6b 60%, #ff4757 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 
+                    1px 1px 0px #ff4757,
+                    2px 2px 0px #ff3742,
+                    3px 3px 0px #ff2f3a,
+                    4px 4px 0px #ff2833,
+                    5px 5px 0px #ff212c;
+                font-weight: 900;
+                position: relative;
+                display: inline-block;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                padding: 0 5px;
+            }
+            
+            .feature-card {
+                padding: 15px 10px;
+                margin: 0;
+                border-radius: 15px;
+            }
+            
+            .feature-icon {
+                font-size: 2rem;
+                margin-bottom: 8px;
+            }
+            
+            .feature-card h3 {
+                font-size: 1rem;
+                margin-bottom: 8px;
+                font-weight: 600;
+            }
+            
+            .feature-card p {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
+            
+            .benefits {
+                padding: 20px 0;
+            }
+            
+            .benefits-text h2 {
+                font-size: 1.9rem;
+                margin-bottom: 25px;
+                color: #ffffff;
+                font-weight: 800;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            }
+            
+            .benefits-list li {
+                font-size: 0.9rem;
+                margin-bottom: 12px;
+                line-height: 1.4;
+                padding-left: 18px;
+                font-weight: 500;
+                white-space: nowrap;
+                position: relative;
+            }
+            
+            .benefits-list li::before {
+                content: '✨';
+                position: absolute;
+                left: 0;
+                top: 0;
+                font-size: 0.9rem;
+            }
+            
+            .highlight-box {
+                padding: 25px 20px;
+                margin: 0;
+                border-radius: 18px;
+            }
+            
+            .highlight-box h3 {
+                font-size: 1.3rem;
+                margin-bottom: 15px;
+                font-weight: 600;
+            }
+            
+            .highlight-box p {
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+            
+            .cta-section {
+                padding: 20px 0;
+            }
+            
+            .cta-section h2 {
+                font-size: 1.7rem;
+                padding: 0 25px;
+                line-height: 1.3;
+                font-weight: 800;
+                color: #ffffff;
+                text-shadow: 
+                    0 0 3px rgba(255,255,255,0.4),
+                    0 0 6px rgba(255,255,255,0.2),
+                    2px 2px 4px rgba(0,0,0,0.3);
+            }
+            
+            .cta-section p {
+                font-size: 1.05rem;
+                padding: 0 25px;
+                line-height: 1.5;
+                font-weight: 400;
+            }
+            
+            .resources-showcase {
+                padding: 20px 0;
+            }
+            
+            .resources-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-top: 30px;
+                padding: 0 5px;
+            }
+            
+            .resource-category {
+                padding: 15px 10px;
+                margin: 0;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+                border: 1px solid rgba(0,0,0,0.05);
+            }
+            
+            .resource-category h3 {
+                font-size: 0.95rem;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: #2c3e50;
+                border-bottom: 1px solid #e9ecef;
+                padding-bottom: 5px;
+            }
+            
+            .resource-category li {
+                padding: 3px 0 3px 12px;
+                font-size: 0.75rem;
+                line-height: 1.3;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+                position: relative;
+            }
+            
+            .resource-category li::before {
+                content: '•';
+                color: #667eea;
+                font-weight: bold;
+                position: absolute;
+                left: 0;
+                top: 3px;
+                font-size: 0.8rem;
+            }
+            
+            .resource-category li:last-child {
+                border-bottom: none;
+            }
+            
+            /* 手機版優化動態效果 - 減少模糊和干擾 */
+            .highlight-text {
+                color: #ffd700 !important; /* 手機版使用純色確保可見 */
+                background: none !important; /* 移除漸層背景 */
+                -webkit-background-clip: unset !important;
+                -webkit-text-fill-color: unset !important;
+                background-clip: unset !important;
+                animation: none !important;
+            }
+            
+            .diamond-text {
+                animation: diamondShineMobile 4s ease-in-out infinite;
+            }
+            
+            @keyframes highlightPulseMobile {
+                0%, 100% {
+                    transform: scale(1);
+                    filter: brightness(1);
+                }
+                50% {
+                    transform: scale(1.01);
+                    filter: brightness(1.1);
+                }
+            }
+            
+            @keyframes diamondShineMobile {
+                0%, 100% {
+                    text-shadow: 
+                        0 0 2px rgba(255,255,255,0.1),
+                        0 0 4px rgba(255,255,255,0.05);
+                    filter: brightness(1);
+                }
+                50% {
+                    text-shadow: 
+                        0 0 3px rgba(255,255,255,0.2),
+                        0 0 6px rgba(255,255,255,0.1);
+                    filter: brightness(1.1);
+                }
+            }
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .floating-elements::before,
+        .floating-elements::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-elements::before {
+            top: 20%;
+            left: 10%;
+            animation-delay: -2s;
+        }
+        
+        .floating-elements::after {
+            top: 60%;
+            right: 10%;
+            animation-delay: -4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="floating-elements"></div>
+        <div class="container">
+            <h1><span class="bni-text">BNI</span><span class="huadi-text">華地產</span><span class="online-text">線上</span><span class="diamond-text">鑽石</span><span class="chapter-text">分會</span></h1>
+            <p class="subtitle">全台唯一<span class="highlight-text">房地產主題式</span> BNI 分會<br class="mobile-break">新分會會員成長速度<span class="highlight-text">全球前10名</span></p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScKm2_Nzqao8v1wy0ZLMwLiGzA3as4Lh-RXginugjeMZ4gosg/viewform?usp=sharing&ouid=117191109196635337936" class="cta-button pulse" target="_blank">
+                🚀 加入高速成長的頂尖分會
+            </a>
+        </div>
+    </section>
+
+    <section class="event-showcase">
+        <div class="container">
+            <div class="event-header">
+                <h2 class="section-title">10/09 華地產早會雙專講同台</h2>
+                <div class="event-date-badge">
+                    <span class="date-text">串連更多商機 共創合作未來</span>
+                </div>
+            </div>
+            <div class="event-grid">
+                <div class="event-card" onclick="openModal('https://i.postimg.cc/9Mm3vXL2/2.png')">
+                    <img src="https://i.postimg.cc/9Mm3vXL2/2.png" alt="專講預告 1" class="event-image">
+                    <div class="event-overlay">
+                        <span class="event-icon">🔍</span>
+                        <p>點擊放大</p>
+                    </div>
+                </div>
+                <div class="event-card" onclick="openModal('https://i.postimg.cc/wvwKHKrp/3.png')">
+                    <img src="https://i.postimg.cc/wvwKHKrp/3.png" alt="專講預告 2" class="event-image">
+                    <div class="event-overlay">
+                        <span class="event-icon">🔍</span>
+                        <p>點擊放大</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 圖片放大模態框 -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">加入分會<br>您將獲得這些頂尖資源</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🏠</div>
+                    <h3>包租代管完整生態圈</h3>
+                    <p>涵蓋雙北、桃園、台中、台南、高雄等全台包租代管專業團隊，從房源開發到租客管理一條龍服務</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>裝修工程資源庫</h3>
+                    <p>室內設計師、統包工程、水電工班、油漆師傅、系統櫃廠商等完整施工團隊，讓您的物件快速上線</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>金融投資專業支援</h3>
+                    <p>房貸專家、理財顧問、保險規劃師，提供資金調度、投資策略、風險規劃等全方位財務諮詢</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚖️</div>
+                    <h3>法律建築專業團隊</h3>
+                    <p>專業律師、地政士、建築師、合法隔套顧問，協助處理契約、產權、法規等所有法務問題</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>行銷科技整合服務</h3>
+                    <p>社群行銷、廣告投放、網站建置、AI系統開發，幫您提升業務效率和市場競爭力</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>海外投資拓展機會</h3>
+                    <p>澳洲、新加坡、日本等海外房地產投資專家，協助您布局國際市場，分散投資風險</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="resources-showcase">
+        <div class="container">
+            <h2 class="section-title">100+ 位會員<br>為您提供的實戰資源</h2>
+            <div class="resources-grid">
+                <div class="resource-category">
+                    <h3>🏢 房源開發與管理</h3>
+                    <ul>
+                        <li>全台各區包租代管專業團隊</li>
+                        <li>法拍屋代標與投資機會</li>
+                        <li>危老都更整合開發資源</li>
+                        <li>合法隔套規劃與申請</li>
+                        <li>民宿旅宿營運管理</li>
+                    </ul>
+                </div>
+                <div class="resource-category">
+                    <h3>⚒️ 專業工程服務</h3>
+                    <ul>
+                        <li>室內設計與統包工程</li>
+                        <li>軟裝設計與空間改造</li>
+                        <li>水電工程與冷氣安裝</li>
+                        <li>系統櫃與建材供應</li>
+                        <li>清潔搬家與維修服務</li>
+                    </ul>
+                </div>
+                <div class="resource-category">
+                    <h3>💼 金融與法務</h3>
+                    <ul>
+                        <li>房貸與理財規劃諮詢</li>
+                        <li>保險與風險管理</li>
+                        <li>地政士與產權服務</li>
+                        <li>律師與契約審查</li>
+                        <li>稅務規劃與節稅策略</li>
+                    </ul>
+                </div>
+                <div class="resource-category">
+                    <h3>🌐 行銷科技</h3>
+                    <ul>
+                        <li>社群行銷與廣告投放</li>
+                        <li>網站建置與SEO優化</li>
+                        <li>短影音製作與代操</li>
+                        <li>AI系統與管理工具</li>
+                        <li>品牌設計與活動企劃</li>
+                    </ul>
+                </div>
+                <div class="resource-category">
+                    <h3>🌏 海外投資</h3>
+                    <ul>
+                        <li>澳洲房地產投資與移民</li>
+                        <li>新加坡置產與諮詢</li>
+                        <li>日本房產與旅宿開發</li>
+                        <li>東南亞市場拓展</li>
+                        <li>海外資產配置規劃</li>
+                    </ul>
+                </div>
+                <div class="resource-category">
+                    <h3>🎯 專業培訓</h3>
+                    <ul>
+                        <li>房地產投資實戰課程</li>
+                        <li>包租代管營運培訓</li>
+                        <li>買房議價與策略指導</li>
+                        <li>風水命理與空間規劃</li>
+                        <li>財商教育與理財規劃</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits">
+        <div class="container">
+            <div class="benefits-content">
+                <div class="benefits-text">
+                    <h2>系統化的商務合作模式</h2>
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <a href="https://tw.news.yahoo.com/%E5%85%A8%E5%8F%B0%E5%94%AF-%E6%88%BF%E5%9C%B0%E7%94%A2%E4%B8%BB%E9%A1%8C%E5%BC%8Fbni%E5%88%86%E6%9C%83-%E8%97%8D%E5%A4%AA%E5%A4%AA%E9%A0%98%E8%BB%8D-%E8%8F%AF%E5%9C%B0%E7%94%A2-%E6%89%93%E9%80%A0%E6%88%BF%E5%9C%B0%E7%94%A2%E7%95%8C%E6%9C%80%E5%BC%B7-070320469.html" 
+                           target="_blank" 
+                           style="display: inline-block; background: linear-gradient(45deg, #ff6b6b, #ffa500); color: white; padding: 12px 25px; border-radius: 25px; text-decoration: none; font-weight: 600; font-size: 1rem; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); transition: all 0.3s ease; text-align: center; line-height: 1.4;"
+                           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(255, 107, 107, 0.4)'"
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(255, 107, 107, 0.3)'">
+                            📰 雅虎新聞報導：<br>全台唯一房地產主題式BNI分會
+                        </a>
+                    </div>
+                    <ul class="benefits-list">
+                        <li>新分會會員成長速度<span class="highlight-text">全球前 10 名</span></li>
+                        <li>已突破 <span class="highlight-text">100+ 位頂尖房地產會員</span></li>
+                        <li>「合作不是靠情分，而是靠<span class="highlight-text">系統</span>」- 藍太太</li>
+                        <li>每週固定節奏更新進度、交換資源</li>
+                        <li>BNI「<span class="highlight-text">Givers Gain</span>」核心價值，先付出再收穫</li>
+                        <li>讓合作機會不再靠運氣，而是靠<span class="highlight-text">流程與節奏</span></li>
+                    </ul>
+                </div>
+                <div class="highlight-box">
+                    <h3>🎯 適合對象</h3>
+                    <p style="margin-top: 20px; font-size: 1.1rem; line-height: 1.8;">
+                        <strong>房地產上下游從業者：</strong>正在尋找真正可靠的<span class="highlight-text">合作系統</span>與<span class="highlight-text">長期夥伴</span><br><br>
+                        <strong>老屋屋主：</strong>握有老屋但不知如何修繕處理，我們的<span class="highlight-text">資金、人才、改造與管理機制</span>已為您準備好<br><br>
+                        <strong>想要進入房地產業：</strong>希望學習<span class="highlight-text">包租代管、房地產投資</span>的專業人士
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>準備好加入成長速度<span class="highlight-text">全球前10名</span>的<span class="highlight-text">頂尖分會</span>了嗎？</h2>
+            <p><span class="highlight-text">100+ 位房地產菁英</span>已經加入，這不是一場社交，而是一支真正要「<span class="highlight-text">打團體戰的 Power Team</span>」！</p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScKm2_Nzqao8v1wy0ZLMwLiGzA3as4Lh-RXginugjeMZ4gosg/viewform?usp=sharing&ouid=117191109196635337936" class="cta-button" target="_blank">
+                📝 立即填寫報名表單
+            </a>
+            <p style="margin-top: 30px; font-size: 1rem; opacity: 0.8;">
+                填寫完成後，我們將協助您完成報名程序
+            </p>
+        </div>
+    </section>
+
+    <footer style="background: #1a202c; color: #718096; text-align: center; padding: 20px 0; font-size: 0.9rem;">
+        <div class="container">
+            <p>華地產鑽石分會 資訊組-蔡濬瑒製</p>
+        </div>
+    </footer>
+
+    <script>
+        // 添加滾動動畫效果
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // 為卡片添加進場動畫
+        document.querySelectorAll('.feature-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+            observer.observe(card);
+        });
+
+        // 添加按鈕點擊效果
+        document.querySelectorAll('.cta-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                // 創建漣漪效果
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.6);
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // 添加 CSS 動畫
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 圖片放大功能
+        function openModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImg.src = imageSrc;
+            document.body.style.overflow = 'hidden'; // 防止背景滾動
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // 恢復滾動
+        }
+
+        // 按ESC鍵關閉模態框
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
