@@ -1,77 +1,3 @@
-// 導航功能
-function setupNavigation() {
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.getElementById('navMenu');
-    
-    if (navToggle && navMenu) {
-        navToggle.addEventListener('click', function() {
-            const isActive = navMenu.classList.contains('active');
-            navMenu.classList.toggle('active');
-            navToggle.classList.toggle('active');
-            
-            // 更新aria-expanded屬性
-            navToggle.setAttribute('aria-expanded', !isActive);
-            
-            // 防止背景滾動
-            if (!isActive) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = 'auto';
-            }
-        });
-        
-        // 點擊選單項目後關閉選單
-        const navLinks = navMenu.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                navMenu.classList.remove('active');
-                navToggle.classList.remove('active');
-                navToggle.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = 'auto';
-            });
-        });
-        
-        // 點擊背景關閉選單
-        document.addEventListener('click', function(e) {
-            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                navMenu.classList.remove('active');
-                navToggle.classList.remove('active');
-                navToggle.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = 'auto';
-            }
-        });
-        
-        // ESC鍵關閉選單
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-                navMenu.classList.remove('active');
-                navToggle.classList.remove('active');
-                navToggle.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = 'auto';
-                navToggle.focus();
-            }
-        });
-    }
-    
-    // 平滑滾動
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
-            if (targetSection) {
-                const offsetTop = targetSection.offsetTop - 80; // 考慮導航欄高度
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-}
-
 // 自動計算下一個週四的日期
 function getNextThursday() {
     const today = new Date();
@@ -80,14 +6,13 @@ function getNextThursday() {
     // 計算到下一個週四的天數
     let daysUntilThursday;
     if (currentDay === 4) { // 今天是週四
-        // 檢查是否已經過了會議結束時間（早上8:45）
+        // 檢查是否已經過了早上9點
         const currentHour = today.getHours();
-        const currentMinute = today.getMinutes();
-        if (currentHour > 8 || (currentHour === 8 && currentMinute >= 45)) {
-            // 如果已經過了會議結束時間，跳到下週四
+        if (currentHour >= 9) {
+            // 如果已經過了早上9點，跳到下週四
             daysUntilThursday = 7;
         } else {
-            // 如果還沒到會議結束時間，今天就是會議日
+            // 如果還沒到早上9點，今天就是會議日
             daysUntilThursday = 0;
         }
     } else if (currentDay < 4) {
@@ -121,9 +46,6 @@ function updateMeetingDate() {
     const dateElement = document.getElementById('nextMeetingDate');
     if (dateElement) {
         dateElement.textContent = formatDate(nextThursday);
-        console.log('會議日期已更新:', formatDate(nextThursday));
-    } else {
-        console.error('找不到會議日期元素 #nextMeetingDate');
     }
 }
 
@@ -945,19 +867,6 @@ function openImageModal(imageSrc, imageTitle) {
         existingModal.remove();
     }
     
-    // 為榮譽榜圖片添加鍵盤支持
-    const honorImages = document.querySelectorAll('.honor-image');
-    honorImages.forEach(img => {
-        img.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                const src = this.src;
-                const alt = this.alt;
-                openImageModal(src, alt);
-            }
-        });
-    });
-    
     // 創建模態框
     const modal = document.createElement('div');
     modal.className = 'image-modal show';
@@ -1096,9 +1005,8 @@ function initMarquee() {
 }
 
 // 頁面載入完成後執行
-function initializePage() {
+document.addEventListener('DOMContentLoaded', function() {
     // 初始化各種功能
-    setupNavigation();
     updateMeetingDate();
     updateCountdown();
     initSmoothScrolling();
@@ -1121,23 +1029,7 @@ function initializePage() {
     setInterval(updateMeetingDate, 3600000);
     
     console.log('華地產鑽石分會網頁已載入完成！');
-}
-
-// 立即執行一次，確保會議日期能正確顯示
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializePage);
-} else {
-    // DOM已經載入完成，立即執行
-    initializePage();
-}
-
-// 備用方案：延遲執行
-setTimeout(function() {
-    if (document.getElementById('nextMeetingDate').textContent === '計算中...') {
-        console.log('備用方案：重新更新會議日期');
-        updateMeetingDate();
-    }
-}, 1000);
+});
 
 // 添加鍵盤快捷鍵
 document.addEventListener('keydown', function(e) {
@@ -1250,31 +1142,3 @@ function initResourcesTitle() {
         showNotification('資源連結區塊已選中', 'info');
     });
 }
-
-// ===== 性能監控和錯誤追蹤 =====
-window.addEventListener('load', function() {
-    // 測量頁面載入時間
-    const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-    console.log('頁面載入時間:', loadTime + 'ms');
-    
-    // 發送性能數據到分析工具
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'timing_complete', {
-            'name': 'load',
-            'value': loadTime
-        });
-    }
-});
-
-// 錯誤處理
-window.addEventListener('error', function(e) {
-    console.error('JavaScript錯誤:', e.error);
-    
-    // 發送錯誤到分析工具
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'exception', {
-            'description': e.error.message,
-            'fatal': false
-        });
-    }
-});

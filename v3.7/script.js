@@ -5,19 +5,8 @@ function setupNavigation() {
     
     if (navToggle && navMenu) {
         navToggle.addEventListener('click', function() {
-            const isActive = navMenu.classList.contains('active');
             navMenu.classList.toggle('active');
             navToggle.classList.toggle('active');
-            
-            // 更新aria-expanded屬性
-            navToggle.setAttribute('aria-expanded', !isActive);
-            
-            // 防止背景滾動
-            if (!isActive) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = 'auto';
-            }
         });
         
         // 點擊選單項目後關閉選單
@@ -26,30 +15,7 @@ function setupNavigation() {
             link.addEventListener('click', function() {
                 navMenu.classList.remove('active');
                 navToggle.classList.remove('active');
-                navToggle.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = 'auto';
             });
-        });
-        
-        // 點擊背景關閉選單
-        document.addEventListener('click', function(e) {
-            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                navMenu.classList.remove('active');
-                navToggle.classList.remove('active');
-                navToggle.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = 'auto';
-            }
-        });
-        
-        // ESC鍵關閉選單
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-                navMenu.classList.remove('active');
-                navToggle.classList.remove('active');
-                navToggle.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = 'auto';
-                navToggle.focus();
-            }
         });
     }
     
@@ -80,14 +46,13 @@ function getNextThursday() {
     // 計算到下一個週四的天數
     let daysUntilThursday;
     if (currentDay === 4) { // 今天是週四
-        // 檢查是否已經過了會議結束時間（早上8:45）
+        // 檢查是否已經過了早上9點
         const currentHour = today.getHours();
-        const currentMinute = today.getMinutes();
-        if (currentHour > 8 || (currentHour === 8 && currentMinute >= 45)) {
-            // 如果已經過了會議結束時間，跳到下週四
+        if (currentHour >= 9) {
+            // 如果已經過了早上9點，跳到下週四
             daysUntilThursday = 7;
         } else {
-            // 如果還沒到會議結束時間，今天就是會議日
+            // 如果還沒到早上9點，今天就是會議日
             daysUntilThursday = 0;
         }
     } else if (currentDay < 4) {
@@ -121,9 +86,6 @@ function updateMeetingDate() {
     const dateElement = document.getElementById('nextMeetingDate');
     if (dateElement) {
         dateElement.textContent = formatDate(nextThursday);
-        console.log('會議日期已更新:', formatDate(nextThursday));
-    } else {
-        console.error('找不到會議日期元素 #nextMeetingDate');
     }
 }
 
@@ -1096,7 +1058,7 @@ function initMarquee() {
 }
 
 // 頁面載入完成後執行
-function initializePage() {
+document.addEventListener('DOMContentLoaded', function() {
     // 初始化各種功能
     setupNavigation();
     updateMeetingDate();
@@ -1121,23 +1083,7 @@ function initializePage() {
     setInterval(updateMeetingDate, 3600000);
     
     console.log('華地產鑽石分會網頁已載入完成！');
-}
-
-// 立即執行一次，確保會議日期能正確顯示
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializePage);
-} else {
-    // DOM已經載入完成，立即執行
-    initializePage();
-}
-
-// 備用方案：延遲執行
-setTimeout(function() {
-    if (document.getElementById('nextMeetingDate').textContent === '計算中...') {
-        console.log('備用方案：重新更新會議日期');
-        updateMeetingDate();
-    }
-}, 1000);
+});
 
 // 添加鍵盤快捷鍵
 document.addEventListener('keydown', function(e) {
