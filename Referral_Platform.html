@@ -19,6 +19,19 @@
             user-select: none;
         }
 
+        /* 手機版允許滾動 */
+        @media (max-width: 768px) {
+            body {
+                overflow: auto;
+                overflow-x: hidden;
+            }
+            
+            .app-container {
+                min-height: 100vh;
+                height: auto;
+            }
+        }
+
         .app-container {
             width: 100vw;
             height: 100vh;
@@ -346,6 +359,16 @@
             overflow: auto;
             cursor: grab;
             transition: margin-top 0.3s ease;
+        }
+
+        /* 手機版心智圖容器調整 */
+        @media (max-width: 768px) {
+            .mindmap-container {
+                height: auto;
+                min-height: calc(100vh - 80px);
+                overflow: visible;
+                padding-bottom: 40px;
+            }
         }
 
         /* 當使用說明框收合時，調整心智圖容器 */
