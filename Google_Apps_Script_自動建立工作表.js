@@ -156,7 +156,7 @@ function createMemberSheet(spreadsheet) {
   }
   
   // 設定標題行
-  const headers = ['會員編號', '姓名', '專業類別'];
+  const headers = ['會員編號', '姓名', '密碼', '專業類別'];
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   
   // 設定標題行格式
@@ -174,7 +174,8 @@ function createMemberSheet(spreadsheet) {
     // 設定欄位寬度
     sheet.setColumnWidth(1, 120); // 會員編號
     sheet.setColumnWidth(2, 200); // 姓名
-    sheet.setColumnWidth(3, 200); // 專業類別
+    sheet.setColumnWidth(3, 80);  // 密碼
+    sheet.setColumnWidth(4, 200); // 專業類別
     
     // 設定專業類別下拉選單
     const professionalCategories = [
@@ -201,7 +202,7 @@ function createMemberSheet(spreadsheet) {
       .build();
     
     // 應用驗證規則到專業類別欄位（從第2行開始，最多1000行）
-    sheet.getRange(2, 3, 1000, 1).setDataValidation(validationRule);
+    sheet.getRange(2, 4, 1000, 1).setDataValidation(validationRule);
     
   } catch (e) {
     console.log('設定會員資料工作表格式時發生錯誤:', e);
@@ -236,7 +237,8 @@ function getMembers() {
         members.push({
           code: String(row[0]).trim(),
           name: String(row[1]).trim(),
-          professionalCategory: row[2] ? String(row[2]).trim() : '' // 專業類別
+          password: row[2] ? String(row[2]).trim() : '', // 密碼（C欄）
+          professionalCategory: row[3] ? String(row[3]).trim() : '' // 專業類別（D欄）
         });
       }
     }

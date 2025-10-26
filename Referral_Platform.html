@@ -171,6 +171,90 @@
             opacity: 1;
         }
 
+        /* 使用說明框 */
+        .usage-notice {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #fff3cd, #ffe69c);
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 15px 25px;
+            box-shadow: 0 4px 20px rgba(255, 193, 7, 0.3);
+            z-index: 999;
+            max-width: 90%;
+            width: 600px;
+            transition: all 0.3s ease;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .usage-notice.collapsed {
+            height: 0;
+            padding: 0;
+            opacity: 0;
+            overflow: hidden;
+            margin: 0;
+            border: none;
+        }
+
+        .usage-notice-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        .usage-notice-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .usage-notice-text {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .usage-notice-text strong {
+            color: #856404;
+            font-weight: 700;
+        }
+
+        .usage-notice-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #856404;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .usage-notice-close:hover {
+            background: rgba(133, 100, 4, 0.1);
+            color: #5c3f00;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
         /* 熱門搜索標籤 */
         .popular-tags {
             display: flex;
@@ -261,6 +345,12 @@
             position: relative;
             overflow: auto;
             cursor: grab;
+            transition: margin-top 0.3s ease;
+        }
+
+        /* 當使用說明框收合時，調整心智圖容器 */
+        .mindmap-container.with-notice {
+            margin-top: 150px;
         }
 
         .mindmap-container:active {
@@ -629,6 +719,31 @@
                 font-size: 12px;
                 padding: 8px 15px;
             }
+
+            /* 使用說明框響應式 */
+            .usage-notice {
+                top: 120px;
+                width: calc(100% - 40px);
+                padding: 12px 18px;
+            }
+
+            .usage-notice-content {
+                font-size: 12px;
+                gap: 10px;
+            }
+
+            .usage-notice-icon {
+                font-size: 20px;
+            }
+
+            .usage-notice-text {
+                line-height: 1.4;
+            }
+
+            /* 手機版心智圖容器調整 */
+            .mindmap-container.with-notice {
+                margin-top: 220px;
+            }
         }
 
         /* 動畫 */
@@ -705,6 +820,17 @@
                 <button class="btn btn-secondary" onclick="showDataView()">
                     📊 資料查看
                 </button>
+            </div>
+        </div>
+
+        <!-- 使用說明框 -->
+        <div class="usage-notice" id="usageNotice">
+            <div class="usage-notice-content">
+                <div class="usage-notice-icon">⚠️</div>
+                <div class="usage-notice-text">
+                    <strong>使用提示：</strong>此引薦平台僅供引薦<strong>會員沒有的區域及資源</strong>，以確保不會損失會員權益。
+                </div>
+                <button class="usage-notice-close" onclick="closeUsageNotice()" title="關閉提示">×</button>
             </div>
         </div>
 
@@ -857,32 +983,13 @@
         // Google Sheets 設定
         const SHEET_CONFIG = {
             // Apps Script Web App URL
-            APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzISJwzwKBFUzHJHHICHH6OwpFMByfyB1xdj2kkhv3GxUY4VIQo7yvSbkN6rte9odMW/exec',
+            APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwS35-ZT2ehCrjwWe1qaduUjKJGHGdQXW_DQBesiS0jcsLFRzbDvIKUUS-6jIkiXY6j/exec',
             // 傳統 Google Sheets API 設定（備用）
             REFERRAL_SHEET_ID: '1rzFA6bqsz_Au1wiMEGj2nxrlG3uOdDMPddBZBT7sqEY', // 引薦登記工作表ID
             ACCESS_LOG_SHEET_ID: '1rzFA6bqsz_Au1wiMEGj2nxrlG3uOdDMPddBZBT7sqEY', // 使用記錄工作表ID（同一個Sheet的不同工作表）
             MEMBER_SHEET_ID: '1rzFA6bqsz_Au1wiMEGj2nxrlG3uOdDMPddBZBT7sqEY', // 會員資料工作表ID（用於快搜會員編號）
             API_KEY: 'YOUR_GOOGLE_SHEETS_API_KEY' // 請替換為您的Google Sheets API金鑰
         };
-        
-        // 測試 Apps Script 連接（頁面載入時自動執行）
-        async function testAppsScriptConnection() {
-            try {
-                console.log('🔍 測試 Apps Script 連接...');
-                const response = await fetch(SHEET_CONFIG.APPS_SCRIPT_URL + '?action=test', {
-                    method: 'GET',
-                    mode: 'no-cors' // 避免 CORS 問題
-                });
-                console.log('✅ Apps Script 連接測試完成');
-            } catch (error) {
-                console.log('⚠️ Apps Script 連接測試（CORS 正常，因為使用 no-cors 模式）');
-            }
-        }
-        
-        // 頁面載入時測試連接
-        window.addEventListener('load', function() {
-            testAppsScriptConnection();
-        });
         
         // 會員資料快取（本地緩存）
         let memberDataCache = null;
@@ -967,28 +1074,33 @@
 
         // 初始化
         document.addEventListener('DOMContentLoaded', async function() {
-            setTimeout(async () => {
-                // 先載入引薦資料（包括從 Google Sheets 讀取）
-                await loadReferralData();
-                
-                // 然後初始化其他功能
-                document.getElementById('loading').style.display = 'none';
-                createMindmap();
-                setupEventListeners();
+            // 立即隱藏載入動畫並顯示心智圖
+            document.getElementById('loading').style.display = 'none';
+            createMindmap();
+            setupEventListeners();
+            
+            // 初始化按鈕狀態
+            updateButtonsState();
+            
+            // 檢查使用說明框狀態
+            checkUsageNotice();
+            
+            // 後台異步載入資料（不阻塞UI）
+            Promise.all([
+                loadReferralData(),
+                loadMemberData()
+            ]).then(() => {
+                console.log('✅ 所有資料載入完成');
+            }).catch(err => {
+                console.warn('⚠️ 資料載入失敗:', err);
+            });
+            
+            // 後台運行測試（不阻塞UI）
+            setTimeout(() => {
                 loadUnlockedContacts();
                 testAppsScriptConnection();
                 testGoogleSheetsConnection();
-                
-                // 預載入會員資料（用於快速搜索）
-                loadMemberData().then(() => {
-                    console.log('✅ 會員資料預載入完成');
-                }).catch(err => {
-                    console.warn('⚠️ 會員資料預載入失敗:', err);
-                });
-                
-                // 初始化按鈕狀態
-                updateButtonsState();
-            }, 1000);
+            }, 100);
         });
         
         // 更新按鈕狀態
@@ -1027,7 +1139,7 @@
                     const response = await fetch(SHEET_CONFIG.APPS_SCRIPT_URL);
                     if (response.ok) {
                         const result = await response.json();
-                        console.log('✅ Apps Script 連接成功:', result);
+                        console.log('✅ Apps Script 連接成功');
                         
                         // 測試讀取引薦資料
                         const referralsUrl = `${SHEET_CONFIG.APPS_SCRIPT_URL}?action=getReferrals`;
@@ -1035,7 +1147,7 @@
                             const referralsResponse = await fetch(referralsUrl);
                             if (referralsResponse.ok) {
                                 const referralsResult = await referralsResponse.json();
-                                console.log('✅ 讀取引薦資料測試成功:', referralsResult);
+                                console.log('✅ 讀取引薦資料測試成功');
                                 console.log(`   找到 ${referralsResult.data ? referralsResult.data.length : 0} 筆引薦資料`);
                             } else {
                                 console.warn('⚠️ 讀取引薦資料測試失敗:', referralsResponse.status);
@@ -1102,7 +1214,7 @@
                         
                         if (response.ok) {
                             const result = await response.json();
-                            console.log('會員資料回應結果:', result);
+                            console.log('會員資料回應結果:', result.success ? '成功' : '失敗');
                             
                             // 檢查是否返回了預設測試訊息（表示 Apps Script 可能沒有正確處理 action）
                             if (result.message && result.message.includes('運行正常') && !result.data) {
@@ -1127,12 +1239,14 @@
                                         const code = String(member.code || member.memberCode || '').trim();
                                         const name = String(member.name || '').trim();
                                         const professionalCategory = String(member.professionalCategory || '').trim();
+                                        const password = String(member.password || '').trim();
                                         
                                         if (code && name) {
                                             // 建立會員資訊對象
                                             const memberInfo = {
                                                 name: name,
-                                                professionalCategory: professionalCategory
+                                                professionalCategory: professionalCategory,
+                                                password: password
                                             };
                                             
                                             // 原始編號
@@ -1217,8 +1331,7 @@
             
             // 調試：顯示會員資料內容
             console.log('🔍 搜索會員編號:', memberCode);
-            console.log('📊 當前會員資料庫:', memberData);
-            console.log('📊 會員資料庫大小:', Object.keys(memberData).length);
+            console.log('📊 當前會員資料庫大小:', Object.keys(memberData).length);
             
             // 清理輸入的編號（移除空格和非數字字符）
             const cleanCode = memberCode.trim().replace(/[^0-9]/g, '');
@@ -1244,10 +1357,14 @@
             
             // 逐一嘗試搜索
             for (const pattern of uniquePatterns) {
-                console.log(`🔍 嘗試模式 "${pattern}":`, memberData[pattern] ? `找到：${JSON.stringify(memberData[pattern])}` : '未找到');
+                console.log(`🔍 嘗試模式 "${pattern}":`, memberData[pattern] ? '找到' : '未找到');
                 if (memberData[pattern]) {
-                    console.log(`✅ 找到會員：${pattern} -> ${JSON.stringify(memberData[pattern])}`);
-                    return memberData[pattern];
+                    // 返回不包含密碼的會員資訊
+                    const memberInfo = memberData[pattern];
+                    return {
+                        name: memberInfo.name,
+                        professionalCategory: memberInfo.professionalCategory
+                    };
                 }
             }
             
@@ -1258,10 +1375,14 @@
                 // 嘗試 1-3 位數格式：1, 01, 001
                 for (let digits = 1; digits <= 3; digits++) {
                     const paddedCode = String(numericValue).padStart(digits, '0');
-                    console.log(`🔍 嘗試 "${paddedCode}":`, memberData[paddedCode] ? `找到：${JSON.stringify(memberData[paddedCode])}` : '未找到');
+                    console.log(`🔍 嘗試 "${paddedCode}":`, memberData[paddedCode] ? '找到' : '未找到');
                     if (memberData[paddedCode]) {
-                        console.log(`✅ 找到會員：${paddedCode} -> ${JSON.stringify(memberData[paddedCode])}`);
-                        return memberData[paddedCode];
+                        // 返回不包含密碼的會員資訊
+                        const memberInfo = memberData[paddedCode];
+                        return {
+                            name: memberInfo.name,
+                            professionalCategory: memberInfo.professionalCategory
+                        };
                     }
                 }
             }
@@ -1626,11 +1747,15 @@
             
             const categories = Object.keys(mindmapData["2025年 華地產鑽石分會引薦平台"]);
             
+            // 優化：使用文檔片段批量添加DOM以提高性能
+            const fragment = document.createDocumentFragment();
+            
             categories.forEach(category => {
                 const card = createCategoryCard(category);
-                cardsContainer.appendChild(card);
+                fragment.appendChild(card);
             });
             
+            cardsContainer.appendChild(fragment);
             container.appendChild(cardsContainer);
         }
         
@@ -2837,7 +2962,7 @@
             }
         }
 
-        function showDetails(item, category, subCategory) {
+        async function showDetails(item, category, subCategory) {
             currentDetails = { item, category, subCategory };
             
             document.getElementById('detailsTitle').textContent = item;
@@ -2859,6 +2984,37 @@
             } else {
                 referrals = [referral];
             }
+                
+                // 加載會員資料以進行排序
+                const memberData = await loadMemberData();
+                
+                // 排序引薦人列表
+                referrals.sort((a, b) => {
+                    const codeA = (a.referrerCode || '').trim();
+                    const codeB = (b.referrerCode || '').trim();
+                    
+                    // 提取數字部分用於排序
+                    const numA = parseInt(codeA.replace(/[^0-9]/g, '')) || 9999;
+                    const numB = parseInt(codeB.replace(/[^0-9]/g, '')) || 9999;
+                    
+                    // 提取純數字編號用於檢查會員資格
+                    const cleanCodeA = codeA.replace(/[^0-9]/g, '');
+                    const cleanCodeB = codeB.replace(/[^0-9]/g, '');
+                    
+                    // 檢查是否為會員成員（使用純數字編號檢查）
+                    const isMemberA = memberData && memberData[cleanCodeA];
+                    const isMemberB = memberData && memberData[cleanCodeB];
+                    
+                    // 排序規則：
+                    // 1. 會員成員優先（isMemberA > isMemberB）
+                    // 2. 會員成員內部按編號排序（numA < numB）
+                    // 3. 非會員成員排在最後
+                    
+                    if (isMemberA && !isMemberB) return -1;
+                    if (!isMemberA && isMemberB) return 1;
+                    if (isMemberA && isMemberB) return numA - numB;
+                    return 0; // 兩個都不是會員成員，保持原有順序
+                });
                 
                 // 分頁設定
                 const itemsPerPage = 5; // 每頁顯示5個
@@ -2890,17 +3046,32 @@
                     </style>`;
                 
                 referrals.forEach((ref, index) => {
+                    // 檢查是否為會員成員
+                    const referrerCode = (ref.referrerCode || '').trim();
+                    // 提取純數字編號用於檢查會員資格
+                    const cleanCode = referrerCode.replace(/[^0-9]/g, '');
+                    const isMember = memberData && memberData[cleanCode];
+                    const memberInfo = isMember ? memberData[cleanCode] : null;
+                    
+                    // 如果是會員成員，添加標籤
+                    const memberTag = isMember ? 
+                        `<span style="font-size: 10px; color: #fff; background: linear-gradient(135deg, #667eea, #764ba2); padding: 2px 6px; border-radius: 10px; font-weight: 600;">👤 會員</span>` : 
+                        '';
+                    
+                    // 調整引薦人顯示順序，會員成員在前
+                    const displayIndex = index + 1;
                     const uniqueId = `${item.replace(/[^a-zA-Z0-9]/g, '_')}_${index}`;
                     referralsHTML += `
                         <div class="referral-item" style="margin-bottom: 12px;">
                             <div class="referral-summary" onclick="toggleReferralDetails('${uniqueId}')" style="cursor: pointer; padding: 10px; border: 2px solid #e3e8ff; border-radius: 10px; margin-bottom: 8px; transition: all 0.3s ease; background: linear-gradient(135deg, #f8f9ff, #ffffff);">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <span style="background: #667eea; color: white; padding: 3px 6px; border-radius: 50%; font-size: 11px; font-weight: bold;">${index + 1}</span>
+                                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                        <span style="background: #667eea; color: white; padding: 3px 6px; border-radius: 50%; font-size: 11px; font-weight: bold;">${displayIndex}</span>
                                         <div>
                                             <strong style="color: #4a5568; font-size: 13px;">引薦人：</strong>
                                             <span style="color: #2d3748; font-weight: 600; font-size: 13px;">${ref.referrerCode || ref.name || '未知'}</span>
                                         </div>
+                                        ${memberTag}
                                         <span style="font-size: 11px; color: #667eea; background: #e3e8ff; padding: 2px 6px; border-radius: 10px;">${ref.companyName || ref.company || '未知'}</span>
                                     </div>
                                     <span class="expand-icon" style="font-size: 14px; color: #667eea; transition: transform 0.3s ease;">▶</span>
@@ -2909,6 +3080,10 @@
                             
                             <div class="referral-details" id="referralDetails_${uniqueId}" style="display: none; padding: 15px; background: #f8f9ff; border-radius: 10px; margin-bottom: 10px;">
                                 <div style="margin-bottom: 12px; font-size: 14px;">
+                                    ${isMember && memberInfo ? `<div style="margin-bottom: 8px;">
+                                        <strong style="color: #4a5568;">👤 會員姓名：</strong>
+                                        <span style="color: #2d3748;">${memberInfo.name}</span>
+                                    </div>` : ''}
                                     <div style="margin-bottom: 8px;">
                                         <strong style="color: #4a5568;">廠商名稱：</strong>
                                         <span style="color: #2d3748;">${ref.companyName || ref.company || '未知'}</span>
@@ -2937,7 +3112,7 @@
                                     </div>
                                 </div>
                                 
-                                <button onclick="showAllContactDetails('${ref.phone}', '${ref.lineId || ''}', '${item}', '${ref.referrerCode || ref.name || '未知'}')" 
+                                <button onclick="showAllContactDetails('${ref.phone}', '${ref.lineId || ''}', '${item}', '${ref.referrerCode || ref.name || '未知'}', ${isMember ? 'true' : 'false'}, '${cleanCode}')" 
                                         style="background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3); transition: all 0.3s ease; width: 100%;">
                                     🔓 查看聯絡資訊
                                 </button>
@@ -2983,6 +3158,42 @@
         function closeDetails() {
             document.getElementById('detailsPanel').classList.remove('active');
             currentDetails = null;
+        }
+
+        // 關閉使用說明框
+        function closeUsageNotice() {
+            const notice = document.getElementById('usageNotice');
+            const mindmapContainer = document.getElementById('mindmapContainer');
+            if (notice) {
+                notice.classList.add('collapsed');
+                // 保存關閉狀態到 localStorage
+                localStorage.setItem('usageNoticeClosed', 'true');
+                // 調整心智圖容器位置
+                if (mindmapContainer) {
+                    mindmapContainer.classList.remove('with-notice');
+                }
+            }
+        }
+
+        // 檢查使用說明框是否應該顯示
+        function checkUsageNotice() {
+            const isClosed = localStorage.getItem('usageNoticeClosed');
+            const notice = document.getElementById('usageNotice');
+            const mindmapContainer = document.getElementById('mindmapContainer');
+            
+            if (isClosed === 'true') {
+                if (notice) {
+                    notice.classList.add('collapsed');
+                }
+                if (mindmapContainer) {
+                    mindmapContainer.classList.remove('with-notice');
+                }
+            } else {
+                // 如果沒有關閉過，顯示使用說明框並調整心智圖容器
+                if (mindmapContainer) {
+                    mindmapContainer.classList.add('with-notice');
+                }
+            }
         }
         
         // 引薦人列表分頁功能
@@ -3161,12 +3372,17 @@
                     
                     <div class="referral-form-field" style="margin-bottom: 15px;">
                         <label class="referral-form-label" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333; font-size: 14px;">引薦人（會員編號） *</label>
-                        <div style="position: relative;">
-                            <input type="text" id="referrerCode" class="referral-form-input" placeholder="例如：016 或 016濬瑒" required 
-                                   style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 8px; padding-right: 120px;">
-                            <div id="memberNameHint" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #667eea; font-size: 13px; font-weight: 600; pointer-events: none; display: none;">
-                                🔍 搜索中...
+                        <div style="display: flex; gap: 8px;">
+                            <div style="position: relative; flex: 1;">
+                                <input type="text" id="referrerCode" class="referral-form-input" placeholder="例如：016 或 016濬瑒" required 
+                                       style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 8px; padding-right: 120px;">
+                                <div id="memberNameHint" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #667eea; font-size: 13px; font-weight: 600; pointer-events: none; display: none;">
+                                    🔍 搜索中...
+                                </div>
                             </div>
+                            <button type="button" id="selectMemberBtn" onclick="showMemberList()" style="padding: 10px 16px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s ease;" onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)'" onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                👥 選擇會員
+                            </button>
                         </div>
                         <div id="memberNameDisplay" style="margin-top: 5px; font-size: 13px; color: #28a745; font-weight: 600; display: none;">
                             <span id="memberNameText"></span>
@@ -3174,7 +3390,13 @@
                     </div>
                     
                     <div class="referral-form-field" style="margin-bottom: 15px;">
-                        <label class="referral-form-label" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333; font-size: 14px;">被引薦廠商名稱 *</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <label class="referral-form-label" style="font-weight: 600; color: #333; font-size: 14px;">被引薦廠商名稱 *</label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;">
+                                <input type="checkbox" id="recommendMyself" style="width: 18px; height: 18px; cursor: pointer;" onchange="toggleRecommendMyself()">
+                                <span style="font-size: 13px; color: #667eea; font-weight: 600;">👤 推薦我自己</span>
+                            </label>
+                        </div>
                         <input type="text" id="referredCompany" class="referral-form-input" placeholder="請輸入廠商名稱" required 
                                style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 8px;">
                     </div>
@@ -3225,6 +3447,203 @@
             
             // 添加電話號碼自動格式化功能
             setupPhoneFormatting();
+        }
+        
+        // 顯示會員列表選擇器
+        async function showMemberList() {
+            const memberData = await loadMemberData();
+            
+            if (!memberData || Object.keys(memberData).length === 0) {
+                alert('目前沒有會員資料，請先建立會員資料工作表。');
+                return;
+            }
+            
+            // 創建會員列表彈窗
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 3000;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: white;
+                padding: 25px;
+                border-radius: 15px;
+                width: 90%;
+                max-width: 500px;
+                max-height: 70vh;
+                overflow-y: auto;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            `;
+            
+            content.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: #333; font-size: 18px;">👥 選擇會員成員</h3>
+                    <button onclick="closeMemberList()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s ease;" onmouseenter="this.style.background='#f1f3f4'; this.style.color='#333';" onmouseleave="this.style.background='none'; this.style.color='#666';">×</button>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="memberSearchInput" placeholder="🔍 搜尋會員姓名或編號..." 
+                           style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 14px;">
+                </div>
+                <div id="memberListContainer" style="max-height: 50vh; overflow-y: auto;">
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            // 安全地添加會員項目
+            const container = document.getElementById('memberListContainer');
+            
+            Object.entries(memberData).forEach(([code, info]) => {
+                const item = document.createElement('div');
+                item.className = 'member-item';
+                item.dataset.code = code;
+                item.dataset.name = info.name;
+                item.style.cssText = 'padding: 12px; border: 2px solid #e9ecef; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s ease;';
+                
+                item.onmouseenter = function() {
+                    this.style.borderColor = '#667eea';
+                    this.style.background = '#f8f9fa';
+                };
+                item.onmouseleave = function() {
+                    this.style.borderColor = '#e9ecef';
+                    this.style.background = 'white';
+                };
+                item.onclick = function() {
+                    selectMember(code, info.name);
+                };
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.style.cssText = 'font-weight: 600; color: #333; font-size: 14px;';
+                nameDiv.textContent = `${code} - ${info.name}`;
+                item.appendChild(nameDiv);
+                
+                if (info.professionalCategory) {
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.style.cssText = 'font-size: 12px; color: #666; margin-top: 4px;';
+                    categoryDiv.textContent = info.professionalCategory;
+                    item.appendChild(categoryDiv);
+                }
+                
+                container.appendChild(item);
+            });
+            
+            // 添加搜索功能
+            const searchInput = document.getElementById('memberSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const items = modal.querySelectorAll('.member-item');
+                    
+                    items.forEach(item => {
+                        const code = item.dataset.code.toLowerCase();
+                        const name = item.dataset.name.toLowerCase();
+                        const matches = code.includes(searchTerm) || name.includes(searchTerm);
+                        item.style.display = matches ? 'block' : 'none';
+                    });
+                });
+            }
+        }
+        
+        // 關閉會員列表彈窗
+        function closeMemberList() {
+            const modal = document.querySelector('[style*="z-index: 3000"]');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        // 選擇會員
+        function selectMember(code, name) {
+            const referrerCodeInput = document.getElementById('referrerCode');
+            if (referrerCodeInput) {
+                referrerCodeInput.value = `${code}${name}`;
+                
+                // 觸發搜索以顯示確認訊息
+                referrerCodeInput.dispatchEvent(new Event('input'));
+            }
+            
+            closeMemberList();
+        }
+        
+        // 切換「推薦我自己」功能
+        async function toggleRecommendMyself() {
+            const checkbox = document.getElementById('recommendMyself');
+            const referrerCodeInput = document.getElementById('referrerCode');
+            const referredCompanyInput = document.getElementById('referredCompany');
+            const companyPhoneInput = document.getElementById('companyPhone');
+            const companyLineIdInput = document.getElementById('companyLineId');
+            const companyAreaInput = document.getElementById('companyArea');
+            
+            if (!checkbox || !referrerCodeInput) return;
+            
+            if (checkbox.checked) {
+                // 獲取引薦人編號
+                const referrerCode = referrerCodeInput.value.trim();
+                
+                if (!referrerCode) {
+                    alert('請先選擇或輸入引薦人（會員編號）');
+                    checkbox.checked = false;
+                    return;
+                }
+                
+                // 提取會員編號
+                const codeMatch = referrerCode.match(/(\d+)/);
+                if (!codeMatch) {
+                    alert('請輸入有效的會員編號');
+                    checkbox.checked = false;
+                    return;
+                }
+                
+                const memberCode = codeMatch[1];
+                
+                // 從會員資料中查找
+                const memberData = await loadMemberData();
+                const memberInfo = memberData[memberCode];
+                
+                if (memberInfo) {
+                    // 自動填充廠商名稱（使用會員姓名）
+                    referredCompanyInput.value = `${memberCode} - ${memberInfo.name}`;
+                    
+                    // 如果當前沒有輸入電話，添加提示
+                    if (!companyPhoneInput.value.trim()) {
+                        companyPhoneInput.placeholder = '請輸入您的聯絡電話';
+                    }
+                    
+                    if (!companyLineIdInput.value.trim()) {
+                        companyLineIdInput.placeholder = '請輸入您的 LINE ID（選填）';
+                    }
+                    
+                    if (!companyAreaInput.value.trim()) {
+                        companyAreaInput.placeholder = '請輸入您的服務區域（選填）';
+                    }
+                    
+                    // 標記這些欄位需要填寫
+                    companyPhoneInput.style.borderColor = '#ffc107';
+                    companyPhoneInput.title = '⚠️ 請填寫您的聯絡電話';
+                } else {
+                    alert('找不到會員資料，請確認會員編號是否正確');
+                    checkbox.checked = false;
+                }
+            } else {
+                // 取消勾選時清空廠商名稱並恢復樣式
+                referredCompanyInput.value = '';
+                companyPhoneInput.style.borderColor = '#e9ecef';
+                companyPhoneInput.title = '';
+                companyPhoneInput.placeholder = '請輸入廠商電話';
+                companyLineIdInput.placeholder = '請輸入廠商LINE ID';
+                companyAreaInput.placeholder = '例如：台北市、新北市';
+            }
         }
         
         // 設置會員編號自動搜索功能
@@ -3411,6 +3830,8 @@
                     // 重新顯示詳細資訊（立即顯示新資料）
                     if (currentDetails) {
                         showDetails(currentDetails.item, currentDetails.category, currentDetails.subCategory);
+                        // 確保詳細資訊面板是打開的
+                        document.getElementById('detailsPanel').classList.add('active');
                     }
                     
                     // 顯示成功訊息
@@ -3615,9 +4036,91 @@
             return start + middle + end;
         }
         
+        // 驗證密碼並顯示聯絡資訊
+        function verifyPasswordAndShow(phone, lineId, serviceItem, referrerCode, memberCode, correctPassword) {
+            const input = document.getElementById('memberPasswordInput');
+            const password = input ? input.value.trim() : '';
+            
+            if (password === correctPassword) {
+                // 密碼正確，關閉密碼彈窗
+                const passwordContainer = document.querySelector('[style*="z-index: 4000"]');
+                if (passwordContainer) {
+                    passwordContainer.remove();
+                }
+                
+                // 顯示聯絡資訊（跳過隱私保護確認）
+                showContactDetailsDirectly(phone, lineId, serviceItem, referrerCode);
+            } else {
+                // 密碼錯誤
+                alert('❌ 密碼錯誤，請重新輸入');
+                if (input) {
+                    input.value = '';
+                    input.focus();
+                }
+            }
+        }
+        
+        // 直接顯示聯絡資訊（無需隱私保護確認）
+        function showContactDetailsDirectly(phone, lineId, serviceItem, referrerCode) {
+            // 顯示聯絡資訊
+            let contactHTML = '<div style="text-align: center; padding: 20px;">';
+            contactHTML += '<h3 style="color: #667eea; margin-bottom: 15px;">📞 聯絡資訊</h3>';
+            
+            if (phone) {
+                contactHTML += `<div style="margin-bottom: 12px;">
+                    <strong style="color: #4a5568;">電話：</strong>
+                    <span style="color: #667eea; font-size: 16px; font-weight: 600;">${phone}</span>
+                </div>`;
+            }
+            
+            if (lineId) {
+                contactHTML += `<div style="margin-bottom: 12px;">
+                    <strong style="color: #4a5568;">LINE ID：</strong>
+                    <span style="color: #667eea; font-size: 16px; font-weight: 600;">${lineId}</span>
+                </div>`;
+            }
+            
+            contactHTML += '</div>';
+            
+            // 創建彈窗顯示聯絡資訊
+            const infoContainer = document.createElement('div');
+            infoContainer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 4000;
+            `;
+            
+            const infoDialog = document.createElement('div');
+            infoDialog.style.cssText = `
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                width: 90%;
+                max-width: 400px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            `;
+            
+            infoDialog.innerHTML = contactHTML + `
+                <button onclick="this.closest('[style*=\"z-index: 4000\"]').remove()" 
+                        style="width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+                    關閉
+                </button>
+            `;
+            
+            infoContainer.appendChild(infoDialog);
+            document.body.appendChild(infoContainer);
+        }
+        
         // 顯示所有聯絡資訊詳情
-        function showAllContactDetails(phone, lineId, serviceItem, referrerCode) {
-            // 創建隱私保護確認彈窗
+        async function showAllContactDetails(phone, lineId, serviceItem, referrerCode, isMember = false, memberCode = '') {
+            // 創建隱私保護確認彈窗（統一使用）
             const confirmContainer = document.createElement('div');
             confirmContainer.style.cssText = `
                 position: fixed;
@@ -3693,6 +4196,7 @@
                             padding: 20px 15px;
                             max-height: calc(90vh - 100px) !important;
                             overflow-y: auto !important;
+                            overflow-x: hidden !important;
                         }
                         .modal-header {
                             padding: 20px 15px;
@@ -3701,20 +4205,22 @@
                             font-size: 18px;
                         }
                         .info-card {
-                            padding: 15px;
+                            padding: 12px;
                             margin: 15px 0;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 8px;
                         }
                         .info-item {
                             flex-direction: column;
                             align-items: flex-start;
-                            gap: 5px;
-                            padding: 10px 0;
+                            gap: 4px;
+                            padding: 8px;
                         }
                         .info-label {
-                            font-size: 13px;
+                            font-size: 12px;
                         }
                         .info-value {
-                            font-size: 13px;
+                            font-size: 12px;
                             word-break: break-all;
                         }
                         .warning-card {
@@ -3756,13 +4262,18 @@
                         padding: 12px 15px;
                         margin: 10px 0;
                         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
                     }
                     .info-item {
                         display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        padding: 5px 0;
-                        border-bottom: 1px solid #f0f2ff;
+                        flex-direction: column;
+                        gap: 4px;
+                        padding: 8px;
+                        background: rgba(255, 255, 255, 0.5);
+                        border-radius: 8px;
+                        border: 1px solid #e3e8ff;
                     }
                     .info-item:last-child {
                         border-bottom: none;
@@ -3770,12 +4281,13 @@
                     .info-label {
                         font-weight: 600;
                         color: #4a5568;
-                        font-size: 13px;
+                        font-size: 12px;
                     }
                     .info-value {
                         color: #2d3748;
                         font-weight: 500;
                         font-size: 13px;
+                        word-break: break-word;
                     }
                     .warning-card {
                         background: linear-gradient(135deg, #fff3cd, #ffe69c);
@@ -3867,7 +4379,7 @@
                     </h3>
                 </div>
                 
-                <div class="modal-body modal-content" style="overflow: visible;">
+                <div class="modal-body modal-content" style="overflow-x: hidden; overflow-y: auto;">
                     <div class="info-card">
                         <div class="info-item">
                             <span class="info-label">服務項目</span>
@@ -3912,6 +4424,20 @@
                         </p>
                     </div>
                     
+                    <div style="margin: 8px 0;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #4a5568; font-size: 13px;">
+                            🔐 請輸入您的會員密碼 *
+                        </label>
+                        <input type="password" id="memberPasswordInputPrivacy" maxlength="4" placeholder="請輸入4碼密碼" required
+                               style="width: 100%; padding: 10px; border: 2px solid #e3e8ff; border-radius: 8px; font-size: 13px; transition: all 0.3s ease; text-align: center; letter-spacing: 8px;"
+                               onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)';"
+                               onblur="this.style.borderColor='#e3e8ff'; this.style.boxShadow='none';"
+                               onkeypress="if(event.key==='Enter') confirmAllContactAccessWithMemberCode('${phone}', '${lineId}', '${serviceItem}', '${referrerCode}')">
+                        <p style="color: #6c757d; font-size: 11px; margin-top: 3px; text-align: left;">
+                            請輸入您的會員密碼以驗證身份
+                        </p>
+                    </div>
+                    
                     <div class="warning-card">
                         <div class="warning-icon">⚠️</div>
                         <div class="warning-text">
@@ -3936,13 +4462,25 @@
             
             // 添加成員編號快搜功能
             setupMemberCodeSearchForPrivacy();
+            
+            // 自動聚焦到密碼輸入框
+            setTimeout(() => {
+                const passwordInput = document.getElementById('memberPasswordInputPrivacy');
+                if (passwordInput) {
+                    passwordInput.focus();
+                }
+            }, 100);
         }
         
         // 確認查看所有聯絡資訊（帶成員編號）
-        function confirmAllContactAccessWithMemberCode(phone, lineId, serviceItem, referrerCode) {
+        async function confirmAllContactAccessWithMemberCode(phone, lineId, serviceItem, referrerCode) {
             // 獲取成員編號
             const memberCodeInput = document.getElementById('memberCodeInput');
             const memberCode = memberCodeInput ? memberCodeInput.value.trim() : '';
+            
+            // 獲取密碼
+            const passwordInput = document.getElementById('memberPasswordInputPrivacy');
+            const password = passwordInput ? passwordInput.value.trim() : '';
             
             // 驗證成員編號
             if (!memberCode) {
@@ -3953,6 +4491,44 @@
                 return;
             }
             
+            // 驗證密碼
+            if (!password) {
+                alert('⚠️ 請輸入您的會員密碼！');
+                if (passwordInput) {
+                    passwordInput.focus();
+                }
+                return;
+            }
+            
+            // 提取純數字編號
+            const cleanCode = memberCode.replace(/[^0-9]/g, '');
+            
+            // 從會員資料中查找並驗證密碼
+            const memberData = await loadMemberData();
+            const memberInfo = memberData[cleanCode];
+            
+            if (!memberInfo) {
+                alert('❌ 找不到該會員編號，請確認編號是否正確');
+                return;
+            }
+            
+            // 檢查會員是否有設置密碼
+            if (!memberInfo.password || memberInfo.password.trim() === '') {
+                alert('❌ 該會員尚未設置密碼，請聯繫管理員設置密碼');
+                return;
+            }
+            
+            // 驗證密碼
+            if (memberInfo.password !== password) {
+                alert('❌ 密碼錯誤，請重新輸入');
+                if (passwordInput) {
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+                return;
+            }
+            
+            console.log('✅ 密碼驗證成功');
             console.log('成員編號:', memberCode);
             
             // 合併聯絡資訊格式：電話和 LINE ID 整合在一筆記錄中
@@ -5381,7 +5957,7 @@
                 
                 if (response.ok) {
                     const result = await response.json();
-                    console.log(`${sheetType} 資料已成功提交到 Google Sheets:`, result);
+                    console.log(`${sheetType} 資料已成功提交到 Google Sheets`);
                     return true;
                 } else {
                     const errorText = await response.text();
@@ -5468,7 +6044,7 @@
                     
                     if (response.ok) {
                         const result = await response.json();
-                        console.log(`✅ ${sheetType} 資料已成功提交到 Apps Script:`, result);
+                        console.log(`✅ ${sheetType} 資料已成功提交到 Apps Script`);
                         return true;
                     } else {
                         const errorText = await response.text();
@@ -6271,10 +6847,10 @@
                 const result = await response.json();
                 
                 if (response.ok) {
-                    console.log('✅ Apps Script 連接成功:', result);
+                    console.log('✅ Apps Script 連接成功');
                     return true;
                 } else {
-                    console.error('❌ Apps Script 連接失敗:', response.status, result);
+                    console.error('❌ Apps Script 連接失敗:', response.status);
                     return false;
                 }
             } catch (error) {
@@ -6746,7 +7322,6 @@
             memberDataCacheTime = null;
             
             const memberData = await loadMemberData();
-            console.log('📊 載入的會員資料:', memberData);
             console.log('📊 會員資料數量:', Object.keys(memberData).length);
             
             // 測試搜索
@@ -6758,14 +7333,26 @@
         
         // 查看當前會員資料（可在控制台調用）
         window.showMemberData = function() {
-            console.log('📊 當前會員資料緩存:', memberDataCache);
-            console.log('📊 緩存時間:', memberDataCacheTime ? new Date(memberDataCacheTime).toLocaleString() : '無');
-            console.log('📊 會員資料數量:', memberDataCache ? Object.keys(memberDataCache).length : 0);
-            
-            if (memberDataCache && Object.keys(memberDataCache).length > 0) {
-                console.table(memberDataCache);
-            } else {
-                console.warn('⚠️ 會員資料為空，請執行 testMemberSearch() 重新載入');
+            try {
+                if (memberDataCache) {
+                    console.log('📊 當前會員資料緩存:');
+                    // 創建不包含密碼的副本用於顯示
+                    const sanitizedData = {};
+                    Object.keys(memberDataCache).forEach(code => {
+                        const member = memberDataCache[code];
+                        sanitizedData[code] = {
+                            name: member.name,
+                            professionalCategory: member.professionalCategory
+                        };
+                    });
+                    console.table(sanitizedData);
+                } else {
+                    console.log('📊 當前會員資料緩存: 無');
+                }
+                console.log('📊 緩存時間:', memberDataCacheTime ? new Date(memberDataCacheTime).toLocaleString() : '無');
+                console.log('📊 會員資料數量:', memberDataCache ? Object.keys(memberDataCache).length : 0);
+            } catch (error) {
+                console.error('查看會員資料時發生錯誤:', error);
             }
             
             return memberDataCache;
