@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>2025年 華地產鑽石分會引薦平台</title>
     <style>
         * {
@@ -65,7 +65,7 @@
             padding: 10px 15px 10px 40px;
             border: 2px solid #e9ecef;
             border-radius: 25px;
-            font-size: 14px;
+            font-size: 16px;
             background: white;
             transition: all 0.3s ease;
         }
@@ -741,6 +741,10 @@
             }
 
             /* 手機版心智圖容器調整 */
+            .mindmap-container {
+                margin-top: 130px;
+            }
+            
             .mindmap-container.with-notice {
                 margin-top: 220px;
             }
@@ -795,6 +799,46 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* 回到頂部按鈕 */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .scroll-to-top.active {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -840,6 +884,9 @@
                 <div class="center-node" id="centerNode">2025年 華地產鑽石分會引薦平台</div>
             </div>
         </div>
+
+        <!-- 回到頂部按鈕 -->
+        <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()" title="回到頂部">↑</button>
 
         <!-- 詳細資訊面板 -->
         <div class="details-panel" id="detailsPanel">
@@ -2877,6 +2924,18 @@
             
             // 中心節點點擊
             document.getElementById('centerNode').onclick = expandMindmap;
+            
+            // 滾動事件監聽器 - 顯示/隱藏回到頂部按鈕
+            const mindmapContainer = document.getElementById('mindmapContainer');
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            
+            mindmapContainer.addEventListener('scroll', function() {
+                if (mindmapContainer.scrollTop > 200) {
+                    scrollToTopBtn.classList.add('active');
+                } else {
+                    scrollToTopBtn.classList.remove('active');
+                }
+            });
         }
 
         function expandMindmap() {
@@ -2887,6 +2946,15 @@
         function collapseMindmap() {
             // 示意函數，卡片佈局不需要展開/收起
             console.log('卡片佈局已顯示');
+        }
+
+        // 回到頂部功能
+        function scrollToTop() {
+            const mindmapContainer = document.getElementById('mindmapContainer');
+            mindmapContainer.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         }
 
         function toggleSubBranches(parentBranch, category) {
@@ -4244,7 +4312,7 @@
                             font-size: 14px;
                         }
                         input[type="text"] {
-                            font-size: 14px;
+                            font-size: 16px;
                             padding: 10px;
                         }
                         label {
