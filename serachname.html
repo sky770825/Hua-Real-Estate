@@ -951,25 +951,57 @@
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             if (isMobile) {
-                // 手機版：直接觸發任務切換器
+                // 手機版：嘗試觸發任務切換器
                 const appStoreUrl = 'https://apps.apple.com/tw/app/bni-connect-mobile/id1212875170';
                 
                 if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-                    // iOS: 直接觸發App切換器
-                    window.location.href = 'app-switcher://';
-                    
-                    // 如果失敗，跳轉到App Store
-                    setTimeout(() => {
+                    // iOS: 嘗試多種方法觸發App切換器
+                    try {
+                        // 方法1: 嘗試觸發App切換器
+                        window.location.href = 'app-switcher://';
+                        
+                        // 方法2: 嘗試觸發iOS的任務切換器
+                        setTimeout(() => {
+                            window.location.href = 'ios-app-switcher://';
+                        }, 100);
+                        
+                        // 方法3: 嘗試觸發多任務切換器
+                        setTimeout(() => {
+                            window.location.href = 'multitasking://';
+                        }, 200);
+                        
+                        // 如果都失敗，跳轉到App Store
+                        setTimeout(() => {
+                            window.location.href = appStoreUrl;
+                        }, 1000);
+                        
+                    } catch (e) {
                         window.location.href = appStoreUrl;
-                    }, 500);
+                    }
                 } else if (navigator.userAgent.includes('Android')) {
-                    // Android: 直接觸發最近使用的App
-                    window.location.href = 'intent://recent/#Intent;end';
-                    
-                    // 如果失敗，跳轉到Google Play
-                    setTimeout(() => {
+                    // Android: 嘗試觸發最近使用的App
+                    try {
+                        // 方法1: 嘗試觸發最近使用的App
+                        window.location.href = 'intent://recent/#Intent;end';
+                        
+                        // 方法2: 嘗試觸發Android任務切換器
+                        setTimeout(() => {
+                            window.location.href = 'android-app-switcher://';
+                        }, 100);
+                        
+                        // 方法3: 嘗試觸發多任務管理器
+                        setTimeout(() => {
+                            window.location.href = 'multitask://';
+                        }, 200);
+                        
+                        // 如果都失敗，跳轉到Google Play
+                        setTimeout(() => {
+                            window.location.href = 'https://play.google.com/store/apps/details?id=com.bni.mobile';
+                        }, 1000);
+                        
+                    } catch (e) {
                         window.location.href = 'https://play.google.com/store/apps/details?id=com.bni.mobile';
-                    }, 500);
+                    }
                 } else {
                     // 其他設備：直接跳轉到App Store
                     window.location.href = appStoreUrl;
