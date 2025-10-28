@@ -714,7 +714,7 @@
             <div class="search-box">
                 <input type="text" id="searchInput" class="search-input" placeholder="請輸入會員編號 (例如: 1, 2, 3...)">
                 <button onclick="openBNIApp()" class="bni-btn">
-                    任務切換器
+                    快速切換 BNI Connect
                 </button>
             </div>
             
@@ -951,61 +951,46 @@
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             if (isMobile) {
-                // 手機版：嘗試觸發任務切換器
+                // 手機版：嘗試直接啟動BNI Connect App
+                const appSchemes = [
+                    'bni-connect://',
+                    'bni://',
+                    'bniconnect://',
+                    'bni-connect-mobile://',
+                    'bnimobile://'
+                ];
+                
                 const appStoreUrl = 'https://apps.apple.com/tw/app/bni-connect-mobile/id1212875170';
                 
-                if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-                    // iOS: 嘗試多種方法觸發App切換器
-                    try {
-                        // 方法1: 嘗試觸發App切換器
-                        window.location.href = 'app-switcher://';
-                        
-                        // 方法2: 嘗試觸發iOS的任務切換器
-                        setTimeout(() => {
-                            window.location.href = 'ios-app-switcher://';
-                        }, 100);
-                        
-                        // 方法3: 嘗試觸發多任務切換器
-                        setTimeout(() => {
-                            window.location.href = 'multitasking://';
-                        }, 200);
-                        
-                        // 如果都失敗，跳轉到App Store
-                        setTimeout(() => {
-                            window.location.href = appStoreUrl;
-                        }, 1000);
-                        
-                    } catch (e) {
+                // 嘗試直接啟動App
+                let appStarted = false;
+                
+                // 使用隱藏iframe嘗試啟動App
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = appSchemes[0];
+                document.body.appendChild(iframe);
+                
+                // 監聽頁面失焦（App啟動時會失焦）
+                const handleBlur = () => {
+                    appStarted = true;
+                };
+                
+                window.addEventListener('blur', handleBlur);
+                document.addEventListener('blur', handleBlur);
+                
+                // 設置超時，如果App沒啟動則跳轉到App Store
+                setTimeout(() => {
+                    window.removeEventListener('blur', handleBlur);
+                    document.removeEventListener('blur', handleBlur);
+                    document.body.removeChild(iframe);
+                    
+                    if (!appStarted) {
+                        // App沒啟動，跳轉到App Store
                         window.location.href = appStoreUrl;
                     }
-                } else if (navigator.userAgent.includes('Android')) {
-                    // Android: 嘗試觸發最近使用的App
-                    try {
-                        // 方法1: 嘗試觸發最近使用的App
-                        window.location.href = 'intent://recent/#Intent;end';
-                        
-                        // 方法2: 嘗試觸發Android任務切換器
-                        setTimeout(() => {
-                            window.location.href = 'android-app-switcher://';
-                        }, 100);
-                        
-                        // 方法3: 嘗試觸發多任務管理器
-                        setTimeout(() => {
-                            window.location.href = 'multitask://';
-                        }, 200);
-                        
-                        // 如果都失敗，跳轉到Google Play
-                        setTimeout(() => {
-                            window.location.href = 'https://play.google.com/store/apps/details?id=com.bni.mobile';
-                        }, 1000);
-                        
-                    } catch (e) {
-                        window.location.href = 'https://play.google.com/store/apps/details?id=com.bni.mobile';
-                    }
-                } else {
-                    // 其他設備：直接跳轉到App Store
-                    window.location.href = appStoreUrl;
-                }
+                }, 2000);
+                
             } else {
                 // 桌面版：直接跳轉到App Store
                 const appStoreUrl = 'https://apps.apple.com/tw/app/bni-connect-mobile/id1212875170';
