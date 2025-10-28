@@ -58,18 +58,21 @@
 
         .search-box {
             position: relative;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         .search-input {
             width: 100%;
-            padding: 20px 25px;
-            font-size: 1.3em;
-            border: 3px solid #e0e0e0;
-            border-radius: 50px;
+            padding: 10px 15px;
+            font-size: 1em;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
             outline: none;
             transition: all 0.3s ease;
             background: #f8f9fa;
+            max-width: 150px;
+            margin: 0 auto;
+            text-align: center;
         }
 
         .search-input:focus {
@@ -215,22 +218,101 @@
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 15px 20px;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin: 10px 0;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            flex: 1;
         }
 
         .quick-menu-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .usage-section {
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .header-row {
+            display: flex;
+            gap: 15px;
+            align-items: stretch;
+        }
+
+        .usage-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .usage-header:hover {
+            background: linear-gradient(135deg, #3d8bfe 0%, #00d4fe 100%);
+        }
+
+        .usage-title {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .usage-toggle {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .usage-toggle.expanded {
+            transform: rotate(180deg);
+        }
+
+        .usage-content {
+            padding: 20px;
+            display: none;
+            line-height: 1.6;
+        }
+
+        .usage-content.show {
+            display: block;
+        }
+
+        .usage-step {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #ff6b6b 0%, #ff8e8e 100%);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .highlight-blue {
+            background: linear-gradient(120deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
         }
 
         .quick-menu {
@@ -499,6 +581,25 @@
         </div>
         
         <div class="search-section">
+            <!-- 使用說明 -->
+            <div class="usage-section">
+                <div class="usage-header" onclick="toggleUsage()">
+                    <div class="usage-title">📖 使用說明</div>
+                    <div class="usage-toggle">▼</div>
+                </div>
+                <div class="usage-content" id="usageContent">
+                    <div class="usage-step">
+                        <strong>步驟1：</strong> <span class="highlight">輸入編號</span> 搜尋會員
+                    </div>
+                    <div class="usage-step">
+                        <strong>步驟2：</strong> 直接<span class="highlight">點擊名字</span>複製
+                    </div>
+                    <div class="usage-step">
+                        <strong>步驟3：</strong> 回到<span class="highlight-blue">BNI Connect</span> 會面人右邊<span class="highlight">放大鏡</span>在<span class="highlight-blue">名字欄位</span>貼上搜尋即可
+                    </div>
+                </div>
+            </div>
+
             <button class="quick-menu-btn" onclick="showQuickMenu()">
                 🏢 華地產九長快捷選單
             </button>
@@ -711,6 +812,20 @@
                 setTimeout(() => {
                     element.classList.remove('copied');
                 }, 2000);
+            }
+        }
+
+        // 切換使用說明
+        function toggleUsage() {
+            const content = document.getElementById('usageContent');
+            const toggle = document.querySelector('.usage-toggle');
+            
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                toggle.classList.remove('expanded');
+            } else {
+                content.classList.add('show');
+                toggle.classList.add('expanded');
             }
         }
 
