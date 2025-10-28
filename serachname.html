@@ -714,7 +714,7 @@
             <div class="search-box">
                 <input type="text" id="searchInput" class="search-input" placeholder="請輸入會員編號 (例如: 1, 2, 3...)">
                 <button onclick="openBNIApp()" class="bni-btn">
-                    搜尋 BNI Connect
+                    啟動 BNI Connect
                 </button>
             </div>
             
@@ -951,23 +951,46 @@
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             if (isMobile) {
-                // 手機版：使用App名稱搜尋
-                const appName = 'BNI Connect';
+                // 手機版：嘗試直接啟動App
+                const appSchemes = [
+                    'bni-connect://',
+                    'bni://',
+                    'bniconnect://',
+                    'bni-connect-mobile://',
+                    'bnimobile://'
+                ];
+                
                 const appStoreUrl = 'https://apps.apple.com/tw/app/bni-connect-mobile/id1212875170';
                 
-                // 嘗試使用App名稱搜尋
-                if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-                    // iOS: 使用App Store搜尋
-                    const searchUrl = `https://apps.apple.com/search?term=${encodeURIComponent(appName)}`;
-                    window.location.href = searchUrl;
-                } else if (navigator.userAgent.includes('Android')) {
-                    // Android: 使用Google Play搜尋
-                    const searchUrl = `https://play.google.com/store/search?q=${encodeURIComponent(appName)}`;
-                    window.location.href = searchUrl;
-                } else {
-                    // 其他設備：直接跳轉到App Store
-                    window.location.href = appStoreUrl;
-                }
+                // 嘗試直接啟動App
+                let appStarted = false;
+                
+                // 使用隱藏iframe嘗試啟動App
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = appSchemes[0];
+                document.body.appendChild(iframe);
+                
+                // 監聽頁面失焦（App啟動時會失焦）
+                const handleBlur = () => {
+                    appStarted = true;
+                };
+                
+                window.addEventListener('blur', handleBlur);
+                document.addEventListener('blur', handleBlur);
+                
+                // 設置超時，如果App沒啟動則跳轉到App Store
+                setTimeout(() => {
+                    window.removeEventListener('blur', handleBlur);
+                    document.removeEventListener('blur', handleBlur);
+                    document.body.removeChild(iframe);
+                    
+                    if (!appStarted) {
+                        // App沒啟動，跳轉到App Store
+                        window.location.href = appStoreUrl;
+                    }
+                }, 1500);
+                
             } else {
                 // 桌面版：直接跳轉到App Store
                 const appStoreUrl = 'https://apps.apple.com/tw/app/bni-connect-mobile/id1212875170';
