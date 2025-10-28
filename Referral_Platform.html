@@ -3606,13 +3606,13 @@
                     
                     <div class="referral-form-field" style="margin-bottom: 15px;">
                         <label class="referral-form-label" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333; font-size: 14px;">廠商聯絡電話 *</label>
-                        <input type="tel" id="companyPhone" class="referral-form-input" placeholder="請輸入廠商電話" required 
+                        <input type="tel" id="companyPhone" class="referral-form-input" placeholder="請輸入廠商電話，若無可填自己電話" required 
                                style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 8px;">
                     </div>
                     
                     <div class="referral-form-field" style="margin-bottom: 15px;">
                         <label class="referral-form-label" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333; font-size: 14px;">廠商LINE ID</label>
-                        <input type="text" id="companyLineId" class="referral-form-input" placeholder="請輸入廠商LINE ID" 
+                        <input type="text" id="companyLineId" class="referral-form-input" placeholder="請輸入LINE ID，或私LINE傳LINE好友名單" 
                                style="width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 8px;">
                     </div>
                     
@@ -3820,7 +3820,7 @@
                     
                     // 如果當前沒有輸入電話，添加提示
                     if (!companyPhoneInput.value.trim()) {
-                        companyPhoneInput.placeholder = '請輸入您的聯絡電話';
+                        companyPhoneInput.placeholder = '請輸入您的聯絡電話（若無廠商電話）';
                     }
                     
                     if (!companyLineIdInput.value.trim()) {
@@ -3843,8 +3843,8 @@
                 referredCompanyInput.value = '';
                 companyPhoneInput.style.borderColor = '#e9ecef';
                 companyPhoneInput.title = '';
-                companyPhoneInput.placeholder = '請輸入廠商電話';
-                companyLineIdInput.placeholder = '請輸入廠商LINE ID';
+                companyPhoneInput.placeholder = '請輸入廠商電話，若無可填自己電話';
+                companyLineIdInput.placeholder = '請輸入LINE ID，或私LINE傳LINE好友名單';
                 companyAreaInput.placeholder = '例如：台北市、新北市';
             }
         }
@@ -6779,7 +6779,7 @@
                     formData.referredService || '',              // 被引薦服務項目
                     formData.referrerCode || '',                 // 引薦人（會員編號）
                     formData.referredCompany || '',              // 被引薦廠商名稱
-                    formattedPhone,                              // 廠商聯絡電話（已格式化）
+                    `'${formattedPhone}`,                        // 廠商聯絡電話（加單引號確保以文字格式保存）
                     formData.companyLineId || '',                // 廠商LINE ID
                     formData.companyArea || '',                  // 廠商服務區域
                     formData.referralNote || ''                  // 引薦備註
@@ -6951,7 +6951,7 @@
             return phoneRegex.test(phone);
         }
         
-        // 格式化電話號碼（不足10碼前面補0）
+        // 格式化電話號碼（不足10碼前面補0，確保前導0不消失）
         function formatPhoneNumber(phone) {
             if (!phone) return '';
             
@@ -6963,7 +6963,12 @@
                 return '0' + digits;
             }
             
-            // 返回原始號碼（移除格式化字符）
+            // 如果數字長度為10碼，確保以字串格式返回（保持前導0）
+            if (digits.length === 10) {
+                return digits; // 已經是10位數，直接返回
+            }
+            
+            // 其他情況返回原始數字
             return digits;
         }
         
