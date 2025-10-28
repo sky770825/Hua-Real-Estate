@@ -714,7 +714,7 @@
             <div class="search-box">
                 <input type="text" id="searchInput" class="search-input" placeholder="請輸入會員編號 (例如: 1, 2, 3...)">
                 <button onclick="openBNIApp()" class="bni-btn">
-                    BNI Connect
+                    開啟 BNI Connect
                 </button>
             </div>
             
@@ -947,14 +947,16 @@
         function openBNIApp() {
             console.log('BNI Connect按鈕被點擊');
             
-            // 嘗試多種URL Scheme
-            const appUrls = [
+            // 嘗試多種可能的URL Scheme
+            const possibleSchemes = [
                 'bni-connect://',
                 'bni://',
                 'bniconnect://',
-                'bni-connect-mobile://'
+                'bni-connect-mobile://',
+                'bnimobile://'
             ];
-            const fallbackUrl = 'https://apps.apple.com/tw/app/bni-connect-mobile/id1212875170';
+            
+            const appStoreUrl = 'https://apps.apple.com/tw/app/bni-connect-mobile/id1212875170';
             
             // 檢測是否為手機版
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -962,30 +964,42 @@
             if (isMobile) {
                 // 手機版：嘗試開啟App
                 let appOpened = false;
+                let startTime = Date.now();
                 
                 // 嘗試第一個URL Scheme
-                window.location.href = appUrls[0];
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = possibleSchemes[0];
+                document.body.appendChild(iframe);
                 
-                // 監聽頁面可見性變化來判斷App是否開啟
-                const handleVisibilityChange = () => {
-                    if (document.hidden) {
-                        appOpened = true;
-                        document.removeEventListener('visibilitychange', handleVisibilityChange);
-                    }
+                // 監聽頁面失焦事件（App開啟時會失焦）
+                const handleBlur = () => {
+                    appOpened = true;
+                    document.removeEventListener('blur', handleBlur);
+                    window.removeEventListener('blur', handleBlur);
                 };
                 
-                document.addEventListener('visibilitychange', handleVisibilityChange);
+                document.addEventListener('blur', handleBlur);
+                window.addEventListener('blur', handleBlur);
                 
-                // 設置較長的超時時間
+                // 設置超時檢測
                 setTimeout(() => {
-                    if (!appOpened) {
-                        window.location.href = fallbackUrl;
+                    const elapsed = Date.now() - startTime;
+                    
+                    // 清理事件監聽器
+                    document.removeEventListener('blur', handleBlur);
+                    window.removeEventListener('blur', handleBlur);
+                    document.body.removeChild(iframe);
+                    
+                    // 如果App沒有開啟，跳轉到App Store
+                    if (!appOpened && elapsed < 2500) {
+                        window.location.href = appStoreUrl;
                     }
-                    document.removeEventListener('visibilitychange', handleVisibilityChange);
-                }, 3000);
+                }, 2000);
+                
             } else {
                 // 桌面版：直接跳轉到App Store
-                window.open(fallbackUrl, '_blank');
+                window.open(appStoreUrl, '_blank');
             }
         }
 
