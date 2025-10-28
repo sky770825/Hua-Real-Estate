@@ -713,9 +713,9 @@
             
             <div class="search-box">
                 <input type="text" id="searchInput" class="search-input" placeholder="請輸入會員編號 (例如: 1, 2, 3...)">
-                <a href="#" onclick="openBNIApp()" class="bni-btn">
+                <button onclick="openBNIApp()" class="bni-btn">
                     BNI Connect
-                </a>
+                </button>
             </div>
             
             <div class="results-section" id="resultsSection">
@@ -945,24 +945,27 @@
 
         // 開啟BNI Connect App
         function openBNIApp() {
-            // 嘗試使用URL Scheme開啟App
+            console.log('BNI Connect按鈕被點擊');
+            
+            // 手機版使用不同的方法
             const appUrl = 'bni-connect://';
             const fallbackUrl = 'https://apps.apple.com/tw/app/bni-connect-mobile/id1212875170';
             
-            // 創建隱藏的iframe來嘗試開啟App
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = appUrl;
-            document.body.appendChild(iframe);
+            // 檢測是否為手機版
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
-            // 設置超時，如果App沒有開啟則跳轉到App Store
-            setTimeout(() => {
-                document.body.removeChild(iframe);
-                // 檢查是否在App內（通過user agent或其他方式）
-                if (!isInApp()) {
-                    window.open(fallbackUrl, '_blank');
-                }
-            }, 1000);
+            if (isMobile) {
+                // 手機版：直接嘗試開啟App
+                window.location.href = appUrl;
+                
+                // 設置較短的超時時間
+                setTimeout(() => {
+                    window.location.href = fallbackUrl;
+                }, 1000);
+            } else {
+                // 桌面版：直接跳轉到App Store
+                window.open(fallbackUrl, '_blank');
+            }
         }
 
         // 檢查是否在App內
