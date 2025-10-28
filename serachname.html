@@ -947,21 +947,42 @@
         function openBNIApp() {
             console.log('BNI Connect按鈕被點擊');
             
-            // 手機版使用不同的方法
-            const appUrl = 'bni-connect://';
+            // 嘗試多種URL Scheme
+            const appUrls = [
+                'bni-connect://',
+                'bni://',
+                'bniconnect://',
+                'bni-connect-mobile://'
+            ];
             const fallbackUrl = 'https://apps.apple.com/tw/app/bni-connect-mobile/id1212875170';
             
             // 檢測是否為手機版
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             if (isMobile) {
-                // 手機版：直接嘗試開啟App
-                window.location.href = appUrl;
+                // 手機版：嘗試開啟App
+                let appOpened = false;
                 
-                // 設置較短的超時時間
+                // 嘗試第一個URL Scheme
+                window.location.href = appUrls[0];
+                
+                // 監聽頁面可見性變化來判斷App是否開啟
+                const handleVisibilityChange = () => {
+                    if (document.hidden) {
+                        appOpened = true;
+                        document.removeEventListener('visibilitychange', handleVisibilityChange);
+                    }
+                };
+                
+                document.addEventListener('visibilitychange', handleVisibilityChange);
+                
+                // 設置較長的超時時間
                 setTimeout(() => {
-                    window.location.href = fallbackUrl;
-                }, 1000);
+                    if (!appOpened) {
+                        window.location.href = fallbackUrl;
+                    }
+                    document.removeEventListener('visibilitychange', handleVisibilityChange);
+                }, 3000);
             } else {
                 // 桌面版：直接跳轉到App Store
                 window.open(fallbackUrl, '_blank');
