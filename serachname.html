@@ -59,6 +59,32 @@
         .search-box {
             position: relative;
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .bni-btn {
+            background: white;
+            color: #ff6b6b;
+            border: 2px solid #ff6b6b;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+        }
+
+        .bni-btn:hover {
+            background: #ff6b6b;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
         }
 
         .search-input {
@@ -286,19 +312,52 @@
             padding: 20px;
             display: none;
             line-height: 1.6;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: #f8f9fa;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            background: white;
             border: 2px solid #e0e0e0;
-            border-top: none;
-            border-radius: 0 0 15px 15px;
-            z-index: 10;
+            border-radius: 15px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow-y: auto;
         }
 
         .usage-content.show {
             display: block;
+        }
+
+        .usage-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .usage-overlay.show {
+            display: block;
+        }
+
+        .usage-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .usage-close:hover {
+            color: #333;
         }
 
         .usage-step {
@@ -604,6 +663,11 @@
                 font-size: 0.8em;
                 flex: 1;
             }
+
+            .bni-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
         }
     </style>
 </head>
@@ -624,6 +688,7 @@
                         <div class="usage-toggle">▼</div>
                     </div>
                     <div class="usage-content" id="usageContent">
+                        <div class="usage-close" onclick="toggleUsage()">×</div>
                         <div class="usage-step">
                             <strong>步驟1：</strong> <span class="highlight">輸入編號</span> 搜尋會員
                         </div>
@@ -643,6 +708,9 @@
             
             <div class="search-box">
                 <input type="text" id="searchInput" class="search-input" placeholder="請輸入會員編號 (例如: 1, 2, 3...)">
+                <a href="https://apps.apple.com/tw/app/bni-business-builder/id1340276797" target="_blank" class="bni-btn">
+                    BNI Connect
+                </a>
             </div>
             
             <div class="results-section" id="resultsSection">
@@ -656,6 +724,7 @@
 
     <!-- 快捷選單 -->
     <div class="overlay" id="overlay" onclick="hideQuickMenu()"></div>
+    <div class="usage-overlay" id="usageOverlay" onclick="toggleUsage()"></div>
     <div class="quick-menu" id="quickMenu">
         <div class="quick-menu-header">
             <div class="quick-menu-title">🏢 華地產九長快捷選單</div>
@@ -855,13 +924,16 @@
         // 切換使用說明
         function toggleUsage() {
             const content = document.getElementById('usageContent');
+            const overlay = document.getElementById('usageOverlay');
             const toggle = document.querySelector('.usage-toggle');
             
             if (content.classList.contains('show')) {
                 content.classList.remove('show');
+                overlay.classList.remove('show');
                 toggle.classList.remove('expanded');
             } else {
                 content.classList.add('show');
+                overlay.classList.add('show');
                 toggle.classList.add('expanded');
             }
         }
