@@ -713,7 +713,7 @@
             
             <div class="search-box">
                 <input type="text" id="searchInput" class="search-input" placeholder="請輸入會員編號 (例如: 1, 2, 3...)">
-                <a href="https://apps.apple.com/tw/app/bni-connect-mobile/id1212875170" target="_blank" class="bni-btn">
+                <a href="#" onclick="openBNIApp()" class="bni-btn">
                     BNI Connect
                 </a>
             </div>
@@ -941,6 +941,34 @@
                 overlay.classList.add('show');
                 toggle.classList.add('expanded');
             }
+        }
+
+        // 開啟BNI Connect App
+        function openBNIApp() {
+            // 嘗試使用URL Scheme開啟App
+            const appUrl = 'bni-connect://';
+            const fallbackUrl = 'https://apps.apple.com/tw/app/bni-connect-mobile/id1212875170';
+            
+            // 創建隱藏的iframe來嘗試開啟App
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = appUrl;
+            document.body.appendChild(iframe);
+            
+            // 設置超時，如果App沒有開啟則跳轉到App Store
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+                // 檢查是否在App內（通過user agent或其他方式）
+                if (!isInApp()) {
+                    window.open(fallbackUrl, '_blank');
+                }
+            }, 1000);
+        }
+
+        // 檢查是否在App內
+        function isInApp() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            return userAgent.includes('bni') || userAgent.includes('mobile');
         }
 
         // 分離姓名的函數
