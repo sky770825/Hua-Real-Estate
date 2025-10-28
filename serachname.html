@@ -242,8 +242,9 @@
             background: #f8f9fa;
             border-radius: 15px;
             border: 2px solid #e0e0e0;
-            overflow: hidden;
+            overflow: visible;
             flex: 1;
+            position: relative;
         }
 
         .header-row {
@@ -285,6 +286,15 @@
             padding: 20px;
             display: none;
             line-height: 1.6;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 15px 15px;
+            z-index: 10;
         }
 
         .usage-content.show {
@@ -569,6 +579,29 @@
             .quick-menu-name-parts {
                 gap: 5px;
             }
+
+            .header-row {
+                flex-direction: row;
+                gap: 8px;
+            }
+
+            .usage-section {
+                margin: 5px 0;
+            }
+
+            .usage-header {
+                padding: 10px 15px;
+            }
+
+            .usage-title {
+                font-size: 0.9em;
+            }
+
+            .quick-menu-btn {
+                margin: 5px 0;
+                padding: 10px 12px;
+                font-size: 0.8em;
+            }
         }
     </style>
 </head>
@@ -581,28 +614,30 @@
         </div>
         
         <div class="search-section">
-            <!-- 使用說明 -->
-            <div class="usage-section">
-                <div class="usage-header" onclick="toggleUsage()">
-                    <div class="usage-title">📖 使用說明</div>
-                    <div class="usage-toggle">▼</div>
+            <!-- 使用說明和快捷選單在同一行 -->
+            <div class="header-row">
+                <div class="usage-section">
+                    <div class="usage-header" onclick="toggleUsage()">
+                        <div class="usage-title">📖 使用說明</div>
+                        <div class="usage-toggle">▼</div>
+                    </div>
+                    <div class="usage-content" id="usageContent">
+                        <div class="usage-step">
+                            <strong>步驟1：</strong> <span class="highlight">輸入編號</span> 搜尋會員
+                        </div>
+                        <div class="usage-step">
+                            <strong>步驟2：</strong> 直接<span class="highlight">點擊名字</span>複製
+                        </div>
+                        <div class="usage-step">
+                            <strong>步驟3：</strong> 回到<span class="highlight-blue">BNI Connect</span> 會面人右邊<span class="highlight">放大鏡</span>在<span class="highlight-blue">名字欄位</span>貼上搜尋即可
+                        </div>
+                    </div>
                 </div>
-                <div class="usage-content" id="usageContent">
-                    <div class="usage-step">
-                        <strong>步驟1：</strong> <span class="highlight">輸入編號</span> 搜尋會員
-                    </div>
-                    <div class="usage-step">
-                        <strong>步驟2：</strong> 直接<span class="highlight">點擊名字</span>複製
-                    </div>
-                    <div class="usage-step">
-                        <strong>步驟3：</strong> 回到<span class="highlight-blue">BNI Connect</span> 會面人右邊<span class="highlight">放大鏡</span>在<span class="highlight-blue">名字欄位</span>貼上搜尋即可
-                    </div>
-                </div>
-            </div>
 
-            <button class="quick-menu-btn" onclick="showQuickMenu()">
-                🏢 華地產九長快捷選單
-            </button>
+                <button class="quick-menu-btn" onclick="showQuickMenu()">
+                    🏢 九長
+                </button>
+            </div>
             
             <div class="search-box">
                 <input type="text" id="searchInput" class="search-input" placeholder="請輸入會員編號 (例如: 1, 2, 3...)">
