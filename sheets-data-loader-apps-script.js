@@ -672,16 +672,28 @@ function getActiveEvent(events) {
     // 過濾出有效的活動（有標題、日期和圖片的）
     const validEvents = events
         .filter(event => {
-            const hasTitle = event['B活動標題'] || event['活動標題'];
-            const hasDate = event['C活動日期'] || event['活動日期'];
-            const hasImage1 = event['E圖片1網址'] || event['圖片1網址'];
-            const hasImage2 = event['F圖片2網址'] || event['圖片2網址'];
+            // 🔍 嘗試多種可能的欄位名稱
+            const hasTitle = event['B活動標題'] || event['活動標題'] || event['A活動標題'];
+            const hasDate = event['C活動日期'] || event['活動日期'] || event['B活動日期'];
+            const hasImage1 = event['E圖片1網址'] || 
+                              event['圖片1網址'] || 
+                              event['D圖片1網址'] || 
+                              event['圖片1'] ||
+                              event['E欄位'] ||
+                              event['圖片網址1'];
+            const hasImage2 = event['F圖片2網址'] || 
+                              event['圖片2網址'] || 
+                              event['E圖片2網址'] || 
+                              event['圖片2'] ||
+                              event['F欄位'] ||
+                              event['圖片網址2'];
             
             console.log('📋 檢查活動:', {
                 標題: hasTitle,
                 日期: hasDate,
                 圖片1: hasImage1,
-                圖片2: hasImage2
+                圖片2: hasImage2,
+                所有欄位: Object.keys(event)
             });
             
             return hasTitle && hasDate && hasImage1 && hasImage2;
@@ -743,25 +755,49 @@ function getActiveEvent(events) {
 function renderInviteEvent(data) {
     console.log('🎨 開始渲染活動展示...');
     console.log('📊 活動資料:', data);
+    console.log('📊 資料類型:', Array.isArray(data) ? '陣列' : '物件');
     
     if (!data) {
         console.warn('⚠️ 沒有活動資料');
         return;
     }
     
-    if (Array.isArray(data) && data.length === 0) {
+    // 🚀 處理單一物件格式（如果資料不是陣列）
+    let eventsArray = Array.isArray(data) ? data : [data];
+    
+    if (eventsArray.length === 0) {
         console.warn('⚠️ 活動資料陣列為空');
         return;
     }
     
+    // 🔍 顯示所有活動的詳細資訊（除錯用）
+    console.log('📋 所有活動資料:');
+    eventsArray.forEach((event, index) => {
+        console.log(`活動 ${index + 1}:`, {
+            所有欄位: Object.keys(event),
+            標題: event['B活動標題'] || event['活動標題'] || event['A活動標題'] || '無',
+            日期: event['C活動日期'] || event['活動日期'] || event['B活動日期'] || '無',
+            圖片1: event['E圖片1網址'] || event['圖片1網址'] || event['D圖片1網址'] || event['圖片1'] || '無',
+            圖片2: event['F圖片2網址'] || event['圖片2網址'] || event['E圖片2網址'] || event['圖片2'] || '無'
+        });
+    });
+    
     // 🎯 自動選擇要顯示的活動
-    const event = getActiveEvent(data);
+    const event = getActiveEvent(eventsArray);
     console.log('🎯 選擇的活動:', event);
     
     if (!event) {
         console.warn('⚠️ 沒有找到有效的活動');
+        // 🚀 如果沒有找到活動，嘗試使用第一筆資料（即使沒有圖片）
+        if (eventsArray.length > 0) {
+            console.log('🔄 嘗試使用第一筆資料:', eventsArray[0]);
+            renderEventImages(eventsArray[0], eventsArray[0]);
+        }
         return;
     }
+    
+    // 🚀 渲染活動圖片
+    renderEventImages(event, event);
     
     const eventHeader = document.querySelector('.event-header');
     
@@ -778,82 +814,126 @@ function renderInviteEvent(data) {
             console.log('📅 設定副標題:', dateText.textContent);
         }
     }
-    
+}
+
+/**
+ * 🚀 渲染活動圖片（獨立函數，方便重用）
+ */
+function renderEventImages(event, eventForTitle) {
     const eventGrid = document.querySelector('.event-grid');
-    console.log('🖼️ 圖片網址檢查:');
-    console.log('  圖片1:', event['E圖片1網址'] || event['圖片1網址']);
-    console.log('  圖片2:', event['F圖片2網址'] || event['圖片2網址']);
     
-    if (eventGrid) {
-        const image1Url = event['E圖片1網址'] || event['圖片1網址'];
-        const image2Url = event['F圖片2網址'] || event['圖片2網址'];
+    if (!eventGrid) {
+        console.warn('⚠️ 找不到 event-grid 元素');
+        return;
+    }
+    
+    // 🔍 嘗試多種可能的欄位名稱
+    const image1Url = event['E圖片1網址'] || 
+                      event['圖片1網址'] || 
+                      event['D圖片1網址'] || 
+                      event['圖片1'] || 
+                      event['E欄位'] ||
+                      event['圖片網址1'] ||
+                      null;
+    
+    const image2Url = event['F圖片2網址'] || 
+                      event['圖片2網址'] || 
+                      event['E圖片2網址'] || 
+                      event['圖片2'] || 
+                      event['F欄位'] ||
+                      event['圖片網址2'] ||
+                      null;
+    
+    console.log('🖼️ 圖片網址檢查:');
+    console.log('  圖片1 (所有可能的欄位):', {
+        'E圖片1網址': event['E圖片1網址'],
+        '圖片1網址': event['圖片1網址'],
+        'D圖片1網址': event['D圖片1網址'],
+        '圖片1': event['圖片1'],
+        'E欄位': event['E欄位'],
+        '圖片網址1': event['圖片網址1'],
+        '最終使用': image1Url
+    });
+    console.log('  圖片2 (所有可能的欄位):', {
+        'F圖片2網址': event['F圖片2網址'],
+        '圖片2網址': event['圖片2網址'],
+        'E圖片2網址': event['E圖片2網址'],
+        '圖片2': event['圖片2'],
+        'F欄位': event['F欄位'],
+        '圖片網址2': event['圖片網址2'],
+        '最終使用': image2Url
+    });
+    
+    if (image1Url && image2Url) {
+        console.log('✅ 找到圖片網址，開始渲染...');
+        console.log('  圖片1 URL:', image1Url);
+        console.log('  圖片2 URL:', image2Url);
         
-        if (image1Url && image2Url) {
-            console.log('✅ 找到圖片網址，開始渲染...');
-            
-            // 🚀 移除骨架屏，顯示實際內容
-            eventGrid.classList.add('content-loaded');
-            
-            // 🚀 優化圖片載入：預載入 + 進度顯示 + 錯誤處理
-            eventGrid.innerHTML = `
-                <div class="event-card" onclick="openModal('${image1Url}')">
-                    <div class="image-container">
-                        <img src="${image1Url}" alt="專講預告 1" class="event-image" 
-                             loading="eager" 
-                             onload="handleImageLoad(this)" 
-                             onerror="handleImageError(this)"
-                             style="opacity: 0; transition: opacity 0.3s ease;">
-                        <div class="image-loading">
-                            <div class="loading-spinner"></div>
-                            <p>載入中...</p>
-                        </div>
-                    </div>
-                    <div class="event-overlay">
-                        <span class="event-icon">🔍</span>
-                        <p>點擊放大</p>
+        // 🚀 移除骨架屏，顯示實際內容
+        eventGrid.classList.add('content-loaded');
+        
+        // 🚀 優化圖片載入：預載入 + 進度顯示 + 錯誤處理
+        eventGrid.innerHTML = `
+            <div class="event-card" onclick="openModal('${image1Url.replace(/'/g, "\\'")}')">
+                <div class="image-container">
+                    <img src="${image1Url.replace(/"/g, '&quot;')}" alt="專講預告 1" class="event-image" 
+                         loading="eager" 
+                         onload="handleImageLoad(this)" 
+                         onerror="handleImageError(this)"
+                         style="opacity: 0; transition: opacity 0.3s ease;">
+                    <div class="image-loading">
+                        <div class="loading-spinner"></div>
+                        <p>載入中...</p>
                     </div>
                 </div>
-                <div class="event-card" onclick="openModal('${image2Url}')">
-                    <div class="image-container">
-                        <img src="${image2Url}" alt="專講預告 2" class="event-image" 
-                             loading="eager" 
-                             onload="handleImageLoad(this)" 
-                             onerror="handleImageError(this)"
-                             style="opacity: 0; transition: opacity 0.3s ease;">
-                        <div class="image-loading">
-                            <div class="loading-spinner"></div>
-                            <p>載入中...</p>
-                        </div>
-                    </div>
-                    <div class="event-overlay">
-                        <span class="event-icon">🔍</span>
-                        <p>點擊放大</p>
+                <div class="event-overlay">
+                    <span class="event-icon">🔍</span>
+                    <p>點擊放大</p>
+                </div>
+            </div>
+            <div class="event-card" onclick="openModal('${image2Url.replace(/'/g, "\\'")}')">
+                <div class="image-container">
+                    <img src="${image2Url.replace(/"/g, '&quot;')}" alt="專講預告 2" class="event-image" 
+                         loading="eager" 
+                         onload="handleImageLoad(this)" 
+                         onerror="handleImageError(this)"
+                         style="opacity: 0; transition: opacity 0.3s ease;">
+                    <div class="image-loading">
+                        <div class="loading-spinner"></div>
+                        <p>載入中...</p>
                     </div>
                 </div>
-            `;
-            
-            // 🚀 預載入圖片到快取
+                <div class="event-overlay">
+                    <span class="event-icon">🔍</span>
+                    <p>點擊放大</p>
+                </div>
+            </div>
+        `;
+        
+        // 🚀 預載入圖片到快取
+        if (typeof preloadImages === 'function') {
             preloadImages([image1Url, image2Url]);
-            
-            console.log('✅ 圖片渲染完成');
-        } else {
-            console.warn('⚠️ 缺少圖片網址，顯示預設內容');
-            // 如果沒有圖片網址，顯示預設的骨架屏
-            eventGrid.innerHTML = `
-                <div class="skeleton skeleton-card" style="animation-delay: 0s;"></div>
-                <div class="skeleton skeleton-card" style="animation-delay: 0.1s;"></div>
-            `;
         }
         
-        // 💡 在控制台顯示當前顯示的活動資訊
-        console.log('✅ 當前顯示活動:', {
-            標題: event['B活動標題'] || event['活動標題'],
-            日期: event['C活動日期'] || event['活動日期'],
-            副標題: event['D活動副標題'] || event['活動副標題']
-        });
+        console.log('✅ 圖片渲染完成');
     } else {
-        console.warn('⚠️ 找不到 event-grid 元素');
+        console.warn('⚠️ 缺少圖片網址');
+        console.warn('  可用欄位:', Object.keys(event));
+        console.warn('  完整資料:', event);
+        
+        // 如果沒有圖片網址，顯示預設的骨架屏
+        eventGrid.innerHTML = `
+            <div class="skeleton skeleton-card" style="animation-delay: 0s;"></div>
+            <div class="skeleton skeleton-card" style="animation-delay: 0.1s;"></div>
+        `;
     }
+    
+    // 💡 在控制台顯示當前顯示的活動資訊
+    console.log('✅ 當前顯示活動:', {
+        標題: eventForTitle['B活動標題'] || eventForTitle['活動標題'] || eventForTitle['A活動標題'],
+        日期: eventForTitle['C活動日期'] || eventForTitle['活動日期'] || eventForTitle['B活動日期'],
+        副標題: eventForTitle['D活動副標題'] || eventForTitle['活動副標題'] || eventForTitle['C活動副標題']
+    });
 }
 
 /**
