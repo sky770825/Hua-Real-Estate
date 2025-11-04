@@ -14,25 +14,16 @@ const APPS_SCRIPT_CONFIG = {
     // API 金鑰（選用，如果你在 Apps Script 中啟用了權限檢查）
     apiKey: '', // 留空表示公開模式
     
-    // 🚀 更積極的快取策略
+    // 快取設定（30分鐘快取，大幅提升效能）
     cacheEnabled: true,
-    cacheDuration: 2 * 60 * 60 * 1000, // 2 小時快取（大幅延長）
+    cacheDuration: 30 * 60 * 1000, // 30 分鐘（從 1 分鐘提升）
     
     // 最小刷新間隔（防止短時間內重複載入）
-    minRefreshInterval: 2 * 1000, // 2 秒（進一步降低）
+    minRefreshInterval: 5 * 1000, // 5 秒（從 10 秒降低）
     
     // 使用 localStorage 持久化快取
     usePersistentCache: true,
-    localStorageKey: 'huadi_sheets_cache',
-    
-    // 🚀 網路優化設定（優化載入速度）
-    requestTimeout: 5000, // 5 秒超時（減少等待時間）
-    maxRetries: 1, // 最大重試次數（減少到 1 次，快速失敗）
-    retryDelay: 500, // 重試延遲 0.5 秒（快速重試）
-    
-    // 🚀 並行載入設定
-    enableParallelLoading: true,
-    maxConcurrentRequests: 3
+    localStorageKey: 'huadi_sheets_cache'
 };
 
 // ==================== 資料快取 ====================
@@ -153,67 +144,19 @@ function clearCache() {
 // ==================== API 呼叫函數 ====================
 
 /**
- * 🚀 優化的網路請求函數（支援超時、重試、並行）
- */
-async function fetchWithRetry(url, options = {}, retryCount = 0) {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), APPS_SCRIPT_CONFIG.requestTimeout);
-    
-    try {
-        const response = await fetch(url, {
-            ...options,
-            signal: controller.signal,
-            // 🚀 添加請求優化標頭
-            headers: {
-                'Cache-Control': 'max-age=7200', // 2小時快取
-                'Accept': 'application/json',
-                ...options.headers
-            }
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        return response;
-    } catch (error) {
-        clearTimeout(timeoutId);
-        
-        // 如果是網路錯誤且還有重試次數，則重試
-        if (retryCount < APPS_SCRIPT_CONFIG.maxRetries && 
-            (error.name === 'AbortError' || error.message.includes('fetch'))) {
-            
-            console.warn(`⚠️ 請求失敗，${APPS_SCRIPT_CONFIG.retryDelay}ms 後重試 (${retryCount + 1}/${APPS_SCRIPT_CONFIG.maxRetries}):`, error.message);
-            
-            // 🚀 快速重試，不遞增延遲時間
-            await new Promise(resolve => setTimeout(resolve, APPS_SCRIPT_CONFIG.retryDelay));
-            return fetchWithRetry(url, options, retryCount + 1);
-        }
-        
-        throw error;
-    }
-}
-
-/**
  * 從 Apps Script API 讀取所有資料
  */
 async function loadAllData(forceRefresh = false) {
-    // 🚀 優先檢查記憶體快取
+    // 優先檢查記憶體快取
     if (!forceRefresh && isCacheValid()) {
         console.log('⚡ 使用記憶體快取資料（極速載入）');
         return dataCache.data;
     }
     
-    // 🚀 再檢查 localStorage 快取
+    // 再檢查 localStorage 快取
     if (!forceRefresh) {
         const persistentData = loadPersistentCache();
         if (persistentData) {
-            console.log('💾 使用 localStorage 快取資料（快速載入）');
-            // 同時更新記憶體快取
-            dataCache.data = persistentData;
-            dataCache.timestamp = Date.now();
             return persistentData;
         }
     }
@@ -244,12 +187,14 @@ async function loadAllData(forceRefresh = false) {
             url.searchParams.append('apiKey', APPS_SCRIPT_CONFIG.apiKey);
         }
         
-        // 🚀 使用優化的請求函數
-        console.log('📡 請求 URL:', url.toString());
-        const response = await fetchWithRetry(url.toString());
-        const result = await response.json();
+        // 呼叫 API
+        const response = await fetch(url.toString());
         
-        console.log('📊 API 回應:', result);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
         
         if (!result.success) {
             throw new Error(result.error || '未知錯誤');
@@ -265,13 +210,7 @@ async function loadAllData(forceRefresh = false) {
         console.error('❌ 資料載入失敗:', error);
         console.error('   錯誤類型:', error.name);
         console.error('   錯誤訊息:', error.message);
-        
-        // 🚀 如果網路請求失敗，嘗試返回舊快取
-        if (dataCache.data) {
-            console.log('🔄 網路請求失敗，使用舊快取資料');
-            return dataCache.data;
-        }
-        
+        console.error('   錯誤堆疊:', error.stack);
         throw error;
     }
 }
@@ -534,25 +473,15 @@ async function initIndexPage() {
     
     try {
         const data = await loadAllData();
-        await initIndexPageWithData(data);
+        
+        // 只渲染 Zoom 會議室
+        renderZoomRooms(data.ZOOM_ROOMS);
+        
+        console.log('✅ Zoom 會議室載入完成');
     } catch (error) {
         console.error('❌ Zoom 會議室載入失敗:', error);
         console.warn('⚠️ 將使用網頁原有的靜態內容');
     }
-}
-
-/**
- * 🚀 使用預載入資料初始化首頁
- */
-async function initIndexPageWithData(data) {
-    console.log('🚀 使用預載入資料初始化首頁...');
-    
-    if (data) {
-        // 只渲染 Zoom 會議室
-        renderZoomRooms(data.ZOOM_ROOMS);
-    }
-    
-    console.log('✅ Zoom 會議室載入完成');
 }
 
 /**
@@ -563,63 +492,18 @@ async function initInvitePage() {
     
     try {
         const data = await loadAllData();
-        await initInvitePageWithData(data);
+        
+        // 渲染活動展示區塊（標題、副標題、圖片）
+        renderInviteEvent(data.INVITE_EVENT);
+        
+        // 更新CTA按鈕連結
+        updateInviteCTAButtons(data.INVITE_CTA);
+        
+        console.log('🎉 邀請頁動態內容加載完成');
     } catch (error) {
         console.error('❌ 邀請頁加載失敗:', error);
         console.warn('⚠️ 將使用預設連結');
     }
-}
-
-/**
- * 🚀 使用預載入資料初始化邀請頁
- */
-async function initInvitePageWithData(data) {
-    console.log('🚀 使用預載入資料初始化邀請頁...');
-    console.log('📊 接收到的資料結構:', data);
-    
-    if (data) {
-        // 🔍 除錯：顯示所有可用的資料鍵
-        console.log('📋 可用的資料鍵:', Object.keys(data));
-        
-        // 嘗試不同的資料結構
-        let eventData = null;
-        
-        // 檢查不同的可能資料結構
-        if (data.INVITE_EVENT) {
-            eventData = data.INVITE_EVENT;
-            console.log('✅ 找到 INVITE_EVENT 資料');
-        } else if (data['活動展示']) {
-            eventData = data['活動展示'];
-            console.log('✅ 找到 活動展示 資料');
-        } else if (data['INVITE_EVENT']) {
-            eventData = data['INVITE_EVENT'];
-            console.log('✅ 找到 INVITE_EVENT 資料（字串鍵）');
-        } else if (data['Invite頁_活動展示']) {
-            eventData = data['Invite頁_活動展示'];
-            console.log('✅ 找到 Invite頁_活動展示 資料');
-        } else if (data['Invite頁_活動展示']) {
-            eventData = data['Invite頁_活動展示'];
-            console.log('✅ 找到 Invite頁_活動展示 資料（字串鍵）');
-        } else {
-            console.warn('⚠️ 未找到活動資料，嘗試使用所有資料');
-            // 如果找不到特定鍵，嘗試使用整個資料
-            eventData = data;
-        }
-        
-        console.log('🎯 將使用的活動資料:', eventData);
-        
-        // 渲染活動展示區塊（標題、副標題、圖片）
-        renderInviteEvent(eventData);
-        
-        // 更新CTA按鈕連結
-        if (data.INVITE_CTA || data['CTA按鈕']) {
-            updateInviteCTAButtons(data.INVITE_CTA || data['CTA按鈕']);
-        }
-    } else {
-        console.warn('⚠️ 沒有接收到資料');
-    }
-    
-    console.log('🎉 邀請頁動態內容加載完成');
 }
 
 /**
@@ -663,55 +547,20 @@ function renderInviteHero(data) {
 function getActiveEvent(events) {
     if (!events || events.length === 0) return null;
     
-    console.log('🔍 開始篩選活動，總共', events.length, '筆資料');
-    
     const now = new Date();
     const currentDay = now.getDay(); // 0=週日, 4=週四
     const currentHour = now.getHours();
     
-    // 過濾出有效的活動（有標題、日期和圖片的）
+    // 過濾出有效的活動（有日期的）
     const validEvents = events
-        .filter(event => {
-            // 🔍 嘗試多種可能的欄位名稱
-            const hasTitle = event['B活動標題'] || event['活動標題'] || event['A活動標題'];
-            const hasDate = event['C活動日期'] || event['活動日期'] || event['B活動日期'];
-            const hasImage1 = event['E圖片1網址'] || 
-                              event['圖片1網址'] || 
-                              event['D圖片1網址'] || 
-                              event['圖片1'] ||
-                              event['E欄位'] ||
-                              event['圖片網址1'];
-            const hasImage2 = event['F圖片2網址'] || 
-                              event['圖片2網址'] || 
-                              event['E圖片2網址'] || 
-                              event['圖片2'] ||
-                              event['F欄位'] ||
-                              event['圖片網址2'];
-            
-            console.log('📋 檢查活動:', {
-                標題: hasTitle,
-                日期: hasDate,
-                圖片1: hasImage1,
-                圖片2: hasImage2,
-                所有欄位: Object.keys(event)
-            });
-            
-            return hasTitle && hasDate && hasImage1 && hasImage2;
-        })
+        .filter(event => event['C活動日期'])
         .map(event => {
-            const eventDateStr = event['C活動日期'] || event['活動日期'];
-            const eventDate = new Date(eventDateStr);
-            console.log('📅 解析日期:', eventDateStr, '->', eventDate.toISOString().split('T')[0]);
+            const eventDate = new Date(event['C活動日期']);
             return { ...event, eventDate };
         })
         .sort((a, b) => a.eventDate - b.eventDate); // 按日期排序
     
-    console.log('✅ 有效活動數量:', validEvents.length);
-    
-    if (validEvents.length === 0) {
-        console.warn('⚠️ 沒有有效活動，返回第一筆資料');
-        return events[0]; // 沒有有效活動就顯示第一筆
-    }
+    if (validEvents.length === 0) return events[0]; // 沒有日期就顯示第一筆
     
     // 判斷是否已過本週四 09:00
     let cutoffDate = new Date(now);
@@ -733,14 +582,11 @@ function getActiveEvent(events) {
     
     cutoffDate.setHours(0, 0, 0, 0); // 重置為當天 00:00
     
-    console.log('📅 今天日期:', now.toISOString().split('T')[0]);
-    console.log('📅 截止日期:', cutoffDate.toISOString().split('T')[0]);
-    
     // 找出 >= cutoffDate 的最近一筆活動
     const upcomingEvent = validEvents.find(event => event.eventDate >= cutoffDate);
     
     if (upcomingEvent) {
-        console.log('✅ 找到未來活動:', upcomingEvent['B活動標題'] || upcomingEvent['活動標題'], '日期:', upcomingEvent['C活動日期'] || upcomingEvent['活動日期']);
+        console.log('📅 顯示活動:', upcomingEvent['B活動標題'], '日期:', upcomingEvent['C活動日期']);
         return upcomingEvent;
     }
     
@@ -753,186 +599,140 @@ function getActiveEvent(events) {
  * 渲染 Invite 活動展示（支援自動切換）
  */
 function renderInviteEvent(data) {
-    console.log('🎨 開始渲染活動展示...');
-    console.log('📊 活動資料:', data);
-    console.log('📊 資料類型:', Array.isArray(data) ? '陣列' : '物件');
-    
-    if (!data) {
-        console.warn('⚠️ 沒有活動資料');
-        return;
-    }
-    
-    // 🚀 處理單一物件格式（如果資料不是陣列）
-    let eventsArray = Array.isArray(data) ? data : [data];
-    
-    if (eventsArray.length === 0) {
-        console.warn('⚠️ 活動資料陣列為空');
-        return;
-    }
-    
-    // 🔍 顯示所有活動的詳細資訊（除錯用）
-    console.log('📋 所有活動資料:');
-    eventsArray.forEach((event, index) => {
-        console.log(`活動 ${index + 1}:`, {
-            所有欄位: Object.keys(event),
-            標題: event['B活動標題'] || event['活動標題'] || event['A活動標題'] || '無',
-            日期: event['C活動日期'] || event['活動日期'] || event['B活動日期'] || '無',
-            圖片1: event['E圖片1網址'] || event['圖片1網址'] || event['D圖片1網址'] || event['圖片1'] || '無',
-            圖片2: event['F圖片2網址'] || event['圖片2網址'] || event['E圖片2網址'] || event['圖片2'] || '無'
-        });
-    });
+    if (!data || data.length === 0) return;
     
     // 🎯 自動選擇要顯示的活動
-    const event = getActiveEvent(eventsArray);
-    console.log('🎯 選擇的活動:', event);
-    
-    if (!event) {
-        console.warn('⚠️ 沒有找到有效的活動');
-        // 🚀 如果沒有找到活動，嘗試使用第一筆資料（即使沒有圖片）
-        if (eventsArray.length > 0) {
-            console.log('🔄 嘗試使用第一筆資料:', eventsArray[0]);
-            renderEventImages(eventsArray[0], eventsArray[0]);
-        }
-        return;
-    }
-    
-    // 🚀 渲染活動圖片
-    renderEventImages(event, event);
+    const event = getActiveEvent(data);
+    if (!event) return;
     
     const eventHeader = document.querySelector('.event-header');
     
     if (eventHeader) {
         const title = eventHeader.querySelector('.section-title');
-        if (title) {
-            title.textContent = event['B活動標題'] || event['活動標題'] || '華地產早會雙專講同台';
-            console.log('📝 設定標題:', title.textContent);
-        }
+        if (title) title.textContent = event['B活動標題'] || '';
         
         const dateText = eventHeader.querySelector('.date-text');
-        if (dateText) {
-            dateText.textContent = event['D活動副標題'] || event['活動副標題'] || '串連更多商機 共創合作未來';
-            console.log('📅 設定副標題:', dateText.textContent);
-        }
+        if (dateText) dateText.textContent = event['D活動副標題'] || '';
     }
-}
-
-/**
- * 🚀 渲染活動圖片（獨立函數，方便重用）
- */
-function renderEventImages(event, eventForTitle) {
-    const eventGrid = document.querySelector('.event-grid');
     
-    if (!eventGrid) {
-        console.warn('⚠️ 找不到 event-grid 元素');
+    const eventGrid = document.querySelector('.event-grid');
+    if (!eventGrid) return;
+    
+    // 檢查圖片URL是否存在
+    const image1Url = event['E圖片1網址'];
+    const image2Url = event['F圖片2網址'];
+    
+    if (!image1Url || !image2Url) {
+        console.warn('⚠️ 活動圖片URL缺失，無法顯示');
         return;
     }
     
-    // 🔍 嘗試多種可能的欄位名稱
-    const image1Url = event['E圖片1網址'] || 
-                      event['圖片1網址'] || 
-                      event['D圖片1網址'] || 
-                      event['圖片1'] || 
-                      event['E欄位'] ||
-                      event['圖片網址1'] ||
-                      null;
+    // 轉義URL中的特殊字符，避免HTML注入和路徑問題
+    const escapeHtml = (str) => {
+        if (!str) return '';
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    };
     
-    const image2Url = event['F圖片2網址'] || 
-                      event['圖片2網址'] || 
-                      event['E圖片2網址'] || 
-                      event['圖片2'] || 
-                      event['F欄位'] ||
-                      event['圖片網址2'] ||
-                      null;
+    // 為 onclick 準備安全編碼的URL（需要特殊處理單引號）
+    const escapeForOnclick = (str) => {
+        if (!str) return '';
+        return str.replace(/'/g, "\\'").replace(/\\/g, '\\\\');
+    };
     
-    console.log('🖼️ 圖片網址檢查:');
-    console.log('  圖片1 (所有可能的欄位):', {
-        'E圖片1網址': event['E圖片1網址'],
-        '圖片1網址': event['圖片1網址'],
-        'D圖片1網址': event['D圖片1網址'],
-        '圖片1': event['圖片1'],
-        'E欄位': event['E欄位'],
-        '圖片網址1': event['圖片網址1'],
-        '最終使用': image1Url
-    });
-    console.log('  圖片2 (所有可能的欄位):', {
-        'F圖片2網址': event['F圖片2網址'],
-        '圖片2網址': event['圖片2網址'],
-        'E圖片2網址': event['E圖片2網址'],
-        '圖片2': event['圖片2'],
-        'F欄位': event['F欄位'],
-        '圖片網址2': event['圖片網址2'],
-        '最終使用': image2Url
-    });
+    // 轉義後的URL（用於src屬性）
+    const image1Escaped = escapeHtml(image1Url);
+    const image2Escaped = escapeHtml(image2Url);
     
-    if (image1Url && image2Url) {
-        console.log('✅ 找到圖片網址，開始渲染...');
-        console.log('  圖片1 URL:', image1Url);
-        console.log('  圖片2 URL:', image2Url);
-        
-        // 🚀 移除骨架屏，顯示實際內容
-        eventGrid.classList.add('content-loaded');
-        
-        // 🚀 優化圖片載入：預載入 + 進度顯示 + 錯誤處理
-        eventGrid.innerHTML = `
-            <div class="event-card" onclick="openModal('${image1Url.replace(/'/g, "\\'")}')">
-                <div class="image-container">
-                    <img src="${image1Url.replace(/"/g, '&quot;')}" alt="專講預告 1" class="event-image" 
-                         loading="eager" 
-                         onload="handleImageLoad(this)" 
-                         onerror="handleImageError(this)"
-                         style="opacity: 0; transition: opacity 0.3s ease;">
-                    <div class="image-loading">
-                        <div class="loading-spinner"></div>
-                        <p>載入中...</p>
-                    </div>
-                </div>
-                <div class="event-overlay">
-                    <span class="event-icon">🔍</span>
-                    <p>點擊放大</p>
-                </div>
+    // 用於onclick的URL（需要不同的轉義）
+    const image1ForClick = escapeForOnclick(image1Url);
+    const image2ForClick = escapeForOnclick(image2Url);
+    
+    // 占位圖（圖片載入失敗時顯示）
+    const placeholderImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7lm77niYfliqDovb3lpLHotKU8L3RleHQ+PC9zdmc+';
+    
+    // 🚀 立即移除骨架屏並顯示圖片容器（避免一直轉圈）
+    eventGrid.classList.add('content-loaded');
+    
+    // 插入圖片HTML（骨架屏會被 innerHTML 替換）
+    eventGrid.innerHTML = `
+        <div class="event-card" onclick="openModal('${image1ForClick}')">
+            <img src="${image1Escaped}" alt="專講預告 1" class="event-image" loading="lazy" 
+                 onerror="this.onerror=null; this.src='${placeholderImage}'; console.error('❌ 圖片1載入失敗');">
+            <div class="event-overlay">
+                <span class="event-icon">🔍</span>
+                <p>點擊放大</p>
             </div>
-            <div class="event-card" onclick="openModal('${image2Url.replace(/'/g, "\\'")}')">
-                <div class="image-container">
-                    <img src="${image2Url.replace(/"/g, '&quot;')}" alt="專講預告 2" class="event-image" 
-                         loading="eager" 
-                         onload="handleImageLoad(this)" 
-                         onerror="handleImageError(this)"
-                         style="opacity: 0; transition: opacity 0.3s ease;">
-                    <div class="image-loading">
-                        <div class="loading-spinner"></div>
-                        <p>載入中...</p>
-                    </div>
-                </div>
-                <div class="event-overlay">
-                    <span class="event-icon">🔍</span>
-                    <p>點擊放大</p>
-                </div>
+        </div>
+        <div class="event-card" onclick="openModal('${image2ForClick}')">
+            <img src="${image2Escaped}" alt="專講預告 2" class="event-image" loading="lazy"
+                 onerror="this.onerror=null; this.src='${placeholderImage}'; console.error('❌ 圖片2載入失敗');">
+            <div class="event-overlay">
+                <span class="event-icon">🔍</span>
+                <p>點擊放大</p>
             </div>
-        `;
-        
-        // 🚀 預載入圖片到快取
-        if (typeof preloadImages === 'function') {
-            preloadImages([image1Url, image2Url]);
+        </div>
+    `;
+    
+    // 🚀 監聽圖片載入狀態（用於調試和日誌）
+    const images = eventGrid.querySelectorAll('.event-image');
+    let loadedCount = 0;
+    const totalImages = images.length;
+    
+    images.forEach((img, index) => {
+        // 如果圖片已經載入完成（從快取）
+        if (img.complete && img.naturalHeight !== 0) {
+            loadedCount++;
+            const imageUrl = index === 0 ? image1Url : image2Url;
+            console.log(`✅ 圖片${index + 1}已載入（快取）: ${imageUrl}`);
+        } else {
+            // 監聽載入完成
+            img.addEventListener('load', () => {
+                loadedCount++;
+                console.log(`✅ 圖片${index + 1}載入完成`);
+                
+                // 所有圖片載入完成後記錄
+                if (loadedCount === totalImages) {
+                    console.log('🎉 所有活動圖片載入完成');
+                }
+            });
+            
+            // 監聽載入錯誤
+            img.addEventListener('error', () => {
+                console.error(`❌ 圖片${index + 1}載入失敗`);
+                // 即使失敗也計入，避免一直等待
+                loadedCount++;
+                
+                if (loadedCount === totalImages) {
+                    console.warn('⚠️ 部分圖片載入失敗，已顯示占位圖');
+                }
+            });
         }
-        
-        console.log('✅ 圖片渲染完成');
-    } else {
-        console.warn('⚠️ 缺少圖片網址');
-        console.warn('  可用欄位:', Object.keys(event));
-        console.warn('  完整資料:', event);
-        
-        // 如果沒有圖片網址，顯示預設的骨架屏
-        eventGrid.innerHTML = `
-            <div class="skeleton skeleton-card" style="animation-delay: 0s;"></div>
-            <div class="skeleton skeleton-card" style="animation-delay: 0.1s;"></div>
-        `;
+    });
+    
+    // 如果所有圖片都已載入（從快取），記錄日誌
+    if (loadedCount === totalImages) {
+        console.log('⚡ 所有圖片已從快取載入');
     }
+    
+    // 設置超時保護：10秒後記錄警告（骨架屏已移除，只是記錄狀態）
+    setTimeout(() => {
+        if (loadedCount < totalImages) {
+            console.warn('⏰ 部分圖片載入時間較長（超過10秒）');
+        }
+    }, 10000);
     
     // 💡 在控制台顯示當前顯示的活動資訊
     console.log('✅ 當前顯示活動:', {
-        標題: eventForTitle['B活動標題'] || eventForTitle['活動標題'] || eventForTitle['A活動標題'],
-        日期: eventForTitle['C活動日期'] || eventForTitle['活動日期'] || eventForTitle['B活動日期'],
-        副標題: eventForTitle['D活動副標題'] || eventForTitle['活動副標題'] || eventForTitle['C活動副標題']
+        標題: event['B活動標題'],
+        日期: event['C活動日期'],
+        副標題: event['D活動副標題'],
+        圖片1: image1Url,
+        圖片2: image2Url
     });
 }
 
@@ -1115,88 +915,6 @@ async function refreshData() {
 // ==================== 工具函數 ====================
 
 /**
- * 🚀 圖片載入優化函數
- */
-// 圖片快取
-const imageCache = new Map();
-
-// 預載入圖片
-function preloadImages(imageUrls) {
-    imageUrls.forEach(url => {
-        if (!imageCache.has(url)) {
-            const img = new Image();
-            img.onload = () => {
-                imageCache.set(url, true);
-                console.log(`✅ 圖片預載入完成: ${url}`);
-            };
-            img.onerror = () => {
-                console.warn(`⚠️ 圖片預載入失敗: ${url}`);
-            };
-            img.src = url;
-        }
-    });
-}
-
-// 處理圖片載入完成
-window.handleImageLoad = function(img) {
-    const container = img.closest('.image-container');
-    const loading = container.querySelector('.image-loading');
-    
-    // 淡入效果
-    img.style.opacity = '1';
-    
-    // 隱藏載入動畫
-    if (loading) {
-        loading.style.opacity = '0';
-        setTimeout(() => {
-            loading.style.display = 'none';
-        }, 300);
-    }
-    
-    console.log('✅ 圖片載入完成:', img.src);
-};
-
-// 處理圖片載入錯誤
-window.handleImageError = function(img) {
-    const container = img.closest('.image-container');
-    const loading = container.querySelector('.image-loading');
-    
-    // 顯示錯誤訊息
-    if (loading) {
-        loading.innerHTML = `
-            <div style="color: #ff6b6b; text-align: center;">
-                <p>⚠️ 圖片載入失敗</p>
-                <button onclick="retryImageLoad(this)" style="background: #667eea; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
-                    重試
-                </button>
-            </div>
-        `;
-    }
-    
-    console.error('❌ 圖片載入失敗:', img.src);
-};
-
-// 重試載入圖片
-window.retryImageLoad = function(button) {
-    const container = button.closest('.image-container');
-    const img = container.querySelector('.event-image');
-    const loading = container.querySelector('.image-loading');
-    
-    // 重置載入狀態
-    loading.innerHTML = `
-        <div class="loading-spinner"></div>
-        <p>重新載入中...</p>
-    `;
-    
-    // 重新載入圖片
-    const originalSrc = img.src;
-    img.src = '';
-    setTimeout(() => {
-        img.src = originalSrc + '?retry=' + Date.now(); // 避免快取
-    }, 100);
-};
-
-/**
  * 複製會議ID
  */
 window.copyMeetingId = function(meetingId) {
@@ -1221,60 +939,6 @@ window.SheetsDataLoader = {
 
 // ==================== 自動初始化 ====================
 
-    // 🚀 更積極的預載入策略（優化載入速度）
-async function preloadCriticalData() {
-    try {
-        // 立即開始載入資料（不等待 DOM）
-        console.log('🚀 開始預載入關鍵資料...');
-        
-        const isInvitePage = window.location.pathname.includes('invite');
-        let data;
-        
-        // 🚀 優先使用快取（立即返回，不等待網路）
-        if (isCacheValid()) {
-            data = dataCache.data;
-            console.log('⚡ 使用現有快取資料（立即顯示）');
-            // 背景靜默更新（不阻塞）
-            loadAllData().catch(err => console.warn('⚠️ 背景更新失敗:', err));
-            return { data, isInvitePage };
-        }
-        
-        // 檢查 localStorage 快取
-        const persistentData = loadPersistentCache();
-        if (persistentData) {
-            data = persistentData;
-            console.log('💾 使用 localStorage 快取（立即顯示）');
-            // 背景靜默更新（不阻塞）
-            loadAllData().catch(err => console.warn('⚠️ 背景更新失敗:', err));
-            return { data, isInvitePage };
-        }
-        
-        // 🚀 如果沒有快取，使用 Promise.race 快速失敗機制
-        console.log('📡 開始網路請求（快速模式）...');
-        const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('請求超時')), 3000) // 3秒快速超時
-        );
-        
-        try {
-            data = await Promise.race([
-                loadAllData(),
-                timeoutPromise
-            ]);
-            return { data, isInvitePage };
-        } catch (error) {
-            // 如果網路請求失敗，返回 null，讓頁面使用預設內容
-            console.warn('⚠️ 網路請求失敗或超時，將使用預設內容:', error.message);
-            return null;
-        }
-    } catch (error) {
-        console.warn('⚠️ 預載入失敗，將使用預設內容:', error);
-        return null;
-    }
-}
-
-// 🚀 立即開始預載入（不等待 DOM）
-const preloadPromise = preloadCriticalData();
-
 // 使用 DOMContentLoaded 更快開始載入（不等圖片等資源）
 document.addEventListener('DOMContentLoaded', async () => {
     // 防止重複初始化
@@ -1287,30 +951,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     console.log('📄 初始化 Google Sheets 資料系統...');
     
+    // 🚀 移除延遲，立即載入以提升速度
+    // await new Promise(resolve => setTimeout(resolve, 100)); // 已移除
+    
     try {
-        // 🚀 使用預載入的資料
-        const preloadResult = await preloadPromise;
+        const isInvitePage = window.location.pathname.includes('invite');
         
-        if (preloadResult && preloadResult.data) {
-            console.log('✅ 使用預載入資料，立即渲染');
-            const { data, isInvitePage } = preloadResult;
-            
-            if (isInvitePage) {
-                await initInvitePageWithData(data);
-            } else {
-                await initIndexPageWithData(data);
-            }
+        if (isInvitePage) {
+            await initInvitePage();
         } else {
-            // 🚀 如果預載入失敗或超時，使用預設內容（不阻塞頁面）
-            console.log('⚠️ 資料載入失敗或超時，使用預設內容（頁面仍可正常顯示）');
-            const isInvitePage = window.location.pathname.includes('invite');
-            
-            // 在背景繼續嘗試載入（不阻塞）
-            if (isInvitePage) {
-                initInvitePage().catch(err => console.warn('⚠️ 背景載入失敗:', err));
-            } else {
-                initIndexPage().catch(err => console.warn('⚠️ 背景載入失敗:', err));
-            }
+            await initIndexPage();
         }
         
         hasInitialized = true;
@@ -1321,7 +971,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (loadingBar) {
                 loadingBar.style.display = 'none';
             }
-        }, 1000); // 縮短到 1 秒
+        }, 2000);
         
     } catch (error) {
         console.error('❌ 初始化失敗:', error);
