@@ -25,10 +25,10 @@ const APPS_SCRIPT_CONFIG = {
     usePersistentCache: true,
     localStorageKey: 'huadi_sheets_cache',
     
-    // 🚀 網路優化設定
-    requestTimeout: 10000, // 10 秒超時
-    maxRetries: 3, // 最大重試次數
-    retryDelay: 1000, // 重試延遲 1 秒
+    // 🚀 網路優化設定（優化載入速度）
+    requestTimeout: 5000, // 5 秒超時（減少等待時間）
+    maxRetries: 1, // 最大重試次數（減少到 1 次，快速失敗）
+    retryDelay: 500, // 重試延遲 0.5 秒（快速重試）
     
     // 🚀 並行載入設定
     enableParallelLoading: true,
@@ -187,7 +187,8 @@ async function fetchWithRetry(url, options = {}, retryCount = 0) {
             
             console.warn(`⚠️ 請求失敗，${APPS_SCRIPT_CONFIG.retryDelay}ms 後重試 (${retryCount + 1}/${APPS_SCRIPT_CONFIG.maxRetries}):`, error.message);
             
-            await new Promise(resolve => setTimeout(resolve, APPS_SCRIPT_CONFIG.retryDelay * (retryCount + 1)));
+            // 🚀 快速重試，不遞增延遲時間
+            await new Promise(resolve => setTimeout(resolve, APPS_SCRIPT_CONFIG.retryDelay));
             return fetchWithRetry(url, options, retryCount + 1);
         }
         
@@ -1140,7 +1141,7 @@ window.SheetsDataLoader = {
 
 // ==================== 自動初始化 ====================
 
-// 🚀 更積極的預載入策略
+    // 🚀 更積極的預載入策略（優化載入速度）
 async function preloadCriticalData() {
     try {
         // 立即開始載入資料（不等待 DOM）
@@ -1149,27 +1150,44 @@ async function preloadCriticalData() {
         const isInvitePage = window.location.pathname.includes('invite');
         let data;
         
-        // 嘗試從快取載入
+        // 🚀 優先使用快取（立即返回，不等待網路）
         if (isCacheValid()) {
             data = dataCache.data;
-            console.log('⚡ 使用現有快取資料');
-        } else {
-            const persistentData = loadPersistentCache();
-            if (persistentData) {
-                data = persistentData;
-                console.log('💾 使用 localStorage 快取');
-            }
+            console.log('⚡ 使用現有快取資料（立即顯示）');
+            // 背景靜默更新（不阻塞）
+            loadAllData().catch(err => console.warn('⚠️ 背景更新失敗:', err));
+            return { data, isInvitePage };
         }
         
-        // 如果沒有快取，開始網路請求
-        if (!data) {
-            console.log('📡 開始網路請求...');
-            data = await loadAllData();
+        // 檢查 localStorage 快取
+        const persistentData = loadPersistentCache();
+        if (persistentData) {
+            data = persistentData;
+            console.log('💾 使用 localStorage 快取（立即顯示）');
+            // 背景靜默更新（不阻塞）
+            loadAllData().catch(err => console.warn('⚠️ 背景更新失敗:', err));
+            return { data, isInvitePage };
         }
         
-        return { data, isInvitePage };
+        // 🚀 如果沒有快取，使用 Promise.race 快速失敗機制
+        console.log('📡 開始網路請求（快速模式）...');
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('請求超時')), 3000) // 3秒快速超時
+        );
+        
+        try {
+            data = await Promise.race([
+                loadAllData(),
+                timeoutPromise
+            ]);
+            return { data, isInvitePage };
+        } catch (error) {
+            // 如果網路請求失敗，返回 null，讓頁面使用預設內容
+            console.warn('⚠️ 網路請求失敗或超時，將使用預設內容:', error.message);
+            return null;
+        }
     } catch (error) {
-        console.warn('⚠️ 預載入失敗，將在 DOM 載入後重試:', error);
+        console.warn('⚠️ 預載入失敗，將使用預設內容:', error);
         return null;
     }
 }
@@ -1193,7 +1211,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 🚀 使用預載入的資料
         const preloadResult = await preloadPromise;
         
-        if (preloadResult) {
+        if (preloadResult && preloadResult.data) {
             console.log('✅ 使用預載入資料，立即渲染');
             const { data, isInvitePage } = preloadResult;
             
@@ -1203,14 +1221,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await initIndexPageWithData(data);
             }
         } else {
-            // 如果預載入失敗，使用原本的方式
-            console.log('🔄 預載入失敗，使用標準載入流程');
+            // 🚀 如果預載入失敗或超時，使用預設內容（不阻塞頁面）
+            console.log('⚠️ 資料載入失敗或超時，使用預設內容（頁面仍可正常顯示）');
             const isInvitePage = window.location.pathname.includes('invite');
             
+            // 在背景繼續嘗試載入（不阻塞）
             if (isInvitePage) {
-                await initInvitePage();
+                initInvitePage().catch(err => console.warn('⚠️ 背景載入失敗:', err));
             } else {
-                await initIndexPage();
+                initIndexPage().catch(err => console.warn('⚠️ 背景載入失敗:', err));
             }
         }
         
