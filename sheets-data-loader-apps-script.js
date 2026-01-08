@@ -271,6 +271,53 @@ async function getAPIVersion() {
     }
 }
 
+// ==================== 圖片快取函數（提前定義以供立即執行函數使用）====================
+
+/**
+ * 🚀 優化：從 localStorage 讀取上次的圖片 URL
+ */
+function getCachedImageUrls() {
+    try {
+        const cacheKey = 'invite_event_images';
+        const cached = localStorage.getItem(cacheKey);
+        if (!cached) return null;
+        
+        const imageData = JSON.parse(cached);
+        const cacheAge = Date.now() - imageData.timestamp;
+        
+        // 如果快取超過 7 天，視為過期
+        if (cacheAge > 7 * 24 * 60 * 60 * 1000) {
+            localStorage.removeItem(cacheKey);
+            return null;
+        }
+        
+        return {
+            image1: imageData.image1,
+            image2: imageData.image2
+        };
+    } catch (error) {
+        return null;
+    }
+}
+
+/**
+ * 🚀 優化：儲存圖片 URL 到 localStorage 以便下次快速載入
+ */
+function saveImageUrlsToCache(image1Url, image2Url) {
+    try {
+        const cacheKey = 'invite_event_images';
+        const imageData = {
+            image1: image1Url,
+            image2: image2Url,
+            timestamp: Date.now()
+        };
+        localStorage.setItem(cacheKey, JSON.stringify(imageData));
+        console.log('💾 圖片 URL 已儲存到快取');
+    } catch (error) {
+        console.warn('⚠️ 無法儲存圖片 URL 到快取:', error);
+    }
+}
+
 // ==================== 渲染函數 ====================
 
 /**
@@ -485,19 +532,134 @@ async function initIndexPage() {
 }
 
 /**
+ * 🚀 優化：快速載入活動數據（只載入活動相關的數據）
+ * 這是關鍵優化：只載入活動數據可以大幅減少API回應時間
+ */
+async function loadInviteEventDataFast() {
+    console.log('⚡ 快速載入活動數據...');
+    
+    try {
+        // 優先從快取讀取
+        if (isCacheValid() && dataCache.data && dataCache.data.INVITE_EVENT) {
+            console.log('⚡ 從記憶體快取載入活動數據（極速）');
+            return dataCache.data.INVITE_EVENT;
+        }
+        
+        // 檢查 localStorage
+        const persistentData = loadPersistentCache();
+        if (persistentData && persistentData.INVITE_EVENT) {
+            console.log('⚡ 從 localStorage 載入活動數據（快速）');
+            return persistentData.INVITE_EVENT;
+        }
+        
+        // 🚀 關鍵優化：只載入活動數據（而不是全部數據），大幅減少API回應時間
+        console.log('⚡ 從API載入活動數據（僅載入活動工作表）');
+        const eventData = await loadSheetData('INVITE_EVENT');
+        
+        // 如果載入成功，更新快取（以便下次使用）
+        if (eventData) {
+            // 更新記憶體快取中的活動數據
+            if (dataCache.data) {
+                dataCache.data.INVITE_EVENT = eventData;
+            }
+            // 更新 localStorage（如果有的話）
+            const existingCache = loadPersistentCache();
+            if (existingCache) {
+                existingCache.INVITE_EVENT = eventData;
+                savePersistentCache(existingCache);
+            }
+        }
+        
+        return eventData;
+    } catch (error) {
+        console.error('❌ 快速載入活動數據失敗:', error);
+        return null;
+    }
+}
+
+/**
+ * 🚀 優化：快速提取圖片URL並立即開始載入（不等待完整數據）
+ */
+function extractAndPreloadImages(eventData) {
+    if (!eventData || !Array.isArray(eventData) || eventData.length === 0) return;
+    
+    try {
+        // 快速選擇活動（簡化版，不需要完整邏輯）
+        const validEvents = eventData
+            .filter(event => event['C活動日期'])
+            .sort((a, b) => {
+                const dateA = new Date(a['C活動日期']);
+                const dateB = new Date(b['C活動日期']);
+                return dateB - dateA; // 最新的在前
+            });
+        
+        const event = validEvents[0] || eventData[0];
+        
+        const image1Url = event['E圖片1網址'];
+        const image2Url = event['F圖片2網址'];
+        
+        if (image1Url && image2Url) {
+            // 立即開始預載入圖片
+            preloadImagesImmediately(image1Url, image2Url);
+            console.log('⚡ 已從API回應中提取圖片URL並立即開始載入');
+        }
+    } catch (error) {
+        console.warn('⚠️ 快速提取圖片URL失敗:', error);
+    }
+}
+
+/**
  * 初始化邀請頁 (invite.html)
+ * 🚀 優化：先顯示快取的圖片，再更新最新數據，並立即開始載入新圖片
  */
 async function initInvitePage() {
     console.log('🚀 初始化邀請頁（活動信息 + CTA按鈕）...');
     
+    // 🚀 優化：立即嘗試從快取顯示圖片
     try {
-        const data = await loadAllData();
+        const cachedData = loadPersistentCache();
+        if (cachedData && cachedData.INVITE_EVENT) {
+            console.log('⚡ 立即顯示快取的活動數據');
+            renderInviteEvent(cachedData.INVITE_EVENT);
+        }
+    } catch (error) {
+        console.warn('⚠️ 無法從快取載入，將等待 API 回應');
+    }
+    
+    try {
+        // 🚀 優化：優先快速載入活動數據，一旦獲取就立即開始預載入圖片
+        const fastEventPromise = loadInviteEventDataFast().then(data => {
+            if (data) {
+                // 立即提取圖片URL並開始載入（不等待完整渲染）
+                extractAndPreloadImages(data);
+                return data;
+            }
+            return null;
+        });
         
-        // 渲染活動展示區塊（標題、副標題、圖片）
-        renderInviteEvent(data.INVITE_EVENT);
+        // 並行載入所有數據和快速載入活動數據
+        const [allData, fastEventData] = await Promise.allSettled([
+            loadAllData(),
+            fastEventPromise
+        ]);
+        
+        // 優先使用快速載入的數據（如果成功）
+        if (fastEventData.status === 'fulfilled' && fastEventData.value) {
+            console.log('⚡ 使用快速載入的活動數據');
+            renderInviteEvent(fastEventData.value);
+        } else if (allData.status === 'fulfilled' && allData.value) {
+            // 如果快速載入失敗，使用完整數據
+            if (allData.value.INVITE_EVENT) {
+                // 確保圖片已開始預載入
+                extractAndPreloadImages(allData.value.INVITE_EVENT);
+                renderInviteEvent(allData.value.INVITE_EVENT);
+            }
+        }
         
         // 更新CTA按鈕連結
-        updateInviteCTAButtons(data.INVITE_CTA);
+        if (allData.status === 'fulfilled' && allData.value && allData.value.INVITE_CTA) {
+            updateInviteCTAButtons(allData.value.INVITE_CTA);
+        }
         
         console.log('🎉 邀請頁動態內容加載完成');
     } catch (error) {
@@ -596,7 +758,43 @@ function getActiveEvent(events) {
 }
 
 /**
+ * 🚀 優化：立即預載入圖片（一旦獲取URL就開始載入，不等待DOM）
+ */
+function preloadImagesImmediately(image1Url, image2Url) {
+    if (!image1Url || !image2Url) return;
+    
+    // 方法1: 使用 Image 對象立即開始載入（最快）
+    const img1 = new Image();
+    img1.src = image1Url;
+    img1.decode().catch(() => {}); // 非阻塞解碼
+    
+    const img2 = new Image();
+    img2.src = image2Url;
+    img2.decode().catch(() => {}); // 非阻塞解碼
+    
+    // 方法2: 使用 preload 連結（瀏覽器優先級更高）
+    if (document.head) {
+        const link1 = document.createElement('link');
+        link1.rel = 'preload';
+        link1.as = 'image';
+        link1.href = image1Url;
+        link1.fetchPriority = 'high';
+        document.head.appendChild(link1);
+        
+        const link2 = document.createElement('link');
+        link2.rel = 'preload';
+        link2.as = 'image';
+        link2.href = image2Url;
+        link2.fetchPriority = 'high';
+        document.head.appendChild(link2);
+    }
+    
+    console.log('⚡ 已立即開始預載入圖片');
+}
+
+/**
  * 渲染 Invite 活動展示（支援自動切換）
+ * 🚀 優化：立即使用快取的圖片 URL，然後更新為最新數據
  */
 function renderInviteEvent(data) {
     if (!data || data.length === 0) return;
@@ -604,6 +802,31 @@ function renderInviteEvent(data) {
     // 🎯 自動選擇要顯示的活動
     const event = getActiveEvent(data);
     if (!event) return;
+    
+    // 檢查圖片URL是否存在（優先提取URL以便立即載入）
+    let image1Url = event['E圖片1網址'];
+    let image2Url = event['F圖片2網址'];
+    
+    // 🚀 優化：如果 URL 缺失，嘗試從快取獲取
+    if (!image1Url || !image2Url) {
+        const cachedUrls = getCachedImageUrls();
+        if (cachedUrls) {
+            console.log('⚡ 使用快取的圖片 URL');
+            image1Url = image1Url || cachedUrls.image1;
+            image2Url = image2Url || cachedUrls.image2;
+        }
+    }
+    
+    if (!image1Url || !image2Url) {
+        console.warn('⚠️ 活動圖片URL缺失，無法顯示');
+        return;
+    }
+    
+    // 🚀 優化：立即開始預載入圖片（在渲染之前）
+    preloadImagesImmediately(image1Url, image2Url);
+    
+    // 🚀 優化：立即儲存圖片 URL 到快取
+    saveImageUrlsToCache(image1Url, image2Url);
     
     const eventHeader = document.querySelector('.event-header');
     
@@ -617,15 +840,6 @@ function renderInviteEvent(data) {
     
     const eventGrid = document.querySelector('.event-grid');
     if (!eventGrid) return;
-    
-    // 檢查圖片URL是否存在
-    const image1Url = event['E圖片1網址'];
-    const image2Url = event['F圖片2網址'];
-    
-    if (!image1Url || !image2Url) {
-        console.warn('⚠️ 活動圖片URL缺失，無法顯示');
-        return;
-    }
     
     // 轉義URL中的特殊字符，避免HTML注入和路徑問題
     const escapeHtml = (str) => {
@@ -658,19 +872,28 @@ function renderInviteEvent(data) {
     // 🚀 立即移除骨架屏並顯示圖片容器（避免一直轉圈）
     eventGrid.classList.add('content-loaded');
     
-    // 插入圖片HTML（骨架屏會被 innerHTML 替換）
+    // 🚀 優化：插入圖片HTML（骨架屏會被 innerHTML 替換）
+    // 圖片已經在 preloadImagesImmediately 中開始載入了，這裡直接顯示
     eventGrid.innerHTML = `
         <div class="event-card" onclick="openModal('${image1ForClick}')">
-            <img src="${image1Escaped}" alt="專講預告 1" class="event-image" loading="lazy" 
-                 onerror="this.onerror=null; this.src='${placeholderImage}'; console.error('❌ 圖片1載入失敗');">
+            <img src="${image1Escaped}" alt="專講預告 1" class="event-image" 
+                 fetchpriority="high"
+                 decoding="async"
+                 loading="eager"
+                 onload="this.classList.add('loaded');"
+                 onerror="this.onerror=null; this.src='${placeholderImage}'; this.classList.add('loaded'); console.error('❌ 圖片1載入失敗');">
             <div class="event-overlay">
                 <span class="event-icon">🔍</span>
                 <p>點擊放大</p>
             </div>
         </div>
         <div class="event-card" onclick="openModal('${image2ForClick}')">
-            <img src="${image2Escaped}" alt="專講預告 2" class="event-image" loading="lazy"
-                 onerror="this.onerror=null; this.src='${placeholderImage}'; console.error('❌ 圖片2載入失敗');">
+            <img src="${image2Escaped}" alt="專講預告 2" class="event-image" 
+                 fetchpriority="high"
+                 decoding="async"
+                 loading="eager"
+                 onload="this.classList.add('loaded');"
+                 onerror="this.onerror=null; this.src='${placeholderImage}'; this.classList.add('loaded'); console.error('❌ 圖片2載入失敗');">
             <div class="event-overlay">
                 <span class="event-icon">🔍</span>
                 <p>點擊放大</p>
@@ -687,30 +910,37 @@ function renderInviteEvent(data) {
         // 如果圖片已經載入完成（從快取）
         if (img.complete && img.naturalHeight !== 0) {
             loadedCount++;
+            img.classList.add('loaded'); // 🚀 優化：標記為已載入
             const imageUrl = index === 0 ? image1Url : image2Url;
             console.log(`✅ 圖片${index + 1}已載入（快取）: ${imageUrl}`);
         } else {
-            // 監聽載入完成
+            // 🚀 優化：使用 load 事件，載入完成後標記
             img.addEventListener('load', () => {
                 loadedCount++;
+                img.classList.add('loaded'); // 標記為已載入，觸發漸入動畫
                 console.log(`✅ 圖片${index + 1}載入完成`);
                 
                 // 所有圖片載入完成後記錄
                 if (loadedCount === totalImages) {
                     console.log('🎉 所有活動圖片載入完成');
+                    // 🚀 優化：確保骨架屏完全移除
+                    eventGrid.classList.add('content-loaded');
                 }
-            });
+            }, { once: true }); // 🚀 優化：只監聽一次，避免重複觸發
             
             // 監聽載入錯誤
             img.addEventListener('error', () => {
                 console.error(`❌ 圖片${index + 1}載入失敗`);
+                img.classList.add('loaded'); // 即使失敗也顯示
                 // 即使失敗也計入，避免一直等待
                 loadedCount++;
                 
                 if (loadedCount === totalImages) {
                     console.warn('⚠️ 部分圖片載入失敗，已顯示占位圖');
+                    // 🚀 優化：確保骨架屏完全移除
+                    eventGrid.classList.add('content-loaded');
                 }
-            });
+            }, { once: true });
         }
     });
     
@@ -939,7 +1169,40 @@ window.SheetsDataLoader = {
 
 // ==================== 自動初始化 ====================
 
-// 使用 DOMContentLoaded 更快開始載入（不等圖片等資源）
+// 🚀 優化：提前開始載入數據（不等待 DOMContentLoaded）
+// 對於邀請頁，立即嘗試顯示快取的圖片
+(function() {
+    if (typeof window === 'undefined') return;
+    
+    const isInvitePage = window.location.pathname.includes('invite');
+    
+    if (isInvitePage) {
+        // 🚀 立即嘗試從快取顯示圖片（不需要等待 DOM）
+        try {
+            const cachedUrls = getCachedImageUrls();
+            if (cachedUrls && cachedUrls.image1 && cachedUrls.image2) {
+                // 在 DOM 準備好之前就開始預載入圖片
+                const link1 = document.createElement('link');
+                link1.rel = 'prefetch';
+                link1.as = 'image';
+                link1.href = cachedUrls.image1;
+                document.head.appendChild(link1);
+                
+                const link2 = document.createElement('link');
+                link2.rel = 'prefetch';
+                link2.as = 'image';
+                link2.href = cachedUrls.image2;
+                document.head.appendChild(link2);
+                
+                console.log('⚡ 已開始預載入快取的圖片');
+            }
+        } catch (error) {
+            // 忽略錯誤，繼續正常流程
+        }
+    }
+})();
+
+// 使用 DOMContentLoaded 進行完整的初始化
 document.addEventListener('DOMContentLoaded', async () => {
     // 防止重複初始化
     if (isInitializing || hasInitialized) {
@@ -965,13 +1228,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         hasInitialized = true;
         
-        // 移除加載進度條
+        // 🚀 優化：移除加載進度條（減少時間以更快移除）
         setTimeout(() => {
             const loadingBar = document.getElementById('loading-bar');
             if (loadingBar) {
                 loadingBar.style.display = 'none';
             }
-        }, 2000);
+        }, 1500); // 從2000ms減少到1500ms
         
     } catch (error) {
         console.error('❌ 初始化失敗:', error);
