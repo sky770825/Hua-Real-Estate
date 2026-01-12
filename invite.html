@@ -2524,6 +2524,11 @@
             <!-- 🚀 優化：立即嘗試從快取顯示圖片，然後從 Supabase 載入最新數據 -->
             <script>
                 (function() {
+                    // 確保 supabaseClient 變量已聲明（如果還沒聲明）
+                    if (typeof window.supabaseClient === 'undefined') {
+                        window.supabaseClient = null;
+                    }
+                    
                     try {
                         const cacheKey = 'invite_event_images';
                         const cached = localStorage.getItem(cacheKey);
@@ -2563,31 +2568,62 @@
                         // 忽略錯誤，繼續正常載入流程
                     }
                     
-                    // 立即從數據庫載入圖片
+                    // 立即從數據庫載入圖片（等待腳本加載完成）
                     (async function() {
-                        // 如果 Supabase 已初始化，立即載入
-                        if (supabaseClient) {
+                        // 等待一下確保所有腳本都已加載
+                        await new Promise(resolve => {
+                            if (document.readyState === 'loading') {
+                                document.addEventListener('DOMContentLoaded', resolve);
+                            } else {
+                                setTimeout(resolve, 100);
+                            }
+                        });
+                        
+                        // 檢查 supabaseClient 是否已初始化（使用 window.supabaseClient 或全局變量）
+                        const client = window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
+                        
+                        if (client) {
                             if (typeof loadEventImagesFromSupabase === 'function') {
                                 loadEventImagesFromSupabase();
                             }
                             return;
                         }
                         
-                        // 如果還沒初始化，立即初始化並載入
-                        if (typeof initSupabase === 'function') {
-                            try {
-                                await initSupabase();
-                                // 初始化成功，立即載入圖片
+                        // 如果還沒初始化，等待初始化函數可用
+                        let retryCount = 0;
+                        const maxRetries = 50; // 最多等待 5 秒
+                        
+                        const checkAndLoad = setInterval(() => {
+                            retryCount++;
+                            
+                            // 檢查是否已初始化
+                            const currentClient = window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
+                            if (currentClient) {
+                                clearInterval(checkAndLoad);
                                 if (typeof loadEventImagesFromSupabase === 'function') {
                                     loadEventImagesFromSupabase();
                                 }
-                            } catch (error) {
-                                console.error('❌ Supabase 初始化失敗:', error);
-                                console.warn('⚠️ 請檢查 Supabase 配置和網絡連接');
+                                return;
                             }
-                        } else {
-                            console.warn('⚠️ initSupabase 函數不可用，請檢查 Supabase 配置');
-                        }
+                            
+                            // 如果初始化函數可用，嘗試初始化
+                            if (typeof initSupabase === 'function') {
+                                initSupabase().then(() => {
+                                    clearInterval(checkAndLoad);
+                                    if (typeof loadEventImagesFromSupabase === 'function') {
+                                        loadEventImagesFromSupabase();
+                                    }
+                                }).catch((error) => {
+                                    console.error('❌ Supabase 初始化失敗:', error);
+                                });
+                            }
+                            
+                            // 如果超過最大重試次數，停止
+                            if (retryCount >= maxRetries) {
+                                clearInterval(checkAndLoad);
+                                console.warn('⚠️ Supabase 初始化超時，請檢查配置');
+                            }
+                        }, 100);
                     })();
                 })();
             </script>
@@ -3349,7 +3385,9 @@
             }
             
             // 檢查 Supabase 配置
-            if (!SUPABASE_CONFIG.anonKey || !supabaseClient) {
+            // 使用 window.supabaseClient 或局部變量
+            const currentClient = (typeof window !== 'undefined' && window.supabaseClient) || supabaseClient;
+            if (!SUPABASE_CONFIG.anonKey || !currentClient) {
                 const configMsg = '⚠️ Supabase 尚未配置！\n\n' +
                     '請在代碼中找到 SUPABASE_CONFIG（約第 3141 行）\n' +
                     '設置 anonKey：\n' +
@@ -3458,6 +3496,23 @@
         // 初始化 Supabase 客戶端
         // 使用不同的變量名避免與 Supabase 庫的全局變量衝突
         let supabaseClient = null;
+        // 同時設置為 window 屬性，方便其他腳本訪問
+        if (typeof window !== 'undefined') {
+            window.supabaseClient = null;
+        }
+        
+        // 安全獲取 supabaseClient 的輔助函數
+        function getSupabaseClient() {
+            // 優先使用 window.supabaseClient（如果已設置）
+            if (typeof window !== 'undefined' && window.supabaseClient) {
+                return window.supabaseClient;
+            }
+            // 其次使用局部變量
+            if (typeof supabaseClient !== 'undefined' && supabaseClient !== null) {
+                return supabaseClient;
+            }
+            return null;
+        }
         
         function initSupabase() {
             return new Promise((resolve, reject) => {
@@ -3482,6 +3537,8 @@
                 if (supabaseLib && supabaseLib.createClient) {
                     try {
                         supabaseClient = supabaseLib.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+                        // 同時設置為 window 屬性，方便其他腳本訪問
+                        window.supabaseClient = supabaseClient;
                         console.log('✅ Supabase 客戶端初始化成功');
                         resolve(supabaseClient);
                     } catch (error) {
@@ -3542,7 +3599,8 @@
                 progress.classList.add('show');
                 
                 try {
-                    if (!supabaseClient) {
+                    const currentClient = getSupabaseClient();
+                    if (!currentClient) {
                         throw new Error('Supabase 客戶端未初始化，請檢查配置');
                     }
                     
@@ -3574,7 +3632,12 @@
                     });
                     
                     // 使用 Supabase Storage API 上傳
-                    const { data, error } = await supabaseClient.storage
+                    const client = getSupabaseClient();
+                    if (!client) {
+                        throw new Error('Supabase 客戶端未初始化');
+                    }
+                    
+                    const { data, error } = await client.storage
                         .from(SUPABASE_CONFIG.bucketName)
                         .upload(filePath, file, {
                             cacheControl: '3600',
@@ -3611,7 +3674,12 @@
                     let publicUrl;
                     
                     try {
-                        const { data: urlData } = supabaseClient.storage
+                        const client = getSupabaseClient();
+                        if (!client) {
+                            throw new Error('Supabase 客戶端未初始化');
+                        }
+                        
+                        const { data: urlData } = client.storage
                             .from(SUPABASE_CONFIG.bucketName)
                             .getPublicUrl(filePath);
                         
@@ -4011,7 +4079,8 @@
         // 刪除舊的活動圖片（從數據庫和存儲）
         async function deleteOldEventImages(eventDate) {
             try {
-                if (!supabaseClient) {
+                const client = getSupabaseClient();
+                if (!client) {
                     console.warn('⚠️ Supabase 客戶端未初始化');
                     return false;
                 }
@@ -4019,7 +4088,8 @@
                 console.log('🗑️ 開始刪除舊圖片，活動日期:', eventDate);
                 
                 // 查找相同日期的舊記錄
-                const { data: oldRecords, error: selectError } = await supabaseClient
+                
+                const { data: oldRecords, error: selectError } = await client
                     .from('invite_event_images')
                     .select('*')
                     .eq('event_date', eventDate);
@@ -4036,90 +4106,90 @@
                 
                 console.log(`找到 ${oldRecords.length} 條舊記錄，開始刪除...`);
                 
-                // 刪除 Supabase Storage 中的舊圖片文件
-                for (const record of oldRecords) {
-                    try {
-                        // 從 URL 中提取文件路徑
-                        // Supabase Storage URL 格式: https://[project].supabase.co/storage/v1/object/public/[bucket]/[path]
-                        // 需要提取 [path] 部分，例如: hua-real-estate/invite-photo/image1_1234567890.jpg
-                        if (record.image1_url) {
+                        // 刪除 Supabase Storage 中的舊圖片文件
+                        for (const record of oldRecords) {
                             try {
-                                const url1 = new URL(record.image1_url);
-                                // 路徑格式: /storage/v1/object/public/[bucket]/[path]
-                                const pathParts = url1.pathname.split('/');
-                                const bucketIndex = pathParts.indexOf('public');
-                                if (bucketIndex !== -1 && pathParts.length > bucketIndex + 1) {
-                                    // 跳過 bucket 名稱，獲取實際文件路徑
-                                    const filePath = pathParts.slice(bucketIndex + 2).join('/');
-                                    if (filePath) {
-                                        const { error: deleteError1 } = await supabaseClient.storage
-                                            .from(SUPABASE_CONFIG.bucketName)
-                                            .remove([filePath]);
-                                        if (deleteError1) {
-                                            console.warn('⚠️ 刪除舊圖片1失敗:', deleteError1, '路徑:', filePath);
+                                // 從 URL 中提取文件路徑
+                                // Supabase Storage URL 格式: https://[project].supabase.co/storage/v1/object/public/[bucket]/[path]
+                                // 需要提取 [path] 部分，例如: hua-real-estate/invite-photo/image1_1234567890.jpg
+                                if (record.image1_url) {
+                                    try {
+                                        const url1 = new URL(record.image1_url);
+                                        // 路徑格式: /storage/v1/object/public/[bucket]/[path]
+                                        const pathParts = url1.pathname.split('/');
+                                        const bucketIndex = pathParts.indexOf('public');
+                                        if (bucketIndex !== -1 && pathParts.length > bucketIndex + 1) {
+                                            // 跳過 bucket 名稱，獲取實際文件路徑
+                                            const filePath = pathParts.slice(bucketIndex + 2).join('/');
+                                            if (filePath) {
+                                                const { error: deleteError1 } = await client.storage
+                                                    .from(SUPABASE_CONFIG.bucketName)
+                                                    .remove([filePath]);
+                                                if (deleteError1) {
+                                                    console.warn('⚠️ 刪除舊圖片1失敗:', deleteError1, '路徑:', filePath);
+                                                } else {
+                                                    console.log('✅ 已刪除舊圖片1:', filePath);
+                                                }
+                                            }
                                         } else {
-                                            console.log('✅ 已刪除舊圖片1:', filePath);
+                                            // 如果 URL 格式不同，嘗試直接從路徑提取
+                                            const path1 = pathParts.slice(-3).join('/');
+                                            if (path1 && path1.includes('invite-photo')) {
+                                                const { error: deleteError1 } = await client.storage
+                                                    .from(SUPABASE_CONFIG.bucketName)
+                                                    .remove([path1]);
+                                                if (!deleteError1) {
+                                                    console.log('✅ 已刪除舊圖片1:', path1);
+                                                }
+                                            }
                                         }
-                                    }
-                                } else {
-                                    // 如果 URL 格式不同，嘗試直接從路徑提取
-                                    const path1 = pathParts.slice(-3).join('/');
-                                    if (path1 && path1.includes('invite-photo')) {
-                                        const { error: deleteError1 } = await supabaseClient.storage
-                                            .from(SUPABASE_CONFIG.bucketName)
-                                            .remove([path1]);
-                                        if (!deleteError1) {
-                                            console.log('✅ 已刪除舊圖片1:', path1);
-                                        }
+                                    } catch (urlError) {
+                                        console.warn('⚠️ 解析圖片1 URL失敗:', urlError);
                                     }
                                 }
-                            } catch (urlError) {
-                                console.warn('⚠️ 解析圖片1 URL失敗:', urlError);
+                                
+                                if (record.image2_url) {
+                                    try {
+                                        const url2 = new URL(record.image2_url);
+                                        const pathParts = url2.pathname.split('/');
+                                        const bucketIndex = pathParts.indexOf('public');
+                                        if (bucketIndex !== -1 && pathParts.length > bucketIndex + 1) {
+                                            const filePath = pathParts.slice(bucketIndex + 2).join('/');
+                                            if (filePath) {
+                                                const { error: deleteError2 } = await client.storage
+                                                    .from(SUPABASE_CONFIG.bucketName)
+                                                    .remove([filePath]);
+                                                if (deleteError2) {
+                                                    console.warn('⚠️ 刪除舊圖片2失敗:', deleteError2, '路徑:', filePath);
+                                                } else {
+                                                    console.log('✅ 已刪除舊圖片2:', filePath);
+                                                }
+                                            }
+                                        } else {
+                                            const path2 = pathParts.slice(-3).join('/');
+                                            if (path2 && path2.includes('invite-photo')) {
+                                                const { error: deleteError2 } = await client.storage
+                                                    .from(SUPABASE_CONFIG.bucketName)
+                                                    .remove([path2]);
+                                                if (!deleteError2) {
+                                                    console.log('✅ 已刪除舊圖片2:', path2);
+                                                }
+                                            }
+                                        }
+                                    } catch (urlError) {
+                                        console.warn('⚠️ 解析圖片2 URL失敗:', urlError);
+                                    }
+                                }
+                            } catch (storageError) {
+                                console.warn('⚠️ 刪除存儲文件時發生錯誤:', storageError);
                             }
                         }
                         
-                        if (record.image2_url) {
-                            try {
-                                const url2 = new URL(record.image2_url);
-                                const pathParts = url2.pathname.split('/');
-                                const bucketIndex = pathParts.indexOf('public');
-                                if (bucketIndex !== -1 && pathParts.length > bucketIndex + 1) {
-                                    const filePath = pathParts.slice(bucketIndex + 2).join('/');
-                                    if (filePath) {
-                                        const { error: deleteError2 } = await supabaseClient.storage
-                                            .from(SUPABASE_CONFIG.bucketName)
-                                            .remove([filePath]);
-                                        if (deleteError2) {
-                                            console.warn('⚠️ 刪除舊圖片2失敗:', deleteError2, '路徑:', filePath);
-                                        } else {
-                                            console.log('✅ 已刪除舊圖片2:', filePath);
-                                        }
-                                    }
-                                } else {
-                                    const path2 = pathParts.slice(-3).join('/');
-                                    if (path2 && path2.includes('invite-photo')) {
-                                        const { error: deleteError2 } = await supabaseClient.storage
-                                            .from(SUPABASE_CONFIG.bucketName)
-                                            .remove([path2]);
-                                        if (!deleteError2) {
-                                            console.log('✅ 已刪除舊圖片2:', path2);
-                                        }
-                                    }
-                                }
-                            } catch (urlError) {
-                                console.warn('⚠️ 解析圖片2 URL失敗:', urlError);
-                            }
-                        }
-                    } catch (storageError) {
-                        console.warn('⚠️ 刪除存儲文件時發生錯誤:', storageError);
-                    }
-                }
-                
-                // 刪除數據庫中的舊記錄
-                const { error: deleteError } = await supabaseClient
-                    .from('invite_event_images')
-                    .delete()
-                    .eq('event_date', eventDate);
+                        // 刪除數據庫中的舊記錄
+                        const { error: deleteError } = await client
+                            .from('invite_event_images')
+                            .delete()
+                            .eq('event_date', eventDate);
                 
                 if (deleteError) {
                     console.error('❌ 刪除數據庫記錄失敗:', deleteError);
@@ -4137,7 +4207,8 @@
         // 保存活動圖片 URL 到 Supabase 數據庫
         async function saveEventImagesToSupabase(image1Url, image2Url) {
             try {
-                if (!supabaseClient) {
+                const client = getSupabaseClient();
+                if (!client) {
                     console.warn('⚠️ Supabase 客戶端未初始化');
                     return false;
                 }
@@ -4156,7 +4227,7 @@
                 
                 // 插入新記錄到 Supabase
                 console.log('💾 保存新圖片記錄...');
-                const { data, error } = await supabaseClient
+                const { data, error } = await client
                     .from('invite_event_images')
                     .insert([
                         {
@@ -4184,7 +4255,8 @@
         // 從 Supabase 數據庫讀取活動圖片
         async function loadEventImagesFromSupabase() {
             try {
-                if (!supabaseClient) {
+                const client = getSupabaseClient();
+                if (!client) {
                     console.warn('⚠️ Supabase 客戶端未初始化');
                     console.warn('💡 請檢查 Supabase 配置：SUPABASE_CONFIG 和 initSupabase() 函數');
                     return false;
@@ -4203,7 +4275,7 @@
                 cutoffDate.setHours(0, 0, 0, 0);
                 
                 // 查詢數據庫：優先查找 >= cutoffDate 的活動，否則使用最新的
-                const { data: upcomingEvents, error: upcomingError } = await supabaseClient
+                const { data: upcomingEvents, error: upcomingError } = await client
                     .from('invite_event_images')
                     .select('*')
                     .gte('event_date', cutoffDate.toISOString().split('T')[0])
@@ -4217,7 +4289,7 @@
                     console.log('✅ 找到未來的活動:', eventData);
                 } else {
                     // 如果沒有未來的活動，使用最新的
-                    const { data: latestEvents, error: latestError } = await supabaseClient
+                    const { data: latestEvents, error: latestError } = await client
                         .from('invite_event_images')
                         .select('*')
                         .order('created_at', { ascending: false })
