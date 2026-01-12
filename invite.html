@@ -2567,14 +2567,12 @@
                     // 只使用 Supabase，不再使用 Google Sheets
                     if (typeof initSupabase === 'function') {
                         initSupabase().then(() => {
-                            // 延遲一點確保 Supabase 完全初始化
-                            setTimeout(() => {
-                                if (typeof loadEventImagesFromSupabase === 'function') {
-                                    loadEventImagesFromSupabase();
-                                } else {
-                                    console.warn('⚠️ loadEventImagesFromSupabase 函數不可用，請檢查 Supabase 配置');
-                                }
-                            }, 500);
+                            // 立即載入，不延遲
+                            if (typeof loadEventImagesFromSupabase === 'function') {
+                                loadEventImagesFromSupabase();
+                            } else {
+                                console.warn('⚠️ loadEventImagesFromSupabase 函數不可用，請檢查 Supabase 配置');
+                            }
                         }).catch((error) => {
                             console.error('❌ Supabase 初始化失敗:', error);
                             console.warn('⚠️ 請檢查 Supabase 配置和網絡連接');
@@ -3923,6 +3921,132 @@
                 .join('');
         }
         
+        // 刪除舊的活動圖片（從數據庫和存儲）
+        async function deleteOldEventImages(eventDate) {
+            try {
+                if (!supabaseClient) {
+                    console.warn('⚠️ Supabase 客戶端未初始化');
+                    return false;
+                }
+                
+                console.log('🗑️ 開始刪除舊圖片，活動日期:', eventDate);
+                
+                // 查找相同日期的舊記錄
+                const { data: oldRecords, error: selectError } = await supabaseClient
+                    .from('invite_event_images')
+                    .select('*')
+                    .eq('event_date', eventDate);
+                
+                if (selectError) {
+                    console.warn('⚠️ 查詢舊記錄失敗:', selectError);
+                    return false;
+                }
+                
+                if (!oldRecords || oldRecords.length === 0) {
+                    console.log('ℹ️ 沒有找到舊記錄，跳過刪除');
+                    return true;
+                }
+                
+                console.log(`找到 ${oldRecords.length} 條舊記錄，開始刪除...`);
+                
+                // 刪除 Supabase Storage 中的舊圖片文件
+                for (const record of oldRecords) {
+                    try {
+                        // 從 URL 中提取文件路徑
+                        // Supabase Storage URL 格式: https://[project].supabase.co/storage/v1/object/public/[bucket]/[path]
+                        // 需要提取 [path] 部分，例如: hua-real-estate/invite-photo/image1_1234567890.jpg
+                        if (record.image1_url) {
+                            try {
+                                const url1 = new URL(record.image1_url);
+                                // 路徑格式: /storage/v1/object/public/[bucket]/[path]
+                                const pathParts = url1.pathname.split('/');
+                                const bucketIndex = pathParts.indexOf('public');
+                                if (bucketIndex !== -1 && pathParts.length > bucketIndex + 1) {
+                                    // 跳過 bucket 名稱，獲取實際文件路徑
+                                    const filePath = pathParts.slice(bucketIndex + 2).join('/');
+                                    if (filePath) {
+                                        const { error: deleteError1 } = await supabaseClient.storage
+                                            .from(SUPABASE_CONFIG.bucketName)
+                                            .remove([filePath]);
+                                        if (deleteError1) {
+                                            console.warn('⚠️ 刪除舊圖片1失敗:', deleteError1, '路徑:', filePath);
+                                        } else {
+                                            console.log('✅ 已刪除舊圖片1:', filePath);
+                                        }
+                                    }
+                                } else {
+                                    // 如果 URL 格式不同，嘗試直接從路徑提取
+                                    const path1 = pathParts.slice(-3).join('/');
+                                    if (path1 && path1.includes('invite-photo')) {
+                                        const { error: deleteError1 } = await supabaseClient.storage
+                                            .from(SUPABASE_CONFIG.bucketName)
+                                            .remove([path1]);
+                                        if (!deleteError1) {
+                                            console.log('✅ 已刪除舊圖片1:', path1);
+                                        }
+                                    }
+                                }
+                            } catch (urlError) {
+                                console.warn('⚠️ 解析圖片1 URL失敗:', urlError);
+                            }
+                        }
+                        
+                        if (record.image2_url) {
+                            try {
+                                const url2 = new URL(record.image2_url);
+                                const pathParts = url2.pathname.split('/');
+                                const bucketIndex = pathParts.indexOf('public');
+                                if (bucketIndex !== -1 && pathParts.length > bucketIndex + 1) {
+                                    const filePath = pathParts.slice(bucketIndex + 2).join('/');
+                                    if (filePath) {
+                                        const { error: deleteError2 } = await supabaseClient.storage
+                                            .from(SUPABASE_CONFIG.bucketName)
+                                            .remove([filePath]);
+                                        if (deleteError2) {
+                                            console.warn('⚠️ 刪除舊圖片2失敗:', deleteError2, '路徑:', filePath);
+                                        } else {
+                                            console.log('✅ 已刪除舊圖片2:', filePath);
+                                        }
+                                    }
+                                } else {
+                                    const path2 = pathParts.slice(-3).join('/');
+                                    if (path2 && path2.includes('invite-photo')) {
+                                        const { error: deleteError2 } = await supabaseClient.storage
+                                            .from(SUPABASE_CONFIG.bucketName)
+                                            .remove([path2]);
+                                        if (!deleteError2) {
+                                            console.log('✅ 已刪除舊圖片2:', path2);
+                                        }
+                                    }
+                                }
+                            } catch (urlError) {
+                                console.warn('⚠️ 解析圖片2 URL失敗:', urlError);
+                            }
+                        }
+                    } catch (storageError) {
+                        console.warn('⚠️ 刪除存儲文件時發生錯誤:', storageError);
+                    }
+                }
+                
+                // 刪除數據庫中的舊記錄
+                const { error: deleteError } = await supabaseClient
+                    .from('invite_event_images')
+                    .delete()
+                    .eq('event_date', eventDate);
+                
+                if (deleteError) {
+                    console.error('❌ 刪除數據庫記錄失敗:', deleteError);
+                    return false;
+                }
+                
+                console.log(`✅ 已刪除 ${oldRecords.length} 條舊記錄`);
+                return true;
+            } catch (error) {
+                console.error('❌ 刪除舊圖片時發生錯誤:', error);
+                return false;
+            }
+        }
+        
         // 保存活動圖片 URL 到 Supabase 數據庫
         async function saveEventImagesToSupabase(image1Url, image2Url) {
             try {
@@ -3939,7 +4063,12 @@
                 const dateStr = formatDateMMDD(nextThursday);
                 const eventTitle = `${dateStr}華地產早會雙專講同台`;
                 
+                // 先刪除舊的圖片記錄和文件
+                console.log('🗑️ 刪除舊圖片...');
+                await deleteOldEventImages(eventDate);
+                
                 // 插入新記錄到 Supabase
+                console.log('💾 保存新圖片記錄...');
                 const { data, error } = await supabaseClient
                     .from('invite_event_images')
                     .insert([
@@ -4017,8 +4146,11 @@
                     }
                 }
                 
-                // 渲染圖片
+                // 立即開始預載入圖片（不等待渲染）
                 if (eventData && eventData.image1_url && eventData.image2_url) {
+                    // 立即開始預載入（在渲染之前）
+                    preloadEventImages(eventData.image1_url, eventData.image2_url);
+                    // 立即渲染（圖片可能已經從預載入中載入）
                     renderEventImages(eventData.image1_url, eventData.image2_url, eventData.event_title);
                     return true;
                 } else {
@@ -4031,6 +4163,47 @@
                 console.warn('💡 請檢查 Supabase 配置和網絡連接');
                 return false;
             }
+        }
+        
+        // 預載入活動圖片（立即開始載入，不等待 DOM）
+        function preloadEventImages(image1Url, image2Url) {
+            if (!image1Url || !image2Url) return;
+            
+            // 方法1: 使用 Image 對象立即開始載入（最快）
+            const img1 = new Image();
+            img1.src = image1Url;
+            img1.fetchPriority = 'high';
+            img1.decode().catch(() => {}); // 非阻塞解碼
+            
+            const img2 = new Image();
+            img2.src = image2Url;
+            img2.fetchPriority = 'high';
+            img2.decode().catch(() => {}); // 非阻塞解碼
+            
+            // 方法2: 使用 preload 連結（瀏覽器優先級更高）
+            if (document.head) {
+                // 移除舊的 preload 連結（如果有的話）
+                const oldLinks = document.querySelectorAll('link[rel="preload"][as="image"][data-invite-image]');
+                oldLinks.forEach(link => link.remove());
+                
+                const link1 = document.createElement('link');
+                link1.rel = 'preload';
+                link1.as = 'image';
+                link1.href = image1Url;
+                link1.fetchPriority = 'high';
+                link1.setAttribute('data-invite-image', '1');
+                document.head.appendChild(link1);
+                
+                const link2 = document.createElement('link');
+                link2.rel = 'preload';
+                link2.as = 'image';
+                link2.href = image2Url;
+                link2.fetchPriority = 'high';
+                link2.setAttribute('data-invite-image', '2');
+                document.head.appendChild(link2);
+            }
+            
+            console.log('⚡ 已立即開始預載入活動圖片');
         }
         
         // 計算下週四的日期（週四 09:00 後自動切換）
@@ -4115,11 +4288,11 @@
                     .replace(/'/g, '&#039;');
             };
             
-            // 渲染圖片
+            // 渲染圖片（使用 eager 立即載入，因為這是首屏重要內容）
             eventGrid.innerHTML = `
                 <div class="event-card" onclick="openModal('${image1Url.replace(/'/g, "\\'")}')">
                     <img src="${escapeHtml(image1Url)}" alt="專講預告 1" class="event-image" 
-                         fetchpriority="high" decoding="async" loading="lazy">
+                         fetchpriority="high" decoding="async" loading="eager">
                     <div class="event-overlay">
                         <span class="event-icon">🔍</span>
                         <p>點擊放大</p>
@@ -4127,7 +4300,7 @@
                 </div>
                 <div class="event-card" onclick="openModal('${image2Url.replace(/'/g, "\\'")}')">
                     <img src="${escapeHtml(image2Url)}" alt="專講預告 2" class="event-image" 
-                         fetchpriority="high" decoding="async" loading="lazy">
+                         fetchpriority="high" decoding="async" loading="eager">
                     <div class="event-overlay">
                         <span class="event-icon">🔍</span>
                         <p>點擊放大</p>
@@ -4138,19 +4311,23 @@
             // 標記為已載入
             eventGrid.classList.add('content-loaded');
             
-            // 監聽圖片載入
+            // 監聽圖片載入（優化：立即檢查是否已載入）
             const images = eventGrid.querySelectorAll('img');
             let loadedCount = 0;
             const totalImages = images.length;
             
             images.forEach((img, index) => {
+                // 立即檢查圖片是否已從預載入中載入完成
                 if (img.complete && img.naturalHeight !== 0) {
                     loadedCount++;
                     img.classList.add('loaded');
+                    console.log(`✅ 圖片${index + 1}已載入（預載入）`);
                 } else {
+                    // 如果圖片已經開始載入（從預載入），等待載入完成
                     img.addEventListener('load', () => {
                         loadedCount++;
                         img.classList.add('loaded');
+                        console.log(`✅ 圖片${index + 1}載入完成`);
                         if (loadedCount === totalImages) {
                             console.log('🎉 所有活動圖片載入完成');
                         }
@@ -4166,6 +4343,11 @@
                     }, { once: true });
                 }
             });
+            
+            // 如果所有圖片都已載入（從預載入），記錄日誌
+            if (loadedCount === totalImages) {
+                console.log('⚡ 所有圖片已從預載入載入');
+            }
             
             // 保存到快取
             try {
