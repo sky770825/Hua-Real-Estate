@@ -3553,11 +3553,22 @@
                     
                     // 構建分類路徑：項目名稱/功能模塊/文件名
                     // 例如：hua-real-estate/invite-photo/image1_1234567890.jpg
-                    const filePath = `${SUPABASE_CONFIG.projectName}/${SUPABASE_CONFIG.moduleName}/${fileName}`;
+                    // 確保路徑格式正確，不包含特殊字符
+                    const sanitizedProjectName = SUPABASE_CONFIG.projectName.replace(/[^a-zA-Z0-9_-]/g, '');
+                    const sanitizedModuleName = SUPABASE_CONFIG.moduleName.replace(/[^a-zA-Z0-9_-]/g, '');
+                    const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '');
+                    
+                    const filePath = `${sanitizedProjectName}/${sanitizedModuleName}/${sanitizedFileName}`;
+                    
+                    // 驗證路徑格式
+                    if (!filePath || filePath.trim() === '' || filePath.includes('//') || filePath.startsWith('/')) {
+                        throw new Error('文件路徑格式無效: ' + filePath);
+                    }
                     
                     console.log('開始上傳到 Supabase:', {
                         bucket: SUPABASE_CONFIG.bucketName,
                         path: filePath,
+                        originalFileName: file.name,
                         fileType: file.type,
                         fileSize: file.size
                     });
@@ -3575,13 +3586,19 @@
                         progress.classList.remove('show');
                         let errorMsg = '❌ 上傳失敗: ' + error.message;
                         
-                        // 特殊處理 RLS 策略錯誤
+                        // 特殊處理各種錯誤
                         if (error.message.includes('row-level security') || error.message.includes('RLS')) {
                             errorMsg = '❌ 上傳失敗：存儲策略未配置\n\n請在 Supabase Dashboard 中配置存儲策略，允許匿名用戶上傳。\n詳細說明請查看：Supabase配置說明.md';
                             console.error('Supabase RLS 策略錯誤:', error);
                             console.error('💡 解決方案：需要在 Supabase Dashboard 中配置存儲策略');
+                        } else if (error.message.includes('InvalidKey') || error.message.includes('Invalid key')) {
+                            errorMsg = '❌ 上傳失敗：文件路徑格式錯誤\n\n文件路徑: ' + filePath + '\n請檢查文件路徑是否正確。';
+                            console.error('Supabase 文件路徑錯誤:', error);
+                            console.error('文件路徑:', filePath);
+                            console.error('💡 解決方案：檢查文件路徑格式，確保不包含特殊字符');
                         } else {
                             console.error('Supabase 上傳錯誤:', error);
+                            console.error('錯誤詳情:', JSON.stringify(error, null, 2));
                         }
                         
                         showStatus(index, errorMsg, 'error');
@@ -3589,12 +3606,39 @@
                         return;
                     }
                     
-                    // 獲取公開 URL
-                    const { data: urlData } = supabaseClient.storage
-                        .from(SUPABASE_CONFIG.bucketName)
-                        .getPublicUrl(filePath);
+                    // 獲取公開 URL（確保使用正確的公開 URL 格式）
+                    // 注意：getPublicUrl 只需要文件路徑，不需要其他參數
+                    let publicUrl;
                     
-                    const publicUrl = urlData.publicUrl;
+                    try {
+                        const { data: urlData } = supabaseClient.storage
+                            .from(SUPABASE_CONFIG.bucketName)
+                            .getPublicUrl(filePath);
+                        
+                        publicUrl = urlData.publicUrl;
+                        
+                        // 驗證 URL 格式是否正確
+                        if (!publicUrl || !publicUrl.includes('/storage/v1/object/public/')) {
+                            console.warn('⚠️ getPublicUrl 返回的 URL 格式不正確，手動構建');
+                            // 手動構建公開 URL
+                            publicUrl = `${SUPABASE_CONFIG.url}/storage/v1/object/public/${SUPABASE_CONFIG.bucketName}/${filePath}`;
+                        }
+                    } catch (urlError) {
+                        console.warn('⚠️ getPublicUrl 失敗，手動構建 URL:', urlError);
+                        // 如果 getPublicUrl 失敗，手動構建公開 URL
+                        publicUrl = `${SUPABASE_CONFIG.url}/storage/v1/object/public/${SUPABASE_CONFIG.bucketName}/${filePath}`;
+                    }
+                    
+                    // 驗證 filePath 是否有效
+                    if (!filePath || filePath.trim() === '') {
+                        throw new Error('文件路徑無效');
+                    }
+                    
+                    // 確保 filePath 不包含特殊字符（URL 編碼）
+                    const encodedFilePath = encodeURIComponent(filePath).replace(/%2F/g, '/');
+                    
+                    console.log('文件路徑:', filePath);
+                    console.log('生成的公開 URL:', publicUrl);
                     
                     progress.classList.remove('show');
                     showStatus(index, '✅ 上傳成功', 'success');
@@ -4191,10 +4235,17 @@
                 
                 // 立即開始預載入圖片（不等待渲染）
                 if (eventData && eventData.image1_url && eventData.image2_url) {
+                    // 確保 URL 格式正確（修復可能的 URL 格式問題）
+                    const image1Url = ensurePublicUrl(eventData.image1_url);
+                    const image2Url = ensurePublicUrl(eventData.image2_url);
+                    
+                    // 測試圖片是否可訪問（診斷功能）
+                    testImageAccessibility(image1Url, image2Url);
+                    
                     // 立即開始預載入（在渲染之前）
-                    preloadEventImages(eventData.image1_url, eventData.image2_url);
+                    preloadEventImages(image1Url, image2Url);
                     // 立即渲染（圖片可能已經從預載入中載入）
-                    renderEventImages(eventData.image1_url, eventData.image2_url, eventData.event_title);
+                    renderEventImages(image1Url, image2Url, eventData.event_title);
                     return true;
                 } else {
                     console.warn('⚠️ 活動數據不完整');
@@ -4206,6 +4257,91 @@
                 console.warn('💡 請檢查 Supabase 配置和網絡連接');
                 return false;
             }
+        }
+        
+        // 驗證並修復圖片 URL（確保使用正確的公開 URL 格式）
+        function ensurePublicUrl(url) {
+            if (!url) return url;
+            
+            // 如果 URL 已經是正確的公開格式，直接返回
+            if (url.includes('/storage/v1/object/public/')) {
+                return url;
+            }
+            
+            // 如果 URL 格式不正確，嘗試修復
+            // 從 URL 中提取文件路徑
+            try {
+                const urlObj = new URL(url);
+                const pathMatch = urlObj.pathname.match(/\/storage\/v1\/object\/[^/]+\/(.+)$/);
+                if (pathMatch) {
+                    const filePath = pathMatch[1];
+                    // 構建正確的公開 URL
+                    return `${SUPABASE_CONFIG.url}/storage/v1/object/public/${SUPABASE_CONFIG.bucketName}/${filePath}`;
+                }
+            } catch (e) {
+                console.warn('無法解析 URL:', url);
+            }
+            
+            return url;
+        }
+        
+        // 測試圖片可訪問性（診斷功能）
+        function testImageAccessibility(image1Url, image2Url) {
+            console.log('🔍 測試圖片可訪問性...');
+            
+            [image1Url, image2Url].forEach((url, index) => {
+                const img = new Image();
+                img.onload = () => {
+                    console.log(`✅ 圖片${index + 1}可訪問: ${url}`);
+                };
+                img.onerror = () => {
+                    console.error(`❌ 圖片${index + 1}無法訪問: ${url}`);
+                    console.error('💡 可能的原因：');
+                    console.error('   1. 存儲桶未設置為公開（Public bucket）⚠️ 最常見');
+                    console.error('   2. RLS 策略未正確配置讀取權限');
+                    console.error('   3. 圖片文件不存在');
+                    console.error('   4. 網絡連接問題');
+                    console.error('');
+                    console.error('🔧 立即解決方案：');
+                    console.error('   1. 訪問：https://supabase.com/dashboard/project/sqgrnowrcvspxhuudrqc/storage/buckets');
+                    console.error('   2. 找到 "hua-real-estate" 存儲桶');
+                    console.error('   3. 點擊存儲桶名稱進入設置');
+                    console.error('   4. 開啟 "Public bucket" 開關（最重要！）');
+                    console.error('   5. 保存設置');
+                    console.error('   6. 執行 SQL 配置 RLS：https://supabase.com/dashboard/project/sqgrnowrcvspxhuudrqc/sql/new');
+                    console.error('   7. 複製並執行 "快速修復RLS策略.sql" 文件中的 SQL');
+                    console.error('   8. 詳細說明請查看：立即修復圖片無法顯示.md');
+                    
+                    // 嘗試使用 fetch 測試，獲取更詳細的錯誤信息
+                    fetch(url, { method: 'HEAD', mode: 'no-cors' })
+                        .then(() => {
+                            // 如果成功，可能是 CORS 問題
+                            console.warn('   ⚠️ 可能是 CORS 問題，但文件可能存在');
+                        })
+                        .catch(() => {
+                            // 使用 fetch 直接測試（可能會有 CORS 限制）
+                            fetch(url)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        console.error(`   HTTP 狀態碼: ${response.status} ${response.statusText}`);
+                                        if (response.status === 403) {
+                                            console.error('   → 這是權限問題！存儲桶必須設置為公開！');
+                                            console.error('   → 執行步驟：');
+                                            console.error('      1. 訪問存儲桶設置');
+                                            console.error('      2. 開啟 "Public bucket" 開關');
+                                            console.error('      3. 執行 RLS 策略 SQL');
+                                        } else if (response.status === 404) {
+                                            console.error('   → 圖片文件不存在，請檢查文件路徑');
+                                        }
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error('   網絡錯誤:', err.message);
+                                });
+                        });
+                };
+                img.src = url;
+            });
         }
         
         // 預載入活動圖片（立即開始載入，不等待 DOM）
@@ -4331,19 +4467,25 @@
                     .replace(/'/g, '&#039;');
             };
             
+            // 確保 URL 格式正確
+            const safeImage1Url = ensurePublicUrl(image1Url);
+            const safeImage2Url = ensurePublicUrl(image2Url);
+            
             // 渲染圖片（使用 eager 立即載入，因為這是首屏重要內容）
             eventGrid.innerHTML = `
-                <div class="event-card" onclick="openModal('${image1Url.replace(/'/g, "\\'")}')">
-                    <img src="${escapeHtml(image1Url)}" alt="專講預告 1" class="event-image" 
-                         fetchpriority="high" decoding="async" loading="eager">
+                <div class="event-card" onclick="openModal('${safeImage1Url.replace(/'/g, "\\'")}')">
+                    <img src="${escapeHtml(safeImage1Url)}" alt="專講預告 1" class="event-image" 
+                         fetchpriority="high" decoding="async" loading="eager"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'400\\' height=\\'300\\'%3E%3Crect fill=\\'%23f0f0f0\\' width=\\'400\\' height=\\'300\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' text-anchor=\\'middle\\' fill=\\'%23999\\' font-size=\\'16\\'%3E圖片載入失敗%3C/text%3E%3C/svg%3E'; console.error('圖片1載入失敗，請檢查存儲桶是否設置為公開');">
                     <div class="event-overlay">
                         <span class="event-icon">🔍</span>
                         <p>點擊放大</p>
                     </div>
                 </div>
-                <div class="event-card" onclick="openModal('${image2Url.replace(/'/g, "\\'")}')">
-                    <img src="${escapeHtml(image2Url)}" alt="專講預告 2" class="event-image" 
-                         fetchpriority="high" decoding="async" loading="eager">
+                <div class="event-card" onclick="openModal('${safeImage2Url.replace(/'/g, "\\'")}')">
+                    <img src="${escapeHtml(safeImage2Url)}" alt="專講預告 2" class="event-image" 
+                         fetchpriority="high" decoding="async" loading="eager"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'400\\' height=\\'300\\'%3E%3Crect fill=\\'%23f0f0f0\\' width=\\'400\\' height=\\'300\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' text-anchor=\\'middle\\' fill=\\'%23999\\' font-size=\\'16\\'%3E圖片載入失敗%3C/text%3E%3C/svg%3E'; console.error('圖片2載入失敗，請檢查存儲桶是否設置為公開');">
                     <div class="event-overlay">
                         <span class="event-icon">🔍</span>
                         <p>點擊放大</p>
