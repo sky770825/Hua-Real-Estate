@@ -2275,7 +2275,7 @@
                 <div class="skeleton skeleton-card" style="animation-delay: 0.1s; aspect-ratio: 4 / 3;"></div>
             </div>
             
-            <!-- 🚀 優化：立即嘗試從快取顯示圖片 -->
+            <!-- 🚀 優化：立即嘗試從快取顯示圖片，然後從 Supabase 載入最新數據 -->
             <script>
                 (function() {
                     try {
@@ -2315,6 +2315,32 @@
                         }
                     } catch (error) {
                         // 忽略錯誤，繼續正常載入流程
+                    }
+                    
+                    // 等待 Supabase 初始化後，從數據庫載入最新圖片
+                    // 優先使用 Supabase，如果失敗則回退到 Google Sheets
+                    if (typeof initSupabase === 'function') {
+                        initSupabase().then(() => {
+                            // 延遲一點確保 Supabase 完全初始化
+                            setTimeout(() => {
+                                if (typeof loadEventImagesFromSupabase === 'function') {
+                                    loadEventImagesFromSupabase();
+                                } else if (typeof initInvitePage === 'function') {
+                                    // 如果 Supabase 函數不可用，回退到 Google Sheets
+                                    initInvitePage();
+                                }
+                            }, 500);
+                        }).catch(() => {
+                            // Supabase 初始化失敗，回退到 Google Sheets
+                            if (typeof initInvitePage === 'function') {
+                                initInvitePage();
+                            }
+                        });
+                    } else {
+                        // 如果沒有 initSupabase 函數，直接使用 Google Sheets
+                        if (typeof initInvitePage === 'function') {
+                            initInvitePage();
+                        }
                     }
                 })();
             </script>
@@ -3103,8 +3129,30 @@
                 const results = await Promise.all(uploadPromises);
                 
                 if (results.every(r => r.success)) {
+                    // 圖片上傳成功，保存到 Supabase 數據庫
+                    const image1Url = results[0].url;
+                    const image2Url = results[1].url;
+                    
+                    console.log('開始保存到 Supabase 數據庫:', { image1Url, image2Url });
+                    
+                    // 保存到 Supabase 數據庫
+                    try {
+                        const saveSuccess = await saveEventImagesToSupabase(image1Url, image2Url);
+                        if (saveSuccess) {
+                            console.log('✅ 圖片 URL 已保存到 Supabase 數據庫');
+                            // 重新載入圖片
+                            setTimeout(() => {
+                                loadEventImagesFromSupabase();
+                            }, 500);
+                        } else {
+                            console.warn('⚠️ 保存到 Supabase 數據庫失敗，但圖片已上傳成功');
+                        }
+                    } catch (saveError) {
+                        console.error('保存到 Supabase 數據庫時發生錯誤:', saveError);
+                    }
+                    
                     // 顯示成功消息
-                    const successMsg = '✅ 圖片上傳成功！\n\n圖片 1: ' + results[0].url + '\n圖片 2: ' + results[1].url + '\n\n是否關閉上傳窗口？';
+                    const successMsg = '✅ 圖片上傳成功！\n\n圖片 1: ' + image1Url + '\n圖片 2: ' + image2Url + '\n\n是否關閉上傳窗口？';
                     
                     if (confirm(successMsg)) {
                         // 關閉上傳彈窗
@@ -3628,6 +3676,249 @@
             return Array.from(bytes)
                 .map(b => b.toString(16).padStart(2, '0'))
                 .join('');
+        }
+        
+        // 保存活動圖片 URL 到 Supabase 數據庫
+        async function saveEventImagesToSupabase(image1Url, image2Url) {
+            try {
+                if (!supabaseClient) {
+                    console.warn('⚠️ Supabase 客戶端未初始化');
+                    return false;
+                }
+                
+                // 獲取當前日期（用於活動日期）
+                const today = new Date();
+                const eventDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
+                
+                // 嘗試獲取活動標題（如果有的話）
+                let eventTitle = '邀請活動';
+                try {
+                    if (typeof loadInviteEventDataFast === 'function') {
+                        const eventData = await loadInviteEventDataFast();
+                        if (eventData && eventData.length > 0) {
+                            const activeEvent = typeof getActiveEvent === 'function' 
+                                ? getActiveEvent(eventData) 
+                                : eventData[eventData.length - 1];
+                            if (activeEvent && activeEvent['B活動標題']) {
+                                eventTitle = activeEvent['B活動標題'];
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // 忽略錯誤，使用默認標題
+                }
+                
+                // 插入新記錄到 Supabase
+                const { data, error } = await supabaseClient
+                    .from('invite_event_images')
+                    .insert([
+                        {
+                            event_title: eventTitle,
+                            event_date: eventDate,
+                            image1_url: image1Url,
+                            image2_url: image2Url
+                        }
+                    ])
+                    .select();
+                
+                if (error) {
+                    console.error('❌ 保存到 Supabase 數據庫失敗:', error);
+                    return false;
+                }
+                
+                console.log('✅ 圖片 URL 已保存到 Supabase 數據庫:', data);
+                return true;
+            } catch (error) {
+                console.error('❌ 保存到 Supabase 數據庫時發生錯誤:', error);
+                return false;
+            }
+        }
+        
+        // 從 Supabase 數據庫讀取活動圖片
+        async function loadEventImagesFromSupabase() {
+            try {
+                if (!supabaseClient) {
+                    console.warn('⚠️ Supabase 客戶端未初始化，嘗試從 Google Sheets 載入');
+                    // 回退到 Google Sheets
+                    if (typeof initInvitePage === 'function') {
+                        initInvitePage();
+                    }
+                    return false;
+                }
+                
+                console.log('📥 從 Supabase 數據庫載入活動圖片...');
+                
+                // 獲取當前日期，用於選擇活動
+                const today = new Date();
+                const currentDay = today.getDay(); // 0=週日, 4=週四
+                const currentHour = today.getHours();
+                
+                // 計算截止日期（週四 09:00 後切換到下週）
+                let cutoffDate = new Date(today);
+                if (currentDay === 4) { // 今天是週四
+                    if (currentHour >= 9) {
+                        cutoffDate.setDate(cutoffDate.getDate() + 7);
+                    }
+                } else if (currentDay > 4 || currentDay === 0) {
+                    const daysUntilNextThursday = currentDay === 0 ? 4 : (11 - currentDay);
+                    cutoffDate.setDate(cutoffDate.getDate() + daysUntilNextThursday);
+                } else {
+                    const daysUntilThursday = 4 - currentDay;
+                    cutoffDate.setDate(cutoffDate.getDate() + daysUntilThursday);
+                }
+                cutoffDate.setHours(0, 0, 0, 0);
+                
+                // 查詢數據庫：優先查找 >= cutoffDate 的活動，否則使用最新的
+                const { data: upcomingEvents, error: upcomingError } = await supabaseClient
+                    .from('invite_event_images')
+                    .select('*')
+                    .gte('event_date', cutoffDate.toISOString().split('T')[0])
+                    .order('event_date', { ascending: true })
+                    .limit(1);
+                
+                let eventData = null;
+                
+                if (!upcomingError && upcomingEvents && upcomingEvents.length > 0) {
+                    eventData = upcomingEvents[0];
+                    console.log('✅ 找到未來的活動:', eventData);
+                } else {
+                    // 如果沒有未來的活動，使用最新的
+                    const { data: latestEvents, error: latestError } = await supabaseClient
+                        .from('invite_event_images')
+                        .select('*')
+                        .order('created_at', { ascending: false })
+                        .limit(1);
+                    
+                    if (!latestError && latestEvents && latestEvents.length > 0) {
+                        eventData = latestEvents[0];
+                        console.log('✅ 使用最新的活動:', eventData);
+                    } else {
+                        console.warn('⚠️ 數據庫中沒有活動圖片數據');
+                        // 回退到 Google Sheets
+                        if (typeof initInvitePage === 'function') {
+                            initInvitePage();
+                        }
+                        return false;
+                    }
+                }
+                
+                // 渲染圖片
+                if (eventData && eventData.image1_url && eventData.image2_url) {
+                    renderEventImages(eventData.image1_url, eventData.image2_url, eventData.event_title);
+                    return true;
+                } else {
+                    console.warn('⚠️ 活動數據不完整');
+                    // 回退到 Google Sheets
+                    if (typeof initInvitePage === 'function') {
+                        initInvitePage();
+                    }
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ 從 Supabase 載入圖片時發生錯誤:', error);
+                // 回退到 Google Sheets
+                if (typeof initInvitePage === 'function') {
+                    initInvitePage();
+                }
+                return false;
+            }
+        }
+        
+        // 渲染活動圖片
+        function renderEventImages(image1Url, image2Url, eventTitle) {
+            const eventGrid = document.getElementById('event-grid');
+            if (!eventGrid) {
+                console.warn('⚠️ 找不到 event-grid 元素');
+                return;
+            }
+            
+            // 更新活動標題（如果有）
+            if (eventTitle) {
+                const eventHeader = document.querySelector('.event-header');
+                if (eventHeader) {
+                    const title = eventHeader.querySelector('.section-title');
+                    if (title) {
+                        title.textContent = eventTitle;
+                    }
+                }
+            }
+            
+            // 轉義 URL 中的特殊字符
+            const escapeHtml = (str) => {
+                if (!str) return '';
+                return str
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            };
+            
+            // 渲染圖片
+            eventGrid.innerHTML = `
+                <div class="event-card" onclick="openModal('${image1Url.replace(/'/g, "\\'")}')">
+                    <img src="${escapeHtml(image1Url)}" alt="專講預告 1" class="event-image" 
+                         fetchpriority="high" decoding="async" loading="lazy">
+                    <div class="event-overlay">
+                        <span class="event-icon">🔍</span>
+                        <p>點擊放大</p>
+                    </div>
+                </div>
+                <div class="event-card" onclick="openModal('${image2Url.replace(/'/g, "\\'")}')">
+                    <img src="${escapeHtml(image2Url)}" alt="專講預告 2" class="event-image" 
+                         fetchpriority="high" decoding="async" loading="lazy">
+                    <div class="event-overlay">
+                        <span class="event-icon">🔍</span>
+                        <p>點擊放大</p>
+                    </div>
+                </div>
+            `;
+            
+            // 標記為已載入
+            eventGrid.classList.add('content-loaded');
+            
+            // 監聽圖片載入
+            const images = eventGrid.querySelectorAll('img');
+            let loadedCount = 0;
+            const totalImages = images.length;
+            
+            images.forEach((img, index) => {
+                if (img.complete && img.naturalHeight !== 0) {
+                    loadedCount++;
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', () => {
+                        loadedCount++;
+                        img.classList.add('loaded');
+                        if (loadedCount === totalImages) {
+                            console.log('🎉 所有活動圖片載入完成');
+                        }
+                    }, { once: true });
+                    
+                    img.addEventListener('error', () => {
+                        console.error(`❌ 圖片${index + 1}載入失敗`);
+                        img.classList.add('loaded');
+                        loadedCount++;
+                        if (loadedCount === totalImages) {
+                            console.warn('⚠️ 部分圖片載入失敗');
+                        }
+                    }, { once: true });
+                }
+            });
+            
+            // 保存到快取
+            try {
+                const cacheData = {
+                    image1: image1Url,
+                    image2: image2Url,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('invite_event_images', JSON.stringify(cacheData));
+            } catch (e) {
+                console.warn('⚠️ 無法保存到快取:', e);
+            }
+            
+            console.log('✅ 活動圖片已渲染');
         }
         
         // 初始化拖放功能
