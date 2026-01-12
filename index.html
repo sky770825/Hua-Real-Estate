@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>華地產鑽石分會 - 線上資源中心</title>
+    <meta name="description" content="華地產鑽石分會官方網站，提供每週四例會資訊、資源連結、來賓邀請等服務。聚集全台灣最專注在包租代管、房地產產業的專業人士。">
+    <meta name="keywords" content="華地產,BNI,房地產,包租代管,線上會議,鑽石分會,商務網絡">
+    <meta name="author" content="資訊長 蔡濬瑒">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="canonical" href="https://hua-real-estate.pages.dev/">
+    
+    <!-- 結構化數據 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "華地產鑽石分會",
+        "description": "聚集全台灣最專注在包租代管、房地產產業的專業人士",
+        "url": "https://hua-real-estate.pages.dev/",
+        "logo": "https://hua-real-estate.pages.dev/logo.png",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "availableLanguage": "Chinese"
+        },
+        "sameAs": [
+            "https://line.me/R/ti/p/@030nlnho"
+        ]
+    }
+    </script>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://house123.bni-checkin.com/">
+    <meta property="og:title" content="華地產鑽石分會 - 線上資源中心">
+    <meta property="og:description" content="聚集全台灣最專注在包租代管、房地產產業的專業人士，每週四線上例會，付出者收穫，共好利他。">
+    <meta property="og:image" content="https://house123.bni-checkin.com/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://house123.bni-checkin.com/">
+    <meta property="twitter:title" content="華地產鑽石分會 - 線上資源中心">
+    <meta property="twitter:description" content="聚集全台灣最專注在包租代管、房地產產業的專業人士，每週四線上例會，付出者收穫，共好利他。">
+    <meta property="twitter:image" content="https://house123.bni-checkin.com/og-image.jpg">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- 返回頂部按鈕 -->
+    <button id="back-to-top" class="back-to-top" title="返回頂部">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+
+    <!-- 聯絡資訊長懸浮按鈕 -->
+    <a href="https://line.me/R/ti/p/@030nlnho" target="_blank" class="contact-float-btn" id="contactBtn" title="聯絡資訊長">
+        <i class="fab fa-line"></i>
+        <span class="btn-text">聯絡資訊長</span>
+    </a>
+
+    <!-- 隱藏/顯示按鈕 -->
+    <button class="toggle-contact-btn" id="toggleContactBtn" title="隱藏/顯示聯絡按鈕">
+        <i class="fas fa-eye" id="toggleIcon"></i>
+    </button>
+
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>🏠 華地產鑽石分會</h1>
+                <p>付出者收穫 · 共好利他</p>
+            </div>
+            <div class="nav-menu">
+                <a href="#meeting" class="nav-link">會議資訊</a>
+                <a href="#resources" class="nav-link">資源連結</a>
+                <a href="#invite" class="nav-link">邀請來賓</a>
+                <a href="#faq" class="nav-link">常見問題</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容 -->
+    <main class="main-content">
+
+        <!-- 會議資訊區塊 -->
+        <section id="meeting" class="meeting-section">
+            <div class="container">
+                <!-- 金質獎榮譽榜 -->
+                <div class="honor-board">
+                    <h2 class="honor-title">🏆 金質獎榮譽榜</h2>
+                    <div class="honor-content">
+                        <div class="honor-item">
+                            <img src="https://i.postimg.cc/x8XRPBM4/image.jpg" alt="一金質獎章-何青馨" class="honor-image" onclick="openImageModal(this.src, '一金質獎章-何青馨')">
+                            <div class="honor-text">
+                                <h3>一金質獎章-何青馨</h3>
+                            </div>
+                        </div>
+                        <div class="honor-item">
+                            <img src="https://i.postimg.cc/kXtsR3nV/image.jpg" alt="十二金質獎-洪怡芳" class="honor-image" onclick="openImageModal(this.src, '十二金質獎-洪怡芳')">
+                            <div class="honor-text">
+                                <h3>十二金質獎-洪怡芳</h3>
+                            </div>
+                        </div>
+                        <div class="honor-item">
+                            <img src="https://i.postimg.cc/8kYwCPVQ/image.jpg" alt="一金質獎章-邱碩鈺" class="honor-image" onclick="openImageModal(this.src, '一金質獎章-邱碩鈺')">
+                            <div class="honor-text">
+                                <h3>一金質獎章-邱碩鈺</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2 class="section-title">📅 每週四例會資訊</h2>
+                <div class="meeting-card">
+                    <div class="meeting-info">
+                        <h3>下次會議時間</h3>
+                        <p class="meeting-date" id="nextMeetingDate">計算中...</p>
+                        <div class="meeting-time-container">
+                            <p class="meeting-time">早上 07:00 - 08:45</p>
+                            <button class="reminder-btn" onclick="setReminder()" title="設定提醒">
+                                <i class="fas fa-bell"></i>
+                            </button>
+                        </div>
+                        <div class="countdown-timer" id="countdownTimer">
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="days">00</span>
+                                <span class="countdown-label">天</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="hours">00</span>
+                                <span class="countdown-label">時</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="minutes">00</span>
+                                <span class="countdown-label">分</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="countdown-number" id="seconds">00</span>
+                                <span class="countdown-label">秒</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="meeting-links">
+                        <div class="meeting-rooms-row">
+                            <div class="meeting-room">
+                                <a href="https://us06web.zoom.us/j/88384176239" target="_blank" class="btn btn-primary">
+                                    <i class="fas fa-video"></i>
+                                    公用牌Zoom會議室
+                                </a>
+                                <div class="meeting-id-container">
+                                    <p class="meeting-id">會議ID: 883 8417 6239</p>
+                                    <button class="btn-copy" onclick="copyMeetingId()" title="複製會議ID">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="meeting-room zoom-hua-container">
+                                <!-- 優先提示 -->
+                                <div class="priority-notice">
+                                    <div class="notice-icon">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="notice-text">先以這個為主</span>
+                                </div>
+                                
+                                <a href="https://us06web.zoom.us/j/86358537640" target="_blank" class="btn btn-primary">
+                                    <i class="fas fa-video"></i>
+                                    華地產Zoom會議室
+                                </a>
+                                <div class="meeting-id-container">
+                                    <p class="meeting-id">華地產會議ID: 863 5853 7640</p>
+                                    <button class="btn-copy" onclick="copyHuaMeetingId()" title="複製華地產會議ID">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="https://house123.bni-checkin.com/" target="_blank" class="btn btn-secondary checkin-btn" id="MEETING_CHECKIN">
+                            <i class="fas fa-check-circle checkin-icon"></i>
+                            <span class="checkin-text">會議簽到</span>
+                            <div class="checkin-pulse"></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 資源連結區塊 -->
+        <section id="resources" class="resources-section">
+            <div class="container">
+                <h2 class="section-title" id="RESOURCES_TITLE">🔗 重要資源連結</h2>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <h3>📋 權限申請表單</h3>
+                        <p>申請簡報編輯權限</p>
+                        <a href="https://forms.gle/t5A5MLXbg5y9RwQC6" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-external-link-alt"></i>
+                            填寫表單
+                        </a>
+                    </div>
+                    <div class="resource-card">
+                        <h3>📊 25秒個人簡報</h3>
+                        <p>會員個人頁面編輯</p>
+                        <a href="https://docs.google.com/presentation/d/1TQHyB8uyrFvDbZo5pTWXEz8ytos-eSm3PPHzNNLHjx8/edit?usp=sharing" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-edit"></i>
+                            編輯簡報
+                        </a>
+                    </div>
+                    <div class="resource-card">
+                        <h3>🤖 資訊組輔助機器人</h3>
+                        <p>LINE 機器人協助服務</p>
+                        <a href="https://lin.ee/2qt2XZI" target="_blank" class="btn btn-outline">
+                            <i class="fab fa-line"></i>
+                            加入 LINE
+                        </a>
+                    </div>
+                    <div class="resource-card">
+                        <h3>📚 BNI線上報名培訓</h3>
+                        <p>各種培訓課程報名</p>
+                        <a href="https://bntw.niiice-design.com/news-category/training/" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-graduation-cap"></i>
+                            查看培訓
+                        </a>
+                    </div>
+                    <div class="resource-card">
+                        <h3>🤝 華地產會員線上匹配系統</h3>
+                        <p>會員資源匹配與合作</p>
+                        <a href="https://notebooklm.google.com/notebook/8273ddf2-0ae8-4e49-b98a-969cfd5ea40b" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-handshake"></i>
+                            進入匹配系統
+                        </a>
+                    </div>
+                    <div class="resource-card">
+                        <h3>🌐 資源引薦平台</h3>
+                        <p>分享及查詢跨區資源</p>
+                        <a href="https://hua-real-estate.pages.dev/Referral_Platform" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-share-alt"></i>
+                            進入平台
+                        </a>
+                    </div>
+                    <div class="resource-card">
+                        <h3>🔍 BNI Connect 快搜名字</h3>
+                        <p>輸入編號快速查詢會員姓名</p>
+                        <a href="https://hua-real-estate.pages.dev/serachname" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-search"></i>
+                            前往搜尋工具
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 邀請來賓區塊 -->
+        <section id="invite" class="invite-section">
+            <div class="container">
+                <h2 class="section-title">👋 邀請來賓</h2>
+                <div class="invite-card">
+                    <h3>哈囉，我真的很想約你來我們華地產看看！</h3>
+                    <p>這裡聚集了全台灣最專注在 包租代管、房地產產業的一群高手：</p>
+                    <ul class="invite-list">
+                        <li>▋買房導客超強的 KOL</li>
+                        <li>▋實戰經驗滿滿的買房老師</li>
+                        <li>▋每月新增百案的包租代管龍頭</li>
+                        <li>▋還有各種和建商、危老改建、房產行銷合作的夥伴</li>
+                    </ul>
+                    <p class="invite-note">我們是【線上分會】，不需要五點起床、不用大老遠奔波，你只要在家、打開電腦，就能一起參與這個強者雲集的圈子。</p>
+                    <p class="invite-note">如果你對房地產有興趣，或正在經營這條路，真的推薦你來感受一下這裡的氛圍。</p>
+                    <p class="invite-link">📌 想參加的話，可以幫我填寫這份連結<br>🔗https://hua-real-estate.pages.dev/invite<br>我會幫你完成報名，並在線上等你一起來！</p>
+                    <div class="invite-actions">
+                        <button class="btn btn-primary" onclick="copyInviteText()">
+                            <i class="fas fa-copy"></i>
+                            複製邀請文字
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 常見問題區塊 -->
+        <section id="faq" class="faq-section">
+            <div class="container">
+                <h2 class="section-title">❓ 常見問題</h2>
+                <div class="faq-grid">
+                    <div class="faq-card">
+                        <h3>如何改名？</h3>
+                        <div class="faq-content">
+                            <h4>〔電腦版〕</h4>
+                            <ul>
+                                <li>將滑鼠停留在您的名稱上，按右上「...」</li>
+                                <li>選擇「改名」</li>
+                                <li>輸入編號/姓名/專業別</li>
+                                <li>輸入後按「改名」</li>
+                            </ul>
+                            <h4>〔手機版〕</h4>
+                            <ul>
+                                <li>點選下方「與會者」</li>
+                                <li>點選您的名稱，然後點選「改名」</li>
+                                <li>輸入編號/姓名/專業別</li>
+                                <li>輸入後按「完成」</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="faq-card">
+                        <h3>如何開啟（關閉）音訊/視訊？</h3>
+                        <div class="faq-content">
+                            <h4>〔電腦版/手機版〕</h4>
+                            <ul>
+                                <li>點按左下方「音訊」<br>可切換開啟/關閉</li>
+                                <li>點按左下方「視訊」<br>可切換開啟/關閉</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="faq-card">
+                        <h3>如何變更背景？</h3>
+                        <div class="faq-content">
+                            <h4>〔電腦版〕</h4>
+                            <ul>
+                                <li>將滑鼠停留在您的名稱上，按右上「...」</li>
+                                <li>選擇「調整背景與效果」</li>
+                                <li>選擇虛擬背景「＋」</li>
+                                <li>選擇「新增影像」</li>
+                                <li>選擇BNI背景電腦版圖片檔</li>
+                            </ul>
+                            <h4>〔手機版〕</h4>
+                            <ul>
+                                <li>點按下方最右方更多「...」</li>
+                                <li>選擇「背景與效果」</li>
+                                <li>選擇「＋」</li>
+                                <li>選擇BNI背景手機版圖片檔</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 華地產鑽石分會 | 付出者收穫 · 共好利他</p>
+            <p class="footer-note">本系統由 <strong>資訊長 蔡濬瑒</strong> 提供 v3.1</p>
+        </div>
+    </footer>
+
+    <script src="script.js?v=20250918"></script>
+    
+    <!-- LINE瀏覽器相容性優化 -->
+    <script>
+        // 檢測LINE瀏覽器
+        function isLineBrowser() {
+            return /Line/i.test(navigator.userAgent);
+        }
+        
+        // 優化觸控事件
+        function optimizeTouchEvents() {
+            const honorImages = document.querySelectorAll('.honor-image');
+            honorImages.forEach(function(img) {
+                // 移除預設的觸控行為
+                img.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                }, { passive: false });
+                
+                // 優化點擊事件
+                img.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // 添加觸控反饋
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                    
+                    // 執行原本的點擊功能
+                    const src = this.src;
+                    const alt = this.alt;
+                    if (window.openImageModal) {
+                        window.openImageModal(src, alt);
+                    }
+                });
+                
+                // 觸控結束時恢復
+                img.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    this.style.transform = '';
+                });
+            });
+        }
+        
+        // 如果是LINE瀏覽器，強制應用樣式
+        if (isLineBrowser()) {
+            document.addEventListener('DOMContentLoaded', function() {
+                const honorImages = document.querySelectorAll('.honor-image');
+                honorImages.forEach(function(img) {
+                    // 強制設定樣式
+                    img.style.width = '100px';
+                    img.style.height = '100px';
+                    img.style.borderRadius = '50%';
+                    img.style.border = '4px solid #daa520';
+                    img.style.boxShadow = '0 4px 15px rgba(218, 165, 32, 0.4)';
+                    
+                    // 手機版檢測
+                    if (window.innerWidth <= 768) {
+                        img.style.width = '80px';
+                        img.style.height = '80px';
+                    }
+                    
+                    // 超小螢幕檢測
+                    if (window.innerWidth <= 480) {
+                        img.style.width = '70px';
+                        img.style.height = '70px';
+                    }
+                });
+                
+                // 優化觸控事件
+                optimizeTouchEvents();
+            });
+        } else {
+            // 非LINE瀏覽器也優化觸控事件
+            document.addEventListener('DOMContentLoaded', function() {
+                optimizeTouchEvents();
+            });
+        }
+    </script>
+</body>
+</html>

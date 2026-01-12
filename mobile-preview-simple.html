@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mobile Preview - 手機版預覽</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0f0f0f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .phone {
+      width: 390px;
+      height: 844px;
+      border-radius: 30px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+      position: relative;
+    }
+
+    /* 手機螢幕內容 */
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: #fff;
+    }
+
+    /* 隱藏滾輪但保持滾動功能 */
+    .phone-screen::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .phone-screen {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* 載入 iframe 內容 */
+    .phone-screen iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* 響應式調整 */
+    @media (max-width: 500px) {
+      .phone {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        max-width: 100vw;
+        max-height: 100vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone">
+    <div class="phone-screen">
+      <!-- 載入主頁面 -->
+      <iframe src="index.html" 
+              style="width: 100%; height: 100%; border: none;">
+      </iframe>
+    </div>
+  </div>
+
+</body>
+</html>
+

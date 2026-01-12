@@ -1,0 +1,22 @@
+{
+  "name": "hua-real-estate-upload",
+  "version": "1.0.0",
+  "description": "華地產圖片上傳功能 - Cloudflare Worker 部署",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "deploy:dev": "wrangler deploy --env dev",
+    "login": "wrangler login",
+    "whoami": "wrangler whoami"
+  },
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "r2",
+    "upload"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

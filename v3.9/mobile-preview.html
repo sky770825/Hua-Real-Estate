@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>華地產鑽石分會 - 手機版預覽</title>
+    <meta name="description" content="華地產鑽石分會手機版預覽 - 線上資源中心">
+    
+    <!-- 手機版預覽專用樣式 -->
+    <style>
+        /* 手機版預覽容器 */
+        .mobile-preview-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        /* 手機框架 */
+        .mobile-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 30px;
+            padding: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        /* 不同手機尺寸 - 按照 iPhone 16 Pro Max 比例調整 */
+        .mobile-frame.iphone-se {
+            width: 320px;
+            height: 568px;
+        }
+        
+        .mobile-frame.iphone-16 {
+            width: 393px;
+            height: 852px;
+        }
+        
+        .mobile-frame.iphone-16-pro {
+            width: 402px;
+            height: 877px;
+        }
+        
+        .mobile-frame.iphone-16-pro-max {
+            width: 444px;
+            height: 963px;
+        }
+        
+        .mobile-frame.iphone-12 {
+            width: 390px;
+            height: 844px;
+        }
+        
+        .mobile-frame.iphone-12-pro-max {
+            width: 428px;
+            height: 926px;
+        }
+        
+        .mobile-frame.samsung-galaxy-s21 {
+            width: 384px;
+            height: 854px;
+        }
+        
+        .mobile-frame.pixel-6 {
+            width: 412px;
+            height: 915px;
+        }
+        
+        /* 為每個設備設定對應的 iframe 尺寸 */
+        .mobile-frame.iphone-16 iframe {
+            width: 393px !important;
+            height: 852px !important;
+        }
+        
+        .mobile-frame.iphone-16-pro iframe {
+            width: 402px !important;
+            height: 877px !important;
+        }
+        
+        .mobile-frame.iphone-16-pro-max iframe {
+            width: 444px !important;
+            height: 963px !important;
+        }
+        
+        .mobile-frame.iphone-12 iframe {
+            width: 390px !important;
+            height: 844px !important;
+        }
+        
+        .mobile-frame.iphone-12-pro-max iframe {
+            width: 428px !important;
+            height: 926px !important;
+        }
+        
+        .mobile-frame.samsung-galaxy-s21 iframe {
+            width: 384px !important;
+            height: 854px !important;
+        }
+        
+        .mobile-frame.pixel-6 iframe {
+            width: 412px !important;
+            height: 915px !important;
+        }
+        
+        /* 手機螢幕 */
+        .mobile-screen {
+            width: 100%;
+            height: 100%;
+            background: #f0f0f0;
+            border-radius: 22px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* 瀏覽器框架 */
+        .browser-frame {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 瀏覽器頂部 */
+        .browser-header {
+            height: 44px;
+            background: #f7f7f7;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        /* 瀏覽器內容 */
+        .browser-content {
+            flex: 1;
+            background: white;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        /* 隱藏滾輪但保持滾動功能 */
+        .browser-content::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .browser-content {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        
+        /* iPhone Pro 模擬 - 更精確的顯示效果 */
+        .mobile-preview-container {
+            width: 100% !important;
+            height: 100% !important;
+            overflow: hidden !important;
+            /* 移除整體縮放，讓內容自然適應 */
+        }
+        
+        /* 模擬 iPhone 16 Pro Max 的視窗大小 */
+        .mobile-preview-container iframe {
+            width: 444px !important;  /* iPhone 16 Pro Max 寬度 */
+            height: 963px !important; /* iPhone 16 Pro Max 高度 */
+            border: none !important;
+            overflow: hidden !important;
+            transform-origin: top left !important;
+        }
+        
+        /* 響應式縮放 - 根據螢幕大小調整 */
+        @media (max-width: 1200px) {
+            .mobile-preview-container iframe {
+                transform: scale(0.8) !important;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .mobile-preview-container iframe {
+                transform: scale(0.7) !important;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .mobile-preview-container iframe {
+                transform: scale(0.6) !important;
+            }
+        }
+        
+        /* 確保 iframe 內容不會被滾輪影響 */
+        .mobile-preview-container iframe {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+            overflow: hidden !important;
+        }
+        
+        /* 導航欄手機版樣式 */
+        .mobile-preview-container .navbar {
+            height: auto !important;
+            padding: 10px 0 !important;
+        }
+        
+        .mobile-preview-container .nav-container {
+            flex-direction: column !important;
+            height: auto !important;
+            padding: 10px 15px !important;
+        }
+        
+        .mobile-preview-container .nav-logo {
+            text-align: center !important;
+            margin-bottom: 10px !important;
+        }
+        
+        .mobile-preview-container .nav-logo h1 {
+            font-size: 1.4rem !important;
+        }
+        
+        .mobile-preview-container .nav-menu {
+            gap: 4px !important;
+            margin-top: 0 !important;
+            flex-wrap: nowrap !important;
+            justify-content: center !important;
+            display: flex !important;
+            width: 100% !important;
+        }
+        
+        .mobile-preview-container .nav-link {
+            font-size: 0.7rem !important;
+            padding: 6px 2px !important;
+            text-align: center !important;
+            border-radius: 12px !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        
+        .mobile-preview-container .main-content {
+            margin-top: 100px !important;
+        }
+        
+        /* 榮譽榜手機版樣式 */
+        .mobile-preview-container .honor-board {
+            margin-top: -20px !important;
+            margin-bottom: 30px !important;
+            padding: 20px 15px !important;
+        }
+        
+        .mobile-preview-container .honor-title {
+            font-size: 1.8rem !important;
+            margin-bottom: 20px !important;
+        }
+        
+        .mobile-preview-container .honor-content {
+            gap: 20px !important;
+            flex-wrap: wrap !important;
+        }
+        
+        .mobile-preview-container .honor-item {
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+        
+        .mobile-preview-container .honor-image {
+            width: 80px !important;
+            height: 80px !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .mobile-preview-container .honor-text {
+            top: -45px !important;
+            font-size: 0.8rem !important;
+            padding: 6px 12px !important;
+            min-width: 100px !important;
+        }
+        
+        .mobile-preview-container .honor-item:hover .honor-text {
+            top: -55px !important;
+        }
+        
+        .mobile-preview-container .honor-text h3 {
+            font-size: 0.8rem !important;
+            margin: 0 !important;
+        }
+        
+        .mobile-preview-container .honor-text p {
+            font-size: 0.7rem !important;
+        }
+        
+        /* 會議卡片手機版樣式 */
+        .mobile-preview-container .meeting-card {
+            flex-direction: column !important;
+            text-align: center !important;
+            gap: 25px !important;
+            padding: 25px 15px !important;
+            margin-bottom: 20px !important;
+        }
+        
+        .mobile-preview-container .meeting-info h3 {
+            font-size: 1.4rem !important;
+            margin-bottom: 12px !important;
+        }
+        
+        .mobile-preview-container .meeting-date {
+            font-size: 1.6rem !important;
+            margin-bottom: 8px !important;
+        }
+        
+        .mobile-preview-container .meeting-time-container {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            margin-bottom: 20px !important;
+            justify-content: center !important;
+        }
+        
+        .mobile-preview-container .meeting-time {
+            font-size: 1.1rem !important;
+            opacity: 0.95 !important;
+            margin: 0 !important;
+            font-weight: 500 !important;
+        }
+        
+        .mobile-preview-container .reminder-btn {
+            background: rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 50% !important;
+            width: 30px !important;
+            height: 30px !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 0.8rem !important;
+            transition: all 0.3s ease !important;
+            backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        }
+        
+        .mobile-preview-container .countdown-timer {
+            gap: 6px !important;
+            margin-top: 15px !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+        
+        .mobile-preview-container .countdown-item {
+            min-width: 40px !important;
+            padding: 8px 4px !important;
+            background: rgba(255, 255, 255, 0.15) !important;
+            border-radius: 8px !important;
+            text-align: center !important;
+            backdrop-filter: blur(10px) !important;
+        }
+        
+        .mobile-preview-container .countdown-number {
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+            color: white !important;
+            display: block !important;
+            line-height: 1.2 !important;
+        }
+        
+        .mobile-preview-container .countdown-label {
+            font-size: 0.6rem !important;
+            color: rgba(255, 255, 255, 0.8) !important;
+            display: block !important;
+            margin-top: 2px !important;
+        }
+        
+        .mobile-preview-container .meeting-links {
+            gap: 15px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            width: 100% !important;
+        }
+        
+        .mobile-preview-container .checkin-btn {
+            padding: 12px 25px !important;
+            font-size: 1rem !important;
+            margin-top: 10px !important;
+            width: auto !important;
+            min-width: 120px !important;
+        }
+        
+        /* 會議室按鈕手機版樣式 */
+        .mobile-preview-container .meeting-rooms-row {
+            flex-direction: column !important;
+            gap: 15px !important;
+            display: flex !important;
+            width: 100% !important;
+        }
+        
+        .mobile-preview-container .meeting-room {
+            max-width: 100% !important;
+            min-width: 200px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 10px !important;
+            width: 100% !important;
+        }
+        
+        .mobile-preview-container .zoom-hua-container {
+            position: relative !important;
+            width: 100% !important;
+        }
+        
+        .mobile-preview-container .meeting-id-container {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            justify-content: center !important;
+            flex-wrap: wrap !important;
+        }
+        
+        .mobile-preview-container .meeting-id {
+            font-size: 0.75rem !important;
+            margin: 0 !important;
+        }
+        
+        .mobile-preview-container .btn-copy {
+            padding: 6px 8px !important;
+            font-size: 0.7rem !important;
+            min-width: auto !important;
+        }
+        
+        .mobile-preview-container .btn {
+            padding: 10px 20px !important;
+            font-size: 0.9rem !important;
+            min-width: 140px !important;
+            width: auto !important;
+            max-width: 100% !important;
+        }
+        
+        /* 優先提示手機版樣式 */
+        .mobile-preview-container .priority-notice {
+            top: -30px !important;
+            left: 20px !important;
+            font-size: 0.7rem !important;
+            padding: 3px 10px !important;
+            gap: 4px !important;
+        }
+        
+        .mobile-preview-container .notice-icon i {
+            font-size: 0.7rem !important;
+        }
+        
+        /* 資源卡片手機版樣式 */
+        .mobile-preview-container .resources-grid {
+            grid-template-columns: 1fr !important;
+            gap: 15px !important;
+            display: grid !important;
+            width: 100% !important;
+        }
+        
+        .mobile-preview-container .resource-card {
+            padding: 20px 15px !important;
+            margin: 0 !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        .mobile-preview-container .resource-card h3 {
+            font-size: 1rem !important;
+            margin-bottom: 8px !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        
+        .mobile-preview-container .resource-card p {
+            font-size: 0.8rem !important;
+            margin-bottom: 10px !important;
+            line-height: 1.3 !important;
+        }
+        
+        .mobile-preview-container .resource-card .btn {
+            padding: 8px 16px !important;
+            font-size: 0.8rem !important;
+            min-width: auto !important;
+            width: auto !important;
+        }
+        
+        /* 資源區塊標題手機版樣式 */
+        .mobile-preview-container .section-title {
+            font-size: 2rem !important;
+            margin-bottom: 30px !important;
+            text-align: center !important;
+        }
+        
+        /* 邀請來賓區塊手機版樣式 */
+        .mobile-preview-container .invite-section {
+            padding: 40px 0 !important;
+            background: white !important;
+        }
+        
+        .mobile-preview-container .invite-card {
+            padding: 20px 15px !important;
+            margin: 0 10px !important;
+            background: linear-gradient(135deg, #2c3e50, #34495e) !important;
+            color: #ecf0f1 !important;
+            border-radius: 15px !important;
+        }
+        
+        .mobile-preview-container .invite-card h3 {
+            font-size: 1.3rem !important;
+            margin-bottom: 12px !important;
+            color: #3498db !important;
+        }
+        
+        .mobile-preview-container .invite-card p {
+            font-size: 0.9rem !important;
+            margin-bottom: 10px !important;
+            line-height: 1.4 !important;
+        }
+        
+        .mobile-preview-container .invite-list {
+            margin: 12px 0 !important;
+            padding-left: 0 !important;
+        }
+        
+        .mobile-preview-container .invite-list li {
+            padding: 4px 0 !important;
+            font-size: 0.85rem !important;
+            color: #ecf0f1 !important;
+        }
+        
+        .mobile-preview-container .invite-note {
+            font-size: 0.8rem !important;
+            margin-bottom: 12px !important;
+            font-style: italic !important;
+        }
+        
+        .mobile-preview-container .invite-link {
+            background: rgba(52, 152, 219, 0.1) !important;
+            padding: 12px !important;
+            border-radius: 8px !important;
+            margin: 12px 0 !important;
+        }
+        
+        .mobile-preview-container .invite-url {
+            color: #9b59b6 !important;
+            font-size: 0.8rem !important;
+            word-break: break-all !important;
+        }
+        
+        .mobile-preview-container .invite-actions {
+            margin-top: 15px !important;
+        }
+        
+        /* 常見問題區塊手機版樣式 */
+        .mobile-preview-container .faq-section {
+            padding: 40px 0 !important;
+            background: #f8f9fa !important;
+        }
+        
+        .mobile-preview-container .faq-grid {
+            grid-template-columns: 1fr !important;
+            gap: 15px !important;
+            display: grid !important;
+        }
+        
+        .mobile-preview-container .faq-card {
+            padding: 20px 15px !important;
+            background: white !important;
+            border-radius: 12px !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .mobile-preview-container .faq-card h3 {
+            font-size: 1.1rem !important;
+            margin-bottom: 15px !important;
+            color: #2c3e50 !important;
+            border-bottom: 2px solid #3498db !important;
+            padding-bottom: 8px !important;
+        }
+        
+        .mobile-preview-container .faq-content h4 {
+            font-size: 1rem !important;
+            color: #e74c3c !important;
+            margin: 15px 0 8px 0 !important;
+        }
+        
+        .mobile-preview-container .faq-content ul {
+            padding-left: 0 !important;
+            list-style: none !important;
+        }
+        
+        .mobile-preview-container .faq-content li {
+            padding: 4px 0 4px 20px !important;
+            position: relative !important;
+            font-size: 0.85rem !important;
+            line-height: 1.4 !important;
+        }
+        
+        .mobile-preview-container .faq-content li::before {
+            content: '•' !important;
+            color: #3498db !important;
+            position: absolute !important;
+            left: 0 !important;
+        }
+        
+        /* 頁尾手機版樣式 */
+        .mobile-preview-container .footer {
+            padding: 30px 0 !important;
+            background: #2c3e50 !important;
+            color: white !important;
+            text-align: center !important;
+        }
+        
+        .mobile-preview-container .footer p {
+            margin-bottom: 8px !important;
+            font-size: 0.9rem !important;
+        }
+        
+        .mobile-preview-container .footer-note {
+            font-size: 0.8rem !important;
+            opacity: 0.7 !important;
+        }
+        
+        /* 隱藏桌面版專用元素 */
+        .mobile-preview-container .contact-float-btn,
+        .mobile-preview-container .toggle-contact-btn,
+        .mobile-preview-container .back-to-top {
+            display: none !important;
+        }
+        
+        /* 控制面板 */
+        .control-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            z-index: 1001;
+            min-width: 200px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .control-panel h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #007AFF;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+        
+        .control-panel button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            margin: 2px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+        
+        .control-panel button:hover {
+            background: #0056CC;
+            transform: translateY(-1px);
+        }
+        
+        .control-panel select {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 12px;
+            width: 100%;
+        }
+        
+        .device-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+    </style>
+    
+    <!-- 引入原始樣式 -->
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <h3>📱 手機預覽控制</h3>
+        
+        <div class="control-group">
+            <label>設備尺寸</label>
+            <select id="deviceSelect" onchange="changeDevice()">
+                <option value="iphone-16">iPhone 16 (393×852)</option>
+                <option value="iphone-16-pro">iPhone 16 Pro (402×877)</option>
+                <option value="iphone-16-pro-max" selected>iPhone 16 Pro Max (444×963)</option>
+                <option value="iphone-x">iPhone X (375×812)</option>
+                <option value="iphone-se">iPhone SE (320×568)</option>
+                <option value="iphone-12">iPhone 12 (390×844)</option>
+                <option value="iphone-12-pro-max">iPhone 12 Pro Max (428×926)</option>
+                <option value="samsung-galaxy-s21">Samsung Galaxy S21 (384×854)</option>
+                <option value="pixel-6">Google Pixel 6 (412×915)</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <label>縮放控制</label>
+            <button onclick="zoomIn()">🔍 放大</button>
+            <button onclick="zoomOut()">🔍 縮小</button>
+            <button onclick="resetZoom()">↺ 重置</button>
+        </div>
+        
+        <div class="control-group">
+            <label>快速操作</label>
+            <button onclick="toggleOrientation()">🔄 旋轉</button>
+            <button onclick="refreshPreview()">🔄 刷新</button>
+        </div>
+        
+        <div class="device-info" id="deviceInfo">
+            當前設備: iPhone 16 Pro Max<br>
+            尺寸: 444×963px<br>
+            縮放: 100%
+        </div>
+    </div>
+
+    <!-- 手機版預覽容器 -->
+    <div class="mobile-preview-container">
+        <div class="mobile-frame">
+            <div class="mobile-screen">
+                <div class="browser-frame">
+                    <!-- 瀏覽器頂部 -->
+                    <div class="browser-header">
+                        <i class="fas fa-lock" style="margin-right: 8px; color: #007AFF;"></i>
+                        house123.bni-checkin.com
+                    </div>
+                    
+                    <!-- 瀏覽器內容 -->
+                    <div class="browser-content">
+                        <!-- 使用 iframe 載入真正的 index.html -->
+                        <iframe id="mainContent" src="index.html" 
+                                style="width: 100%; height: 100%; border: none; background: white; overflow: hidden;"
+                                onload="adjustIframeContent()">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 設備尺寸配置
+        const deviceConfigs = {
+            'iphone-16': { name: 'iPhone 16', width: 393, height: 852 },
+            'iphone-16-pro': { name: 'iPhone 16 Pro', width: 402, height: 877 },
+            'iphone-16-pro-max': { name: 'iPhone 16 Pro Max', width: 444, height: 963 },
+            'iphone-x': { name: 'iPhone X', width: 375, height: 812 },
+            'iphone-se': { name: 'iPhone SE', width: 320, height: 568 },
+            'iphone-12': { name: 'iPhone 12', width: 390, height: 844 },
+            'iphone-12-pro-max': { name: 'iPhone 12 Pro Max', width: 428, height: 926 },
+            'samsung-galaxy-s21': { name: 'Samsung Galaxy S21', width: 384, height: 854 },
+            'pixel-6': { name: 'Google Pixel 6', width: 412, height: 915 }
+        };
+        
+        let currentZoom = 1;
+        let currentDevice = 'iphone-16-pro-max';
+        let isLandscape = false;
+        
+        // 縮放功能
+        function zoomIn() {
+            currentZoom = Math.min(currentZoom + 0.1, 2);
+            updateDisplay();
+        }
+        
+        function zoomOut() {
+            currentZoom = Math.max(currentZoom - 0.1, 0.3);
+            updateDisplay();
+        }
+        
+        function resetZoom() {
+            currentZoom = 1;
+            updateDisplay();
+        }
+        
+        // 設備切換功能
+        function changeDevice() {
+            const select = document.getElementById('deviceSelect');
+            currentDevice = select.value;
+            updateDisplay();
+        }
+        
+        // 旋轉功能
+        function toggleOrientation() {
+            isLandscape = !isLandscape;
+            updateDisplay();
+        }
+        
+        // 刷新預覽
+        function refreshPreview() {
+            window.location.reload();
+        }
+        
+        // 更新顯示
+        function updateDisplay() {
+            const mobileFrame = document.querySelector('.mobile-frame');
+            const deviceInfo = document.getElementById('deviceInfo');
+            const iframe = document.getElementById('mainContent');
+            
+            // 移除所有設備類別
+            Object.keys(deviceConfigs).forEach(device => {
+                mobileFrame.classList.remove(device);
+            });
+            
+            // 添加當前設備類別
+            mobileFrame.classList.add(currentDevice);
+            
+            // 更新 iframe 尺寸以匹配當前設備
+            const config = deviceConfigs[currentDevice];
+            if (iframe) {
+                iframe.style.width = `${config.width}px`;
+                iframe.style.height = `${config.height}px`;
+            }
+            
+            // 應用縮放
+            mobileFrame.style.transform = `scale(${currentZoom})`;
+            
+            // 旋轉效果
+            if (isLandscape) {
+                mobileFrame.style.transform += ' rotate(90deg)';
+            }
+            
+            // 更新設備資訊
+            const dimensions = isLandscape ? 
+                `${config.height}×${config.width}px` : 
+                `${config.width}×${config.height}px`;
+                
+            deviceInfo.innerHTML = `
+                當前設備: ${config.name}<br>
+                尺寸: ${dimensions}<br>
+                縮放: ${Math.round(currentZoom * 100)}%<br>
+                方向: ${isLandscape ? '橫向' : '直向'}
+            `;
+        }
+        
+        // 自動適應視窗大小 - iPhone Pro 精確模擬
+        function autoFitScreen() {
+            const container = document.querySelector('.mobile-preview-container');
+            const frame = document.querySelector('.mobile-frame');
+            const config = deviceConfigs[currentDevice];
+            
+            const maxWidth = window.innerWidth - 250; // 預留控制面板空間
+            const maxHeight = window.innerHeight - 50;
+            
+            const frameWidth = isLandscape ? config.height : config.width;
+            const frameHeight = isLandscape ? config.width : config.height;
+            
+            const scaleX = maxWidth / frameWidth;
+            const scaleY = maxHeight / frameHeight;
+            const autoScale = Math.min(scaleX, scaleY, 1); // 最大縮放到 100%
+            
+            // 根據螢幕大小自動調整縮放，保持 iPhone Pro 比例
+            if (window.innerWidth <= 600) {
+                currentZoom = Math.min(autoScale, 0.5);
+            } else if (window.innerWidth <= 900) {
+                currentZoom = Math.min(autoScale, 0.65);
+            } else if (window.innerWidth <= 1200) {
+                currentZoom = Math.min(autoScale, 0.8);
+            } else {
+                currentZoom = Math.min(autoScale, 1.0); // 大螢幕可以顯示完整大小
+            }
+            
+            updateDisplay();
+        }
+        
+        // 調整 iframe 內容
+        function adjustIframeContent() {
+            const iframe = document.getElementById('mainContent');
+            if (iframe && iframe.contentDocument) {
+                const iframeDoc = iframe.contentDocument;
+                const iframeBody = iframeDoc.body;
+                
+                // 強制套用手機版樣式
+                iframeBody.classList.add('mobile-preview-container');
+                
+                // 隱藏滾輪但保持滾動功能，並確保不影響布局
+                iframeBody.style.overflow = 'auto';
+                iframeBody.style.scrollbarWidth = 'none'; // Firefox
+                iframeBody.style.msOverflowStyle = 'none'; // IE and Edge
+                iframeBody.style.margin = '0';
+                iframeBody.style.padding = '0';
+                
+                // 根據當前設備設定 body 寬度
+                const config = deviceConfigs[currentDevice];
+                const bodyWidth = config.width;
+                
+                // 添加 CSS 來隱藏 WebKit 滾輪並確保布局不受影響
+                const style = iframeDoc.createElement('style');
+                style.textContent = `
+                    body::-webkit-scrollbar {
+                        display: none;
+                        width: 0px;
+                        background: transparent;
+                    }
+                    * {
+                        scrollbar-width: none;
+                        -ms-overflow-style: none;
+                    }
+                    body {
+                        width: ${bodyWidth}px !important;  /* 動態設備寬度 */
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        box-sizing: border-box !important;
+                        overflow-x: hidden !important;
+                        font-size: 16px !important; /* iPhone 預設字體大小 */
+                    }
+                    .container {
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        box-sizing: border-box !important;
+                        padding: 0 15px !important; /* iPhone 標準內邊距 */
+                    }
+                    /* 強制套用手機版響應式樣式 - 模擬 iPhone Pro */
+                    .nav-container {
+                        flex-direction: column !important;
+                        height: auto !important;
+                        padding: 10px 15px !important;
+                    }
+                    .nav-menu {
+                        gap: 4px !important;
+                        margin-top: 0 !important;
+                        flex-wrap: nowrap !important;
+                        justify-content: center !important;
+                        display: flex !important;
+                        width: 100% !important;
+                    }
+                    .nav-link {
+                        font-size: 0.7rem !important;
+                        padding: 6px 2px !important;
+                        text-align: center !important;
+                        border-radius: 12px !important;
+                        flex: 1 !important;
+                        min-width: 0 !important;
+                    }
+                    .main-content {
+                        margin-top: 100px !important;
+                    }
+                    .meeting-card {
+                        flex-direction: column !important;
+                        text-align: center !important;
+                        gap: 25px !important;
+                        padding: 25px 15px !important;
+                    }
+                    .resources-grid {
+                        grid-template-columns: 1fr !important;
+                        gap: 15px !important;
+                    }
+                    .faq-grid {
+                        grid-template-columns: 1fr !important;
+                        gap: 15px !important;
+                    }
+                    .faq-content li {
+                        font-size: 0.85rem !important;
+                        line-height: 1.4 !important;
+                        word-wrap: break-word !important;
+                        overflow-wrap: break-word !important;
+                    }
+                    /* 確保所有元素都適應容器寬度 */
+                    .faq-card, .resource-card, .invite-card, .meeting-card {
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        box-sizing: border-box !important;
+                    }
+                `;
+                iframeDoc.head.appendChild(style);
+                
+                // 隱藏桌面版專用元素
+                const contactBtn = iframeDoc.querySelector('.contact-float-btn');
+                const toggleBtn = iframeDoc.querySelector('.toggle-contact-btn');
+                const backToTop = iframeDoc.querySelector('.back-to-top');
+                
+                if (contactBtn) contactBtn.style.display = 'none';
+                if (toggleBtn) toggleBtn.style.display = 'none';
+                if (backToTop) backToTop.style.display = 'none';
+                
+                // 調整導航欄為手機版
+                const navbar = iframeDoc.querySelector('.navbar');
+                if (navbar) {
+                    navbar.style.height = 'auto';
+                    navbar.style.padding = '10px 0';
+                }
+                
+                const navContainer = iframeDoc.querySelector('.nav-container');
+                if (navContainer) {
+                    navContainer.style.flexDirection = 'column';
+                    navContainer.style.height = 'auto';
+                    navContainer.style.padding = '10px 15px';
+                }
+                
+                const navMenu = iframeDoc.querySelector('.nav-menu');
+                if (navMenu) {
+                    navMenu.style.gap = '4px';
+                    navMenu.style.marginTop = '0';
+                    navMenu.style.flexWrap = 'nowrap';
+                    navMenu.style.justifyContent = 'center';
+                    navMenu.style.display = 'flex';
+                    navMenu.style.width = '100%';
+                }
+                
+                const navLinks = iframeDoc.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.style.fontSize = '0.7rem';
+                    link.style.padding = '6px 2px';
+                    link.style.textAlign = 'center';
+                    link.style.borderRadius = '12px';
+                    link.style.flex = '1';
+                    link.style.minWidth = '0';
+                });
+                
+                // 調整主要內容間距
+                const mainContent = iframeDoc.querySelector('.main-content');
+                if (mainContent) {
+                    mainContent.style.marginTop = '100px';
+                }
+            }
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDisplay();
+            autoFitScreen();
+            
+            // 監聽視窗大小變化
+            window.addEventListener('resize', autoFitScreen);
+            
+            // 延遲調整 iframe 內容
+            setTimeout(adjustIframeContent, 1000);
+        });
+        
+        // 模擬手機觸控
+        document.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        // 模擬點擊效果
+        document.querySelectorAll('.btn, .honor-image, .nav-link').forEach(element => {
+            element.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+        
+        // 鍵盤快捷鍵
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case '+':
+                case '=':
+                    e.preventDefault();
+                    zoomIn();
+                    break;
+                case '-':
+                    e.preventDefault();
+                    zoomOut();
+                    break;
+                case '0':
+                    e.preventDefault();
+                    resetZoom();
+                    break;
+                case 'r':
+                    e.preventDefault();
+                    toggleOrientation();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
