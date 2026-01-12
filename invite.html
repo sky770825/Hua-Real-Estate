@@ -2021,6 +2021,38 @@
             display: none;
         }
         
+        .password-modal-content {
+            position: relative;
+        }
+        
+        .password-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 28px;
+            color: #6c757d;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: rgba(108, 117, 125, 0.1);
+            line-height: 1;
+        }
+        
+        .password-modal-close:hover {
+            background: rgba(108, 117, 125, 0.2);
+            color: #2c3e50;
+            transform: rotate(90deg) scale(1.1);
+        }
+        
+        .password-modal-close:active {
+            transform: rotate(90deg) scale(0.95);
+        }
+        
         /* 圖片上傳彈窗 */
         .upload-modal {
             display: none;
@@ -2368,6 +2400,203 @@
             transform: none;
         }
         
+        /* 成功提示彈窗 */
+        .success-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .success-modal.active {
+            display: flex;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .success-modal-content {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            padding: 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1);
+            animation: successSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+        }
+        
+        @keyframes successSlideIn {
+            from {
+                transform: scale(0.8) translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .success-modal-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 30px 40px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .success-modal-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .success-modal-header h3 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .success-modal-header h3::before {
+            content: '✅';
+            font-size: 2.2rem;
+            animation: bounce 0.6s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .success-modal-body {
+            padding: 35px 40px;
+        }
+        
+        .success-file-list {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 2px solid #bae6fd;
+        }
+        
+        .success-file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .success-file-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .success-file-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        
+        .success-file-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .success-file-name {
+            flex: 1;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1e293b;
+            word-break: break-all;
+            line-height: 1.4;
+        }
+        
+        .success-file-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+        
+        .success-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        .success-modal-button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .success-modal-button.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .success-modal-button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .success-modal-button.secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .success-modal-button.secondary:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .success-modal-content {
+                max-width: 90%;
+            }
+            
+            .success-modal-body {
+                padding: 25px 20px;
+            }
+            
+            .success-modal-actions {
+                flex-direction: column;
+            }
+        }
+        
         .upload-button::after {
             content: '🚀';
             font-size: 1.2rem;
@@ -2653,6 +2882,7 @@
     <!-- 密碼驗證彈窗 -->
     <div class="password-modal" id="passwordModal">
         <div class="password-modal-content">
+            <span class="password-modal-close" onclick="closePasswordModal()" aria-label="關閉密碼驗證">&times;</span>
             <div class="password-modal-header">
                 <h3>🔒 密碼驗證</h3>
                 <p>請輸入密碼以啟用上傳功能</p>
@@ -2725,6 +2955,37 @@
                     </div>
                     
                     <button class="upload-button" id="uploadButton" onclick="uploadImages()" disabled>上傳圖片</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功提示彈窗 -->
+    <div class="success-modal" id="successModal">
+        <div class="success-modal-content">
+            <div class="success-modal-header">
+                <h3>上傳成功</h3>
+            </div>
+            <div class="success-modal-body">
+                <div class="success-file-list">
+                    <div class="success-file-item">
+                        <span class="success-file-icon">🖼️</span>
+                        <div class="success-file-name">
+                            <span class="success-file-label">圖片 1：</span>
+                            <span id="successFileName1"></span>
+                        </div>
+                    </div>
+                    <div class="success-file-item">
+                        <span class="success-file-icon">🖼️</span>
+                        <div class="success-file-name">
+                            <span class="success-file-label">圖片 2：</span>
+                            <span id="successFileName2"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="success-modal-actions">
+                    <button class="success-modal-button secondary" id="successModalStay">繼續上傳</button>
+                    <button class="success-modal-button primary" id="successModalClose">關閉窗口</button>
                 </div>
             </div>
         </div>
@@ -3233,6 +3494,72 @@
             checkUploadButton();
         }
         
+        // 顯示成功提示彈窗
+        function showSuccessModal(fileName1, fileName2, onClose, onStay) {
+            const successModal = document.getElementById('successModal');
+            const name1Element = document.getElementById('successFileName1');
+            const name2Element = document.getElementById('successFileName2');
+            const closeBtn = document.getElementById('successModalClose');
+            const stayBtn = document.getElementById('successModalStay');
+            
+            // 美化文件名顯示（只顯示文件名，不顯示路徑和時間戳）
+            const beautifyFileName = (name) => {
+                if (!name) return '未知文件';
+                
+                // 如果是完整路徑，只取最後的文件名部分
+                let fileName = name.split('/').pop() || name;
+                
+                // 如果是帶時間戳的文件名（如 image1_1234567890.jpg），提取並美化
+                if (fileName.startsWith('image') && fileName.includes('_')) {
+                    // 提取文件擴展名
+                    const ext = fileName.split('.').pop() || '';
+                    // 提取圖片編號（1 或 2）
+                    const match = fileName.match(/image(\d+)/);
+                    const imageNum = match ? match[1] : '';
+                    // 返回美化的名稱
+                    return `圖片 ${imageNum}.${ext}`;
+                }
+                
+                // 如果文件名太長，截斷並顯示省略號
+                if (fileName.length > 30) {
+                    const ext = fileName.split('.').pop() || '';
+                    const nameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
+                    return nameWithoutExt.substring(0, 25) + '...' + (ext ? '.' + ext : '');
+                }
+                
+                return fileName;
+            };
+            
+            name1Element.textContent = beautifyFileName(fileName1);
+            name2Element.textContent = beautifyFileName(fileName2);
+            
+            // 綁定按鈕事件
+            closeBtn.onclick = () => {
+                successModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                if (onClose) onClose();
+            };
+            
+            stayBtn.onclick = () => {
+                successModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                if (onStay) onStay();
+            };
+            
+            // 點擊背景關閉
+            successModal.onclick = (e) => {
+                if (e.target === successModal) {
+                    successModal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                    if (onClose) onClose();
+                }
+            };
+            
+            // 顯示彈窗
+            successModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
         // 驗證密碼
         function checkPassword() {
             const passwordInput = document.getElementById('passwordInput');
@@ -3441,13 +3768,32 @@
                         console.error('保存到 Supabase 數據庫時發生錯誤:', saveError);
                     }
                     
-                    // 顯示成功消息
-                    const successMsg = '✅ 圖片上傳成功！\n\n圖片 1: ' + image1Url + '\n圖片 2: ' + image2Url + '\n\n是否關閉上傳窗口？';
+                    // 顯示美觀的成功消息
+                    const fileName1 = results[0].originalFileName || results[0].fileName || '圖片 1';
+                    const fileName2 = results[1].originalFileName || results[1].fileName || '圖片 2';
                     
-                    if (confirm(successMsg)) {
+                    // 格式化文件名（只顯示文件名，不顯示路徑）
+                    const formatFileName = (name) => {
+                        if (!name) return '未知文件';
+                        // 如果是完整路徑，只取最後的文件名部分
+                        const parts = name.split('/');
+                        let fileName = parts[parts.length - 1];
+                        // 如果是帶時間戳的文件名，提取原始名稱（如果可能）
+                        if (fileName.startsWith('image') && fileName.includes('_')) {
+                            // 保持顯示，但可以美化
+                            return fileName;
+                        }
+                        return fileName;
+                    };
+                    
+                    const displayName1 = formatFileName(fileName1);
+                    const displayName2 = formatFileName(fileName2);
+                    
+                    // 創建美觀的成功提示彈窗
+                    showSuccessModal(displayName1, displayName2, () => {
                         // 關閉上傳彈窗
                         closeUploadModal();
-                    } else {
+                    }, () => {
                         // 重置狀態但保持彈窗打開
                         selectedFiles = { 1: null, 2: null };
                         document.getElementById('fileInput1').value = '';
@@ -3457,7 +3803,7 @@
                         showStatus(1, '', '');
                         showStatus(2, '', '');
                         checkUploadButton();
-                    }
+                    });
                 } else {
                     alert('❌ 部分圖片上傳失敗，請檢查控制台獲取詳細信息');
                 }
@@ -3712,7 +4058,13 @@
                     showStatus(index, '✅ 上傳成功', 'success');
                     console.log('上傳成功:', { path: filePath, url: publicUrl });
                     
-                    resolve({ success: true, url: publicUrl, path: filePath });
+                    resolve({ 
+                        success: true, 
+                        url: publicUrl, 
+                        path: filePath,
+                        originalFileName: file.name,
+                        fileName: sanitizedFileName
+                    });
                     
                 } catch (error) {
                     progress.classList.remove('show');
