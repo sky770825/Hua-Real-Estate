@@ -1882,6 +1882,362 @@
             outline: 2px solid #fff;
             outline-offset: 2px;
         }
+        
+        /* 上傳入口圖標按鈕 */
+        .upload-trigger-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 9998; /* 提高 z-index，確保在最上層 */
+            border: none;
+            color: white;
+            pointer-events: auto; /* 確保可以點擊 */
+        }
+        
+        .upload-trigger-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .upload-trigger-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* 密碼驗證彈窗 */
+        .password-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .password-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .password-modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .password-modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .password-modal-header h3 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .password-modal-header p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .password-section {
+            margin-bottom: 20px;
+        }
+        
+        .password-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .password-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .password-button {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .password-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .password-error {
+            color: #dc3545;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        /* 圖片上傳彈窗 */
+        .upload-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
+        }
+        
+        .upload-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .upload-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease;
+            position: relative;
+        }
+        
+        .upload-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: #6c757d;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        .upload-modal-close:hover {
+            background: #e9ecef;
+            color: #2c3e50;
+            transform: rotate(90deg);
+        }
+        
+        .upload-area {
+            display: block;
+        }
+        
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .upload-item {
+            position: relative;
+            border: 2px dashed #dee2e6;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        .upload-item:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .upload-item.dragover {
+            border-color: #667eea;
+            background: #e6f3ff;
+            transform: scale(1.02);
+        }
+        
+        .upload-label {
+            display: block;
+            cursor: pointer;
+            padding: 20px;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .upload-text {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        
+        .upload-input {
+            display: none;
+        }
+        
+        .upload-preview {
+            margin-top: 15px;
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .upload-preview.show {
+            display: block;
+        }
+        
+        .upload-progress {
+            margin-top: 10px;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .upload-progress.show {
+            display: block;
+        }
+        
+        .upload-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .upload-status {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+        
+        .upload-status.success {
+            color: #28a745;
+        }
+        
+        .upload-status.error {
+            color: #dc3545;
+        }
+        
+        .upload-button {
+            margin-top: 20px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .upload-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .upload-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .password-input-group {
+                flex-direction: column;
+            }
+            
+            .password-input {
+                width: 100%;
+            }
+            
+            .password-button {
+                width: 100%;
+            }
+            
+            .upload-trigger-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .upload-modal-content {
+                padding: 20px;
+                max-height: 95vh;
+            }
+            
+            .password-modal-content {
+                padding: 30px 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1984,6 +2340,86 @@
              alt="放大顯示的活動圖片"
              tabindex="0">
     </div>
+
+    <!-- 密碼驗證彈窗 -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-modal-content">
+            <div class="password-modal-header">
+                <h3>🔒 密碼驗證</h3>
+                <p>請輸入密碼以啟用上傳功能</p>
+            </div>
+            <div class="password-section">
+                <div class="password-input-group">
+                    <input type="password" 
+                           id="passwordInput" 
+                           class="password-input" 
+                           placeholder="輸入密碼"
+                           autocomplete="off">
+                    <button class="password-button" onclick="checkPassword()">確認</button>
+                </div>
+                <div class="password-error" id="passwordError">密碼錯誤，請重新輸入</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 圖片上傳彈窗 -->
+    <div class="upload-modal" id="uploadModal">
+        <div class="upload-modal-content">
+            <span class="upload-modal-close" onclick="closeUploadModal()">&times;</span>
+            <h2 class="section-title" style="margin-bottom: 20px; text-align: center;">圖片上傳管理</h2>
+            
+            <div class="upload-area" id="uploadArea">
+                <div id="configWarning" style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 10px; padding: 15px; margin-bottom: 20px; color: #856404; display: none;">
+                    <!-- 配置狀態將由 JavaScript 動態更新 -->
+                </div>
+                <div id="folderStructureInfo" style="background: #e7f3ff; border: 1px solid #2196F3; border-radius: 10px; padding: 15px; margin-bottom: 20px; color: #1565C0;">
+                    <!-- 文件分類結構信息將由 JavaScript 動態更新 -->
+                </div>
+                <div class="upload-grid">
+                    <div class="upload-item" id="uploadItem1">
+                        <label class="upload-label" for="fileInput1">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">點擊或拖放圖片 1</div>
+                            <input type="file" 
+                                   id="fileInput1" 
+                                   class="upload-input" 
+                                   accept="image/*"
+                                   onchange="handleFileSelect(event, 1)">
+                        </label>
+                        <img id="preview1" class="upload-preview" alt="預覽圖片 1">
+                        <div class="upload-progress" id="progress1">
+                            <div class="upload-progress-bar" id="progressBar1"></div>
+                        </div>
+                        <div class="upload-status" id="status1"></div>
+                    </div>
+                    
+                    <div class="upload-item" id="uploadItem2">
+                        <label class="upload-label" for="fileInput2">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">點擊或拖放圖片 2</div>
+                            <input type="file" 
+                                   id="fileInput2" 
+                                   class="upload-input" 
+                                   accept="image/*"
+                                   onchange="handleFileSelect(event, 2)">
+                        </label>
+                        <img id="preview2" class="upload-preview" alt="預覽圖片 2">
+                        <div class="upload-progress" id="progress2">
+                            <div class="upload-progress-bar" id="progressBar2"></div>
+                        </div>
+                        <div class="upload-status" id="status2"></div>
+                    </div>
+                </div>
+                
+                <button class="upload-button" id="uploadButton" onclick="uploadImages()" disabled>上傳圖片</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 上傳入口圖標按鈕 -->
+    <button class="upload-trigger-btn" id="uploadTriggerBtn" aria-label="開啟圖片上傳">
+        📤
+    </button>
 
     <section class="features" aria-labelledby="features-title">
         <div class="container">
@@ -2151,8 +2587,18 @@
         </div>
     </footer>
 
+    <!-- Supabase JS 客戶端 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    
     <!-- 🚀 Google Apps Script 資料載入器 - 使用 defer 非阻塞載入 -->
     <!-- 🚀 優化：添加 integrity 檢查（如果有的話）並確保非阻塞 -->
+    <script>
+        // 檢測是否在本地文件系統打開
+        if (window.location.protocol === 'file:') {
+            console.warn('⚠️ 檢測到在本地文件系統打開，某些功能可能無法正常工作');
+            console.warn('💡 建議使用本地服務器運行，例如：python -m http.server 8000');
+        }
+    </script>
     <script src="sheets-data-loader-apps-script.js" defer crossorigin="anonymous"></script>
     
     <!-- 強制刷新快捷鍵 -->
@@ -2337,6 +2783,869 @@
                         firstElement.focus();
                     }
                 }
+            }
+        });
+        
+        // ==================== 圖片上傳功能 ====================
+        
+        // 密碼驗證
+        const UPLOAD_PASSWORD = '888';
+        let isPasswordVerified = false;
+        let selectedFiles = { 1: null, 2: null };
+        
+        // 打開密碼驗證彈窗
+        function openPasswordModal() {
+            console.log('openPasswordModal 被調用');
+            const passwordModal = document.getElementById('passwordModal');
+            if (!passwordModal) {
+                console.error('❌ 找不到密碼驗證彈窗元素');
+                alert('找不到密碼驗證彈窗，請刷新頁面重試');
+                return;
+            }
+            
+            passwordModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            console.log('✅ 密碼驗證彈窗已打開');
+            
+            // 聚焦到密碼輸入框
+            setTimeout(() => {
+                const passwordInput = document.getElementById('passwordInput');
+                if (passwordInput) {
+                    passwordInput.focus();
+                } else {
+                    console.warn('⚠️ 找不到密碼輸入框');
+                }
+            }, 100);
+        }
+        
+        // 確保函數在全局作用域可訪問
+        window.openPasswordModal = openPasswordModal;
+        
+        // 關閉密碼驗證彈窗
+        function closePasswordModal() {
+            const passwordModal = document.getElementById('passwordModal');
+            passwordModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // 清空密碼輸入
+            const passwordInput = document.getElementById('passwordInput');
+            if (passwordInput) {
+                passwordInput.value = '';
+            }
+            const passwordError = document.getElementById('passwordError');
+            if (passwordError) {
+                passwordError.style.display = 'none';
+            }
+        }
+        
+        // 打開上傳彈窗
+        function openUploadModal() {
+            const uploadModal = document.getElementById('uploadModal');
+            uploadModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // 檢查配置狀態
+            checkConfigStatus();
+            
+            // 更新文件分類結構信息
+            updateFolderStructureInfo();
+        }
+        
+        // 更新文件分類結構信息
+        function updateFolderStructureInfo() {
+            const infoDiv = document.getElementById('folderStructureInfo');
+            if (!infoDiv) return;
+            
+            const examplePath = `${SUPABASE_CONFIG.projectName}/${SUPABASE_CONFIG.moduleName}/image1_1234567890.jpg`;
+            
+            infoDiv.innerHTML = `
+                <strong>📁 文件分類結構：</strong>
+                <p style="margin: 10px 0 0 0; font-size: 0.9rem;">
+                    上傳的文件會按以下結構分類：<br>
+                    <code>{項目名稱}/{功能模塊}/{文件名}</code><br>
+                    <br>
+                    當前配置：<br>
+                    • 項目名稱：<code>${SUPABASE_CONFIG.projectName}</code><br>
+                    • 功能模塊：<code>${SUPABASE_CONFIG.moduleName}</code><br>
+                    • 存儲桶：<code>${SUPABASE_CONFIG.bucketName}</code><br>
+                    <br>
+                    完整路徑示例：<br>
+                    <code>${examplePath}</code>
+                </p>
+            `;
+        }
+        
+        // 檢查配置狀態
+        function checkConfigStatus() {
+            const configWarning = document.getElementById('configWarning');
+            if (!configWarning) return;
+            
+            const hasAnonKey = SUPABASE_CONFIG.anonKey && SUPABASE_CONFIG.anonKey.trim() !== '';
+            const hasSupabaseClient = supabaseClient !== null;
+            
+            if (hasAnonKey && hasSupabaseClient) {
+                configWarning.style.display = 'none';
+            } else {
+                configWarning.style.display = 'block';
+                configWarning.innerHTML = `
+                    <strong style="color: #dc3545;">⚠️ Supabase 未配置！</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9rem;">
+                        請在代碼中找到 <code>SUPABASE_CONFIG</code> 配置（約第 3090 行）<br>
+                        <strong>配置步驟：</strong><br>
+                        1. 訪問：<a href="https://supabase.com/dashboard/project/sqgrnowrcvspxhuudrqc/settings/api" target="_blank">Supabase API 設置</a><br>
+                        2. 複製 "anon" 或 "public" key<br>
+                        3. 設置 <code>SUPABASE_CONFIG.anonKey = "您的key"</code><br>
+                        <br>
+                        同時確認存儲桶 "<code>${SUPABASE_CONFIG.bucketName}</code>" 已創建並設置為公開
+                    </p>
+                `;
+            }
+        }
+        
+        // 關閉上傳彈窗
+        function closeUploadModal() {
+            const uploadModal = document.getElementById('uploadModal');
+            uploadModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // 重置上傳狀態
+            selectedFiles = { 1: null, 2: null };
+            document.getElementById('fileInput1').value = '';
+            document.getElementById('fileInput2').value = '';
+            document.getElementById('preview1').classList.remove('show');
+            document.getElementById('preview2').classList.remove('show');
+            showStatus(1, '', '');
+            showStatus(2, '', '');
+            checkUploadButton();
+        }
+        
+        // 驗證密碼
+        function checkPassword() {
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordError = document.getElementById('passwordError');
+            
+            if (passwordInput.value === UPLOAD_PASSWORD) {
+                isPasswordVerified = true;
+                passwordError.style.display = 'none';
+                
+                // 關閉密碼彈窗
+                closePasswordModal();
+                
+                // 打開上傳彈窗
+                setTimeout(() => {
+                    openUploadModal();
+                }, 200);
+            } else {
+                passwordError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+        
+        // 按 Enter 鍵確認密碼
+        document.getElementById('passwordInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+        
+        // 點擊彈窗外部關閉
+        document.getElementById('passwordModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePasswordModal();
+            }
+        });
+        
+        document.getElementById('uploadModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeUploadModal();
+            }
+        });
+        
+        // 按 ESC 鍵關閉彈窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const passwordModal = document.getElementById('passwordModal');
+                const uploadModal = document.getElementById('uploadModal');
+                
+                if (passwordModal && passwordModal.classList.contains('active')) {
+                    closePasswordModal();
+                } else if (uploadModal && uploadModal.classList.contains('active')) {
+                    closeUploadModal();
+                }
+            }
+        });
+        
+        // 處理文件選擇
+        function handleFileSelect(event, index) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // 驗證文件類型
+            if (!file.type.startsWith('image/')) {
+                showStatus(index, '請選擇圖片文件', 'error');
+                return;
+            }
+            
+            // 驗證文件大小（最大 10MB）
+            if (file.size > 10 * 1024 * 1024) {
+                showStatus(index, '圖片大小不能超過 10MB', 'error');
+                return;
+            }
+            
+            selectedFiles[index] = file;
+            
+            // 顯示預覽
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById(`preview${index}`);
+                preview.src = e.target.result;
+                preview.classList.add('show');
+                showStatus(index, '圖片已選擇，準備上傳', '');
+            };
+            reader.readAsDataURL(file);
+            
+            // 啟用上傳按鈕
+            checkUploadButton();
+        }
+        
+        // 拖放功能
+        function setupDragAndDrop() {
+            ['uploadItem1', 'uploadItem2'].forEach((itemId, index) => {
+                const item = document.getElementById(itemId);
+                const num = index + 1;
+                
+                item.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    item.classList.add('dragover');
+                });
+                
+                item.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    item.classList.remove('dragover');
+                });
+                
+                item.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    item.classList.remove('dragover');
+                    
+                    const file = e.dataTransfer.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                        const input = document.getElementById(`fileInput${num}`);
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        input.files = dataTransfer.files;
+                        handleFileSelect({ target: input }, num);
+                    }
+                });
+            });
+        }
+        
+        // 檢查是否可以上傳
+        function checkUploadButton() {
+            const uploadButton = document.getElementById('uploadButton');
+            if (selectedFiles[1] && selectedFiles[2]) {
+                uploadButton.disabled = false;
+            } else {
+                uploadButton.disabled = true;
+            }
+        }
+        
+        // 顯示狀態
+        function showStatus(index, message, type) {
+            const status = document.getElementById(`status${index}`);
+            status.textContent = message;
+            status.className = 'upload-status ' + type;
+        }
+        
+        // 上傳圖片到 Cloudflare R2
+        async function uploadImages() {
+            if (!isPasswordVerified) {
+                alert('請先輸入正確的密碼');
+                return;
+            }
+            
+            if (!selectedFiles[1] || !selectedFiles[2]) {
+                alert('請選擇兩張圖片');
+                return;
+            }
+            
+            // 檢查 Supabase 配置
+            if (!SUPABASE_CONFIG.anonKey || !supabaseClient) {
+                const configMsg = '⚠️ Supabase 尚未配置！\n\n' +
+                    '請在代碼中找到 SUPABASE_CONFIG（約第 3141 行）\n' +
+                    '設置 anonKey：\n' +
+                    '1. 訪問：https://supabase.com/dashboard/project/sqgrnowrcvspxhuudrqc/settings/api\n' +
+                    '2. 複製 "anon" 或 "public" key\n' +
+                    '3. 在代碼中設置 SUPABASE_CONFIG.anonKey = "您的key"\n\n' +
+                    '同時確認：\n' +
+                    '- 存儲桶 "' + SUPABASE_CONFIG.bucketName + '" 已創建\n' +
+                    '- 存儲桶設置為公開（Public）\n' +
+                    '- 存儲策略允許上傳（重要！）';
+                
+                alert(configMsg);
+                showStatus(1, '❌ 請先配置 Supabase', 'error');
+                showStatus(2, '❌ 請先配置 Supabase', 'error');
+                return;
+            }
+            
+            const uploadButton = document.getElementById('uploadButton');
+            uploadButton.disabled = true;
+            uploadButton.textContent = '上傳中...';
+            
+            try {
+                // 上傳兩張圖片到 Supabase Storage
+                const uploadPromises = [
+                    uploadToSupabase(selectedFiles[1], 1),
+                    uploadToSupabase(selectedFiles[2], 2)
+                ];
+                
+                const results = await Promise.all(uploadPromises);
+                
+                if (results.every(r => r.success)) {
+                    // 顯示成功消息
+                    const successMsg = '✅ 圖片上傳成功！\n\n圖片 1: ' + results[0].url + '\n圖片 2: ' + results[1].url + '\n\n是否關閉上傳窗口？';
+                    
+                    if (confirm(successMsg)) {
+                        // 關閉上傳彈窗
+                        closeUploadModal();
+                    } else {
+                        // 重置狀態但保持彈窗打開
+                        selectedFiles = { 1: null, 2: null };
+                        document.getElementById('fileInput1').value = '';
+                        document.getElementById('fileInput2').value = '';
+                        document.getElementById('preview1').classList.remove('show');
+                        document.getElementById('preview2').classList.remove('show');
+                        showStatus(1, '', '');
+                        showStatus(2, '', '');
+                        checkUploadButton();
+                    }
+                } else {
+                    alert('❌ 部分圖片上傳失敗，請檢查控制台獲取詳細信息');
+                }
+            } catch (error) {
+                console.error('上傳錯誤:', error);
+                alert('❌ 上傳失敗: ' + error.message);
+            } finally {
+                uploadButton.disabled = false;
+                uploadButton.textContent = '上傳圖片';
+            }
+        }
+        
+        // 上傳到 Cloudflare R2
+        // 注意：Cloudflare R2 使用 S3 兼容 API
+        // 需要配置以下信息（建議使用環境變量或後端 API）：
+        // 1. R2_ACCESS_KEY_ID - Cloudflare R2 訪問密鑰 ID
+        // 2. R2_SECRET_ACCESS_KEY - Cloudflare R2 秘密訪問密鑰
+        // 3. R2_ENDPOINT - R2 端點 URL
+        // 4. R2_BUCKET_NAME - 存儲桶名稱
+        
+        // R2 配置
+        // ⚠️ 重要：為了安全，建議使用 Cloudflare Workers 作為後端 API
+        // 請創建一個 Cloudflare Worker 來處理上傳，避免在前端暴露訪問憑證
+        // Supabase 配置
+        // 項目 URL: https://supabase.com/dashboard/project/sqgrnowrcvspxhuudrqc
+        const SUPABASE_CONFIG = {
+            url: 'https://sqgrnowrcvspxhuudrqc.supabase.co', // Supabase 項目 URL
+            anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxZ3Jub3dyY3ZzcHhodXVkcnFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyMTExNjYsImV4cCI6MjA4Mzc4NzE2Nn0.VMg-7oQTmPapHLGeLzEZ3l_5zcyCZRjJdw_X2J-8kRw', // Supabase anon key
+            bucketName: 'hua-real-estate', // 存儲桶名稱
+            // 分類路徑：項目名稱/功能模塊/具體用途
+            // 例如：hua-real-estate/invite-photo/ 用於邀請頁圖片
+            projectName: 'hua-real-estate', // 項目名稱，用於分類
+            moduleName: 'invite-photo' // 功能模塊名稱
+        };
+        
+        // 初始化 Supabase 客戶端
+        // 使用不同的變量名避免與 Supabase 庫的全局變量衝突
+        let supabaseClient = null;
+        
+        function initSupabase() {
+            if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) {
+                console.warn('⚠️ Supabase 配置不完整，請設置 anonKey');
+                return;
+            }
+            
+            // 檢查 Supabase 庫是否已載入
+            // UMD 版本可能暴露為 window.supabase 或 supabaseJs
+            let supabaseLib = null;
+            if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                supabaseLib = window.supabase;
+            } else if (typeof supabaseJs !== 'undefined' && supabaseJs.createClient) {
+                supabaseLib = supabaseJs;
+            } else if (typeof supabase !== 'undefined' && typeof supabase.createClient === 'function') {
+                // 如果 Supabase 庫暴露了全局 supabase 變量
+                supabaseLib = supabase;
+            }
+            
+            if (supabaseLib && supabaseLib.createClient) {
+                try {
+                    supabaseClient = supabaseLib.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+                    console.log('✅ Supabase 客戶端初始化成功');
+                } catch (error) {
+                    console.error('❌ Supabase 客戶端初始化失敗:', error);
+                }
+            } else {
+                console.error('❌ Supabase JS 庫未載入，請檢查 CDN 連結');
+            }
+        }
+        
+        // 等待 Supabase 庫載入後初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                // 延遲一下確保 Supabase 庫已載入
+                setTimeout(initSupabase, 500);
+            });
+        } else {
+            // 如果已經載入，等待一下確保 Supabase 庫已載入
+            setTimeout(initSupabase, 500);
+        }
+        
+        // 上傳到 Supabase Storage
+        async function uploadToSupabase(file, index) {
+            return new Promise(async (resolve, reject) => {
+                const progressBar = document.getElementById(`progressBar${index}`);
+                const progress = document.getElementById(`progress${index}`);
+                progress.classList.add('show');
+                
+                try {
+                    if (!supabaseClient) {
+                        throw new Error('Supabase 客戶端未初始化，請檢查配置');
+                    }
+                    
+                    // 生成文件名
+                    const timestamp = Date.now();
+                    const fileExtension = file.name.split('.').pop() || 'jpg';
+                    const fileName = `image${index}_${timestamp}.${fileExtension}`;
+                    
+                    // 構建分類路徑：項目名稱/功能模塊/文件名
+                    // 例如：hua-real-estate/invite-photo/image1_1234567890.jpg
+                    const filePath = `${SUPABASE_CONFIG.projectName}/${SUPABASE_CONFIG.moduleName}/${fileName}`;
+                    
+                    console.log('開始上傳到 Supabase:', {
+                        bucket: SUPABASE_CONFIG.bucketName,
+                        path: filePath,
+                        fileType: file.type,
+                        fileSize: file.size
+                    });
+                    
+                    // 使用 Supabase Storage API 上傳
+                    const { data, error } = await supabaseClient.storage
+                        .from(SUPABASE_CONFIG.bucketName)
+                        .upload(filePath, file, {
+                            cacheControl: '3600',
+                            upsert: false, // 不覆蓋已存在的文件
+                            contentType: file.type || 'image/jpeg'
+                        });
+                    
+                    if (error) {
+                        progress.classList.remove('show');
+                        let errorMsg = '❌ 上傳失敗: ' + error.message;
+                        
+                        // 特殊處理 RLS 策略錯誤
+                        if (error.message.includes('row-level security') || error.message.includes('RLS')) {
+                            errorMsg = '❌ 上傳失敗：存儲策略未配置\n\n請在 Supabase Dashboard 中配置存儲策略，允許匿名用戶上傳。\n詳細說明請查看：Supabase配置說明.md';
+                            console.error('Supabase RLS 策略錯誤:', error);
+                            console.error('💡 解決方案：需要在 Supabase Dashboard 中配置存儲策略');
+                        } else {
+                            console.error('Supabase 上傳錯誤:', error);
+                        }
+                        
+                        showStatus(index, errorMsg, 'error');
+                        reject(new Error(error.message));
+                        return;
+                    }
+                    
+                    // 獲取公開 URL
+                    const { data: urlData } = supabaseClient.storage
+                        .from(SUPABASE_CONFIG.bucketName)
+                        .getPublicUrl(filePath);
+                    
+                    const publicUrl = urlData.publicUrl;
+                    
+                    progress.classList.remove('show');
+                    showStatus(index, '✅ 上傳成功', 'success');
+                    console.log('上傳成功:', { path: filePath, url: publicUrl });
+                    
+                    resolve({ success: true, url: publicUrl, path: filePath });
+                    
+                } catch (error) {
+                    progress.classList.remove('show');
+                    showStatus(index, '❌ ' + error.message, 'error');
+                    console.error('上傳錯誤:', error);
+                    reject(error);
+                }
+            });
+        }
+        
+        // 舊的 R2 上傳函數（已廢棄，保留用於參考）
+        async function uploadToR2_OLD(file, index) {
+            return new Promise(async (resolve, reject) => {
+                const progressBar = document.getElementById(`progressBar${index}`);
+                const progress = document.getElementById(`progress${index}`);
+                progress.classList.add('show');
+                
+                try {
+                    // 生成文件名
+                    const timestamp = Date.now();
+                    const fileExtension = file.name.split('.').pop() || 'jpg';
+                    const fileName = `image${index}_${timestamp}.${fileExtension}`;
+                    // 上傳到 invite-photo 目錄
+                    const objectKey = `${R2_CONFIG.uploadPath}/${fileName}`;
+                    
+                    // 構建完整 URL
+                    const url = `${R2_CONFIG.endpoint}/${R2_CONFIG.bucketName}/${objectKey}`;
+                    
+                    // 方法 1: 使用 Worker API 上傳（推薦，避免 CORS 問題）
+                    if (false && R2_CONFIG.apiEndpoint) {
+                        // 使用後端 API 上傳
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('fileName', fileName);
+                        formData.append('index', index);
+                        
+                        const xhr = new XMLHttpRequest();
+                        
+                        xhr.upload.addEventListener('progress', function(e) {
+                            if (e.lengthComputable) {
+                                const percentComplete = (e.loaded / e.total) * 100;
+                                progressBar.style.width = percentComplete + '%';
+                            }
+                        });
+                        
+                        xhr.addEventListener('load', function() {
+                            if (xhr.status === 200) {
+                                try {
+                                    const response = JSON.parse(xhr.responseText);
+                                    if (response.success) {
+                                        progress.classList.remove('show');
+                                        showStatus(index, '✅ 上傳成功', 'success');
+                                        resolve({ success: true, url: response.url || url });
+                                    } else {
+                                        throw new Error(response.error || '上傳失敗');
+                                    }
+                                } catch (e) {
+                                    progress.classList.remove('show');
+                                    showStatus(index, '❌ 解析響應失敗', 'error');
+                                    console.error('響應解析錯誤:', e, xhr.responseText);
+                                    reject(e);
+                                }
+                            } else {
+                                progress.classList.remove('show');
+                                showStatus(index, '❌ 上傳失敗: ' + xhr.status, 'error');
+                                console.error('上傳失敗:', { status: xhr.status, response: xhr.responseText });
+                                reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                            }
+                        });
+                        
+                        xhr.addEventListener('error', function(e) {
+                            progress.classList.remove('show');
+                            showStatus(index, '❌ 網絡錯誤', 'error');
+                            console.error('網絡錯誤:', e);
+                            reject(new Error('網絡錯誤'));
+                        });
+                        
+                        xhr.open('POST', R2_CONFIG.apiEndpoint);
+                        xhr.send(formData);
+                    } else if (R2_CONFIG.accessKeyId && R2_CONFIG.secretAccessKey) {
+                        // 方法 2: 直接使用 S3 兼容 API（會被 CORS 阻止，不推薦）
+                        console.warn('⚠️ 直接上傳會被 CORS 阻止，請使用 Worker API');
+                        console.log('開始上傳到 R2:', { url, objectKey, fileType: file.type, fileSize: file.size });
+                        
+                        try {
+                            // 使用 AWS Signature Version 4 簽名上傳
+                            const xhr = new XMLHttpRequest();
+                            
+                            xhr.upload.addEventListener('progress', function(e) {
+                                if (e.lengthComputable) {
+                                    const percentComplete = (e.loaded / e.total) * 100;
+                                    progressBar.style.width = percentComplete + '%';
+                                }
+                            });
+                            
+                            xhr.addEventListener('load', function() {
+                                console.log('上傳響應:', { status: xhr.status, statusText: xhr.statusText, response: xhr.responseText });
+                                if (xhr.status === 200 || xhr.status === 201) {
+                                    progress.classList.remove('show');
+                                    showStatus(index, '✅ 上傳成功', 'success');
+                                    resolve({ success: true, url: url });
+                                } else {
+                                    progress.classList.remove('show');
+                                    const errorText = xhr.responseText || xhr.statusText;
+                                    showStatus(index, '❌ 上傳失敗: ' + xhr.status, 'error');
+                                    console.error('上傳錯誤詳情:', {
+                                        status: xhr.status,
+                                        statusText: xhr.statusText,
+                                        responseText: errorText,
+                                        headers: xhr.getAllResponseHeaders()
+                                    });
+                                    reject(new Error(`HTTP ${xhr.status}: ${errorText}`));
+                                }
+                            });
+                            
+                            xhr.addEventListener('error', function(e) {
+                                progress.classList.remove('show');
+                                showStatus(index, '❌ 網絡錯誤', 'error');
+                                console.error('網絡錯誤:', e);
+                                reject(new Error('網絡錯誤'));
+                            });
+                            
+                            xhr.addEventListener('abort', function() {
+                                progress.classList.remove('show');
+                                showStatus(index, '❌ 上傳已取消', 'error');
+                                reject(new Error('上傳已取消'));
+                            });
+                            
+                            // 生成簽名請求
+                            console.log('生成簽名...');
+                            const signedRequest = await generateSignedRequest(
+                                'PUT',
+                                url,
+                                file.type || 'application/octet-stream',
+                                file.size,
+                                objectKey,
+                                R2_CONFIG.accessKeyId,
+                                R2_CONFIG.secretAccessKey,
+                                R2_CONFIG.endpoint
+                            );
+                            
+                            console.log('簽名生成完成，開始上傳:', signedRequest.headers);
+                            
+                            xhr.open('PUT', url);
+                            
+                            // 設置簽名頭部
+                            Object.keys(signedRequest.headers).forEach(key => {
+                                xhr.setRequestHeader(key, signedRequest.headers[key]);
+                            });
+                            
+                            xhr.send(file);
+                        } catch (signError) {
+                            progress.classList.remove('show');
+                            showStatus(index, '❌ 簽名生成失敗', 'error');
+                            console.error('簽名生成錯誤:', signError);
+                            reject(new Error('簽名生成失敗: ' + signError.message));
+                        }
+                    } else if (R2_CONFIG.apiEndpoint) {
+                        // 方法 2: 使用後端 API 上傳（推薦）
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('fileName', fileName);
+                        formData.append('index', index);
+                        
+                        const xhr = new XMLHttpRequest();
+                        
+                        xhr.upload.addEventListener('progress', function(e) {
+                            if (e.lengthComputable) {
+                                const percentComplete = (e.loaded / e.total) * 100;
+                                progressBar.style.width = percentComplete + '%';
+                            }
+                        });
+                        
+                        xhr.addEventListener('load', function() {
+                            if (xhr.status === 200) {
+                                try {
+                                    const response = JSON.parse(xhr.responseText);
+                                    if (response.success) {
+                                        progress.classList.remove('show');
+                                        showStatus(index, '✅ 上傳成功', 'success');
+                                        resolve({ success: true, url: response.url || url });
+                                    } else {
+                                        throw new Error(response.error || '上傳失敗');
+                                    }
+                                } catch (e) {
+                                    progress.classList.remove('show');
+                                    showStatus(index, '❌ 解析響應失敗', 'error');
+                                    reject(e);
+                                }
+                            } else {
+                                progress.classList.remove('show');
+                                showStatus(index, '❌ 上傳失敗: ' + xhr.status, 'error');
+                                reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                            }
+                        });
+                        
+                        xhr.addEventListener('error', function() {
+                            progress.classList.remove('show');
+                            showStatus(index, '❌ 網絡錯誤', 'error');
+                            reject(new Error('網絡錯誤'));
+                        });
+                        
+                        xhr.open('POST', R2_CONFIG.apiEndpoint);
+                        xhr.send(formData);
+                    } else {
+                        // 方法 3: 配置未完成
+                        progress.classList.remove('show');
+                        const errorMsg = '❌ 上傳功能未配置\n\n請在代碼中配置 R2_CONFIG.apiEndpoint（推薦）\n或配置 accessKeyId 和 secretAccessKey';
+                        showStatus(index, errorMsg, 'error');
+                        reject(new Error('請配置 R2_CONFIG.apiEndpoint 或訪問憑證。詳細說明請查看：圖片上傳配置說明.md'));
+                    }
+                } catch (error) {
+                    progress.classList.remove('show');
+                    showStatus(index, '❌ ' + error.message, 'error');
+                    reject(error);
+                }
+            });
+        }
+        
+        // 生成 AWS Signature Version 4 簽名請求（用於 S3 兼容 API）
+        async function generateSignedRequest(method, url, contentType, contentLength, key, accessKeyId, secretAccessKey, endpoint) {
+            try {
+                const urlObj = new URL(url);
+                const host = urlObj.hostname;
+                let path = urlObj.pathname;
+                
+                // 確保路徑以 / 開頭
+                if (!path.startsWith('/')) {
+                    path = '/' + path;
+                }
+                
+                // 獲取當前時間
+                const now = new Date();
+                const amzDate = now.toISOString().replace(/[:\-]|\.\d{3}/g, '').slice(0, 15) + 'Z';
+                const dateStamp = amzDate.slice(0, 8);
+                
+                // 區域和服務（R2 使用 auto）
+                const region = 'auto';
+                const service = 's3';
+                
+                // 規範化請求 - 路徑需要 URL 編碼但保留斜杠
+                // 先將路徑分段編碼，然後用 / 連接
+                const pathParts = path.split('/').map(part => encodeURIComponent(part));
+                const canonicalUri = pathParts.join('/');
+                const canonicalQueryString = '';
+                
+                // 構建規範化頭部（必須按字母順序）
+                const canonicalHeaders = [
+                    `host:${host}`,
+                    `x-amz-content-sha256:UNSIGNED-PAYLOAD`,
+                    `x-amz-date:${amzDate}`
+                ].join('\n') + '\n';
+                
+                const signedHeaders = 'host;x-amz-content-sha256;x-amz-date';
+                const payloadHash = 'UNSIGNED-PAYLOAD';
+                
+                const canonicalRequest = [
+                    method,
+                    canonicalUri,
+                    canonicalQueryString,
+                    canonicalHeaders,
+                    signedHeaders,
+                    payloadHash
+                ].join('\n');
+                
+                console.log('Canonical Request:', canonicalRequest);
+                
+                // 創建簽名字符串
+                const algorithm = 'AWS4-HMAC-SHA256';
+                const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;
+                const canonicalRequestHash = await sha256(canonicalRequest);
+                const stringToSign = [
+                    algorithm,
+                    amzDate,
+                    credentialScope,
+                    canonicalRequestHash
+                ].join('\n');
+                
+                console.log('String to Sign:', stringToSign);
+                
+                // 計算簽名
+                const kDate = await hmacSha256('AWS4' + secretAccessKey, dateStamp);
+                const kRegion = await hmacSha256(kDate, region);
+                const kService = await hmacSha256(kRegion, service);
+                const kSigning = await hmacSha256(kService, 'aws4_request');
+                const signature = await hmacSha256(kSigning, stringToSign);
+                const signatureHex = await hexEncode(signature);
+                
+                // 構建授權頭
+                const authorization = `${algorithm} Credential=${accessKeyId}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signatureHex}`;
+                
+                const headers = {
+                    'Authorization': authorization,
+                    'x-amz-date': amzDate,
+                    'x-amz-content-sha256': payloadHash
+                };
+                
+                // 只有在有 Content-Type 時才添加
+                if (contentType) {
+                    headers['Content-Type'] = contentType;
+                }
+                
+                console.log('生成的請求頭:', headers);
+                
+                return { headers };
+            } catch (error) {
+                console.error('簽名生成過程錯誤:', error);
+                throw error;
+            }
+        }
+        
+        // SHA-256 哈希
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            return hexEncode(hashBuffer);
+        }
+        
+        // HMAC-SHA256
+        async function hmacSha256(key, message) {
+            try {
+                const encoder = new TextEncoder();
+                let keyBuffer;
+                
+                if (typeof key === 'string') {
+                    keyBuffer = encoder.encode(key);
+                } else if (key instanceof Uint8Array) {
+                    keyBuffer = key;
+                } else {
+                    keyBuffer = new Uint8Array(key);
+                }
+                
+                const messageBuffer = encoder.encode(message);
+                
+                const cryptoKey = await crypto.subtle.importKey(
+                    'raw',
+                    keyBuffer,
+                    { name: 'HMAC', hash: 'SHA-256' },
+                    false,
+                    ['sign']
+                );
+                
+                const signature = await crypto.subtle.sign('HMAC', cryptoKey, messageBuffer);
+                return new Uint8Array(signature);
+            } catch (error) {
+                console.error('HMAC 計算錯誤:', error, { keyType: typeof key, message });
+                throw error;
+            }
+        }
+        
+        // 將 ArrayBuffer 轉換為十六進制字符串
+        function hexEncode(buffer) {
+            if (buffer instanceof Uint8Array) {
+                return Array.from(buffer)
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+            }
+            const bytes = new Uint8Array(buffer);
+            return Array.from(bytes)
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+        }
+        
+        // 初始化拖放功能
+        document.addEventListener('DOMContentLoaded', function() {
+            setupDragAndDrop();
+            
+            // 綁定上傳觸發按鈕
+            const uploadTriggerBtn = document.getElementById('uploadTriggerBtn');
+            if (uploadTriggerBtn) {
+                uploadTriggerBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('上傳按鈕被點擊');
+                    openPasswordModal();
+                });
+                console.log('✅ 上傳觸發按鈕已綁定');
+            } else {
+                console.error('❌ 找不到上傳觸發按鈕');
             }
         });
     </script>
