@@ -1,0 +1,20 @@
+# Cursor IDE 忽略檔案
+
+# 環境變數（敏感資訊）
+.env
+.env.local
+rag/.env
+
+# 依賴套件
+node_modules/
+
+# 日誌檔案
+*.log
+
+# 臨時檔案
+tmp/
+temp/
+*.tmp
+
+# RAG 匯出資料（使用者自行準備）
+rag/rag_export/*.jsonl

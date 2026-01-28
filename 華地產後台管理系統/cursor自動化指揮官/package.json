@@ -1,0 +1,40 @@
+{
+  "name": "cursor-automation-commander",
+  "version": "1.0.0",
+  "description": "Cursor 自動化指揮官 - 完整的自動化流程記錄與執行系統",
+  "type": "module",
+  "main": "scripts/automate.mjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "automate": "node scripts/automate.mjs",
+    "list": "node scripts/automate.mjs list",
+    "analyze": "node scripts/automate.mjs analyze",
+    "setup": "node scripts/automate.mjs setup"
+  },
+  "keywords": [
+    "automation",
+    "cursor",
+    "commander",
+    "rag",
+    "supabase"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8"
+  }
+}

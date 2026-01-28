@@ -1,0 +1,130 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "last_updated": "2025-01-20",
+    "description": "自動化指令資料庫 - RAG 全自動化系統"
+  },
+  "categories": [
+    {
+      "id": "rag-automation",
+      "name": "RAG 全自動化系統",
+      "description": "一鍵完成：建表/套 SQL（含 RPC）→ 產 embedding(1536) → upsert Supabase → smoke test 查詢"
+    },
+    {
+      "id": "supabase-migrations",
+      "name": "Supabase 資料庫遷移",
+      "description": "RAG schema 和 RPC 函數的 SQL migrations"
+    },
+    {
+      "id": "rag-pipeline",
+      "name": "RAG 資料處理管線",
+      "description": "資料擷取、embedding 生成、upsert 到 Supabase"
+    }
+  ],
+  "commands": [
+    {
+      "id": "cmd-start",
+      "category": "rag-automation",
+      "name": "一鍵啟動（全自動）",
+      "description": "執行完整自動化流程：DB push → ingest → smoke test",
+      "command": "./cmd start",
+      "command_with_env": "./cmd start --env prod",
+      "usage": "在 Terminal 執行 ./cmd start 或 ./cmd start --env prod",
+      "auto_env_detection": "根據 git 分支自動判斷：develop → staging, main → prod",
+      "tags": ["rag", "automation", "supabase", "embedding"]
+    },
+    {
+      "id": "rag-ingest",
+      "category": "rag-pipeline",
+      "name": "RAG 資料擷取",
+      "description": "讀取 JSONL 檔案，產生 embeddings，upsert 到 Supabase",
+      "command": "node rag/ingest.mjs rag/rag_export/rag_documents.jsonl rag/rag_export/rag_chunks.jsonl",
+      "usage": "在 rag 目錄下執行：node ingest.mjs <docs_path> <chunks_path>",
+      "tags": ["rag", "ingest", "embedding", "openai"]
+    },
+    {
+      "id": "rag-query",
+      "category": "rag-pipeline",
+      "name": "RAG 查詢測試",
+      "description": "執行 RAG 查詢測試",
+      "command": "node rag/query.mjs \"<question>\"",
+      "usage": "在 rag 目錄下執行：node query.mjs \"你的問題\"",
+      "tags": ["rag", "query", "test"]
+    },
+    {
+      "id": "supabase-db-push",
+      "category": "supabase-migrations",
+      "name": "Supabase DB Push",
+      "description": "使用 Supabase CLI 自動套用 migrations",
+      "command": "supabase db push",
+      "usage": "在專案根目錄執行：supabase db push",
+      "tags": ["supabase", "migration", "database"]
+    }
+  ],
+  "file_structure": {
+    "cmd": "一鍵入口腳本（可執行）",
+    "scripts/start.mjs": "主要自動化邏輯：環境判斷、DB push、ingest、smoke test",
+    "supabase/migrations/202601120001_rag_schema.sql": "RAG 資料表結構（documents, chunks, indexes）",
+    "supabase/migrations/202601120002_match_rag_chunks_rpc.sql": "RAG 查詢 RPC 函數",
+    "rag/package.json": "RAG pipeline 依賴套件",
+    "rag/.env.example": "環境變數範例檔案",
+    "rag/.env": "實際環境變數（需自行建立，不要提交）",
+    "rag/ingest.mjs": "資料擷取和 embedding 生成",
+    "rag/query.mjs": "RAG 查詢測試工具",
+    "rag/rag_export/rag_documents.jsonl": "輸入資料：文件列表（需自行準備）",
+    "rag/rag_export/rag_chunks.jsonl": "輸入資料：文件區塊列表（需自行準備）"
+  },
+  "setup_steps": [
+    "1. 將 JSONL 檔案放到 rag/rag_export/ 目錄",
+    "2. 從 rag/.env.example 複製建立 rag/.env，填入實際值",
+    "3. 執行 chmod +x cmd（已自動完成）",
+    "4. 執行 ./cmd start"
+  ],
+  "features": [
+    "自動環境判斷（根據 git 分支）",
+    "Supabase CLI 全自動 db push",
+    "OpenAI embedding 生成（1536 維度）",
+    "批次 upsert 到 Supabase",
+    "自動 smoke test 查詢"
+  ],
+  "notion_sop": {
+    "file": "SOP_NOTION.md",
+    "description": "Notion 標準作業頁面版本，可直接複製貼到 Notion 使用",
+    "format": "Markdown（Notion 最佳化）",
+    "sections": [
+      "最終指令",
+      "專案必要結構",
+      "一鍵指揮官自動化項目",
+      "環境變數設定",
+      "RAG 資料來源",
+      "資料庫 Schema",
+      "RAG Query",
+      "GPT System Prompt",
+      "驗證方式",
+      "使用情境",
+      "後續擴充"
+    ]
+  },
+  "system_architecture": {
+    "core_modules": {
+      "command-loader": "讀取指令資料庫和 SOP 文件",
+      "project-scanner": "掃描專案結構和檔案",
+      "automation-executor": "執行自動化任務",
+      "commander": "主要指揮官類別，整合所有功能"
+    },
+    "workflow": [
+      "讀取指令 - 從 automation_commands.json 或 SOP_NOTION.md 載入",
+      "掃描專案 - 分析專案結構、檔案類型、專案類型",
+      "執行自動化 - 根據指令對專案檔案進行自動化加工",
+      "產生報告 - 顯示執行摘要和結果"
+    ],
+    "usage": {
+      "initialize": "複製指揮官資料夾到專案 → 執行 analyze 初始化",
+      "list_commands": "node scripts/automate.mjs list",
+      "execute_command": "node scripts/automate.mjs execute <command-id>",
+      "execute_category": "node scripts/automate.mjs category <category-id>",
+      "auto_setup": "node scripts/automate.mjs setup",
+      "analyze_project": "node scripts/automate.mjs analyze"
+    }
+  }
+}

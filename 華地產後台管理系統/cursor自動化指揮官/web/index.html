@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API 快捷中心 | Cursor 自動化指揮官</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1 class="title">
+          <span class="icon">🧠</span>
+          API 快捷中心
+        </h1>
+        <p class="subtitle">Cursor 自動化指揮官 - 一站式 API 與 Token 管理</p>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Supabase Section -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-icon">🗄️</span>
+            Supabase
+          </h2>
+          <p class="section-description">資料庫與後端服務配置</p>
+        </div>
+
+        <div class="cards-grid">
+          <!-- API URL -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">API URL</h3>
+              <button class="copy-btn" data-copy="SUPABASE_URL" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">SUPABASE_URL</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://app.supabase.com/project/_/settings/api" target="_blank" class="link">
+                  Supabase Dashboard → Settings → API
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="info-item">
+                <span class="label">格式：</span>
+                <code class="code-inline">https://xxxx.supabase.co</code>
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>專案的 API 端點 URL，用於連接 Supabase 服務
+              </div>
+            </div>
+          </div>
+
+          <!-- Service Role Key -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Service Role Key</h3>
+              <button class="copy-btn" data-copy="SUPABASE_SERVICE_ROLE_KEY" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">SUPABASE_SERVICE_ROLE_KEY</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://app.supabase.com/project/_/settings/api" target="_blank" class="link">
+                  Supabase Dashboard → Settings → API → service_role key
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="warning">
+                <strong>⚠️ 警告：</strong>此 key 擁有完整權限，請勿在前端使用或提交到 Git
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>用於後端服務，可繞過 Row Level Security (RLS)
+              </div>
+            </div>
+          </div>
+
+          <!-- Access Token -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Access Token</h3>
+              <button class="copy-btn" data-copy="SUPABASE_ACCESS_TOKEN" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">SUPABASE_ACCESS_TOKEN</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://app.supabase.com/account/tokens" target="_blank" class="link">
+                  Supabase Dashboard → Account → Access Tokens
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>用於 Supabase CLI 認證，執行 <code class="code-inline">supabase db push</code> 時需要
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Ref Staging -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Project Ref (Staging)</h3>
+              <button class="copy-btn" data-copy="SUPABASE_PROJECT_REF_STAGING" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">SUPABASE_PROJECT_REF_STAGING</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://app.supabase.com/project/_/settings/general" target="_blank" class="link">
+                  Supabase Dashboard → Settings → General → Reference ID
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="info-item">
+                <span class="label">格式：</span>
+                <code class="code-inline">xxxxxxxxxxxxx</code>
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>Staging 環境的專案識別碼，用於 <code class="code-inline">supabase link</code>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Ref Production -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Project Ref (Production)</h3>
+              <button class="copy-btn" data-copy="SUPABASE_PROJECT_REF_PROD" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">SUPABASE_PROJECT_REF_PROD</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://app.supabase.com/project/_/settings/general" target="_blank" class="link">
+                  Supabase Dashboard → Settings → General → Reference ID
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>Production 環境的專案識別碼
+              </div>
+            </div>
+          </div>
+
+          <!-- DB Password Staging -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">DB Password (Staging)</h3>
+              <button class="copy-btn" data-copy="SUPABASE_DB_PASSWORD_STAGING" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">SUPABASE_DB_PASSWORD_STAGING</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://app.supabase.com/project/_/settings/database" target="_blank" class="link">
+                  Supabase Dashboard → Settings → Database → Database Password
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="warning">
+                <strong>⚠️ 警告：</strong>如果忘記密碼，需要重置資料庫密碼
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>Staging 環境的資料庫密碼，用於 CLI 連線
+              </div>
+            </div>
+          </div>
+
+          <!-- DB Password Production -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">DB Password (Production)</h3>
+              <button class="copy-btn" data-copy="SUPABASE_DB_PASSWORD_PROD" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">SUPABASE_DB_PASSWORD_PROD</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://app.supabase.com/project/_/settings/database" target="_blank" class="link">
+                  Supabase Dashboard → Settings → Database → Database Password
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>Production 環境的資料庫密碼
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- OpenAI Section -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-icon">🤖</span>
+            OpenAI
+          </h2>
+          <p class="section-description">Embedding 與 AI 服務配置</p>
+        </div>
+
+        <div class="cards-grid">
+          <!-- API Key -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">API Key</h3>
+              <button class="copy-btn" data-copy="OPENAI_API_KEY" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">OPENAI_API_KEY</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://platform.openai.com/api-keys" target="_blank" class="link">
+                  OpenAI Platform → API Keys → Create new secret key
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="warning">
+                <strong>⚠️ 警告：</strong>請妥善保管，避免洩漏。建議設定使用額度限制
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>用於呼叫 OpenAI Embedding API（text-embedding-3-small，1536 維度）
+              </div>
+            </div>
+          </div>
+
+          <!-- Embed Model -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Embedding Model</h3>
+              <button class="copy-btn" data-copy="OPENAI_EMBED_MODEL" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">OPENAI_EMBED_MODEL</code>
+              </div>
+              <div class="info-item">
+                <span class="label">預設值：</span>
+                <code class="code-inline">text-embedding-3-small</code>
+              </div>
+              <div class="info-item">
+                <span class="label">其他選項：</span>
+                <code class="code-inline">text-embedding-3-large</code> (3072 維)
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>Embedding 模型名稱，本專案使用 1536 維度的 small 版本
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GitHub Section -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-icon">🐙</span>
+            GitHub
+          </h2>
+          <p class="section-description">版本控制與程式碼管理</p>
+        </div>
+
+        <div class="cards-grid">
+          <!-- Personal Access Token -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Personal Access Token (PAT)</h3>
+              <button class="copy-btn" data-copy="GITHUB_TOKEN" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">GITHUB_TOKEN</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://github.com/settings/tokens" target="_blank" class="link">
+                  GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="info-item">
+                <span class="label">所需權限：</span>
+                <code class="code-inline">repo</code> (完整 repository 權限)
+              </div>
+              <div class="warning">
+                <strong>⚠️ 警告：</strong>Token 只會顯示一次，請妥善保存。建議設定過期時間
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>用於自動化腳本、CI/CD、API 呼叫。Classic token 或 Fine-grained token 皆可
+              </div>
+            </div>
+          </div>
+
+          <!-- Repository URL -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Repository URL</h3>
+              <button class="copy-btn" data-copy="GITHUB_REPO_URL" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">GITHUB_REPO_URL</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://github.com" target="_blank" class="link">
+                  GitHub → 你的 Repository → Code → 複製 HTTPS/SSH URL
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="info-item">
+                <span class="label">格式 (HTTPS)：</span>
+                <code class="code-inline">https://github.com/username/repo.git</code>
+              </div>
+              <div class="info-item">
+                <span class="label">格式 (SSH)：</span>
+                <code class="code-inline">git@github.com:username/repo.git</code>
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>Repository 的完整 URL，用於 clone、deploy、CI/CD 設定
+              </div>
+            </div>
+          </div>
+
+          <!-- GitHub Username -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">GitHub Username</h3>
+              <button class="copy-btn" data-copy="GITHUB_USERNAME" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">GITHUB_USERNAME</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://github.com/settings/profile" target="_blank" class="link">
+                  GitHub → Settings → Profile → Username
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>你的 GitHub 使用者名稱，用於 API 呼叫和自動化腳本
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- n8n Section -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-icon">⚙️</span>
+            n8n
+          </h2>
+          <p class="section-description">工作流程自動化與整合平台</p>
+        </div>
+
+        <div class="cards-grid">
+          <!-- n8n API Key -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">API Key</h3>
+              <button class="copy-btn" data-copy="N8N_API_KEY" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">N8N_API_KEY</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://app.n8n.io" target="_blank" class="link">
+                  n8n Dashboard → Settings → API → Create API Key
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="info-item">
+                <span class="label">詳細步驟：</span>
+                <ol class="steps-list">
+                  <li>登入 n8n Dashboard</li>
+                  <li>點擊右上角設定圖示 → Settings</li>
+                  <li>選擇左側 "API" 選項</li>
+                  <li>點擊 "Create API Key"</li>
+                  <li>輸入名稱並選擇權限範圍</li>
+                  <li>複製生成的 API Key</li>
+                </ol>
+              </div>
+              <div class="warning">
+                <strong>⚠️ 警告：</strong>API Key 擁有完整工作流程權限，請妥善保管
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>用於程式化呼叫 n8n API、觸發工作流程、查詢執行記錄
+              </div>
+            </div>
+          </div>
+
+          <!-- n8n Base URL -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Base URL</h3>
+              <button class="copy-btn" data-copy="N8N_BASE_URL" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">N8N_BASE_URL</code>
+              </div>
+              <div class="info-item">
+                <span class="label">Cloud 版本：</span>
+                <code class="code-inline">https://app.n8n.io</code>
+              </div>
+              <div class="info-item">
+                <span class="label">Self-hosted：</span>
+                <code class="code-inline">https://your-n8n-domain.com</code>
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>n8n 實例的基礎 URL。Cloud 版本固定為 app.n8n.io，自架版本需填入你的域名
+              </div>
+            </div>
+          </div>
+
+          <!-- n8n Webhook URL -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Webhook URL</h3>
+              <button class="copy-btn" data-copy="N8N_WEBHOOK_URL" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">N8N_WEBHOOK_URL</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://app.n8n.io" target="_blank" class="link">
+                  n8n Dashboard → 建立 Webhook 節點 → 複製 Webhook URL
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="info-item">
+                <span class="label">格式：</span>
+                <code class="code-inline">https://app.n8n.io/webhook/xxxx-xxxx-xxxx</code>
+              </div>
+              <div class="info-item">
+                <span class="label">詳細步驟：</span>
+                <ol class="steps-list">
+                  <li>在 n8n 中建立新的工作流程</li>
+                  <li>新增 "Webhook" 節點</li>
+                  <li>選擇 HTTP Method (GET/POST)</li>
+                  <li>儲存工作流程並啟動</li>
+                  <li>複製節點上顯示的 Webhook URL</li>
+                </ol>
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>用於從外部系統觸發 n8n 工作流程，支援 GET/POST 請求
+              </div>
+            </div>
+          </div>
+
+          <!-- n8n Workflow ID -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Workflow ID</h3>
+              <button class="copy-btn" data-copy="N8N_WORKFLOW_ID" title="複製變數名稱">
+                <span class="copy-icon">📋</span>
+              </button>
+            </div>
+            <div class="card-content">
+              <div class="info-item">
+                <span class="label">環境變數：</span>
+                <code class="code">N8N_WORKFLOW_ID</code>
+              </div>
+              <div class="info-item">
+                <span class="label">取得位置：</span>
+                <a href="https://app.n8n.io" target="_blank" class="link">
+                  n8n Dashboard → 選擇工作流程 → URL 中的 ID 參數
+                  <span class="link-icon">↗</span>
+                </a>
+              </div>
+              <div class="info-item">
+                <span class="label">格式：</span>
+                <code class="code-inline">數字 ID (例如: 123)</code>
+              </div>
+              <div class="note">
+                <strong>💡 說明：</strong>工作流程的唯一識別碼，用於 API 呼叫時指定特定工作流程
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Actions -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-icon">⚡</span>
+            快速操作
+          </h2>
+          <p class="section-description">常用連結與工具</p>
+        </div>
+
+        <div class="cards-grid">
+          <div class="card action-card">
+            <div class="card-content">
+              <h3 class="card-title">Supabase Dashboard</h3>
+              <a href="https://app.supabase.com" target="_blank" class="action-link">
+                前往控制台
+                <span class="link-icon">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="card action-card">
+            <div class="card-content">
+              <h3 class="card-title">OpenAI Platform</h3>
+              <a href="https://platform.openai.com" target="_blank" class="action-link">
+                前往平台
+                <span class="link-icon">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="card action-card">
+            <div class="card-content">
+              <h3 class="card-title">GitHub</h3>
+              <a href="https://github.com" target="_blank" class="action-link">
+                前往 GitHub
+                <span class="link-icon">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="card action-card">
+            <div class="card-content">
+              <h3 class="card-title">n8n Dashboard</h3>
+              <a href="https://app.n8n.io" target="_blank" class="action-link">
+                前往平台
+                <span class="link-icon">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="card action-card">
+            <div class="card-content">
+              <h3 class="card-title">複製所有環境變數</h3>
+              <button class="action-btn" id="copy-all-env">
+                複製 .env 範本
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

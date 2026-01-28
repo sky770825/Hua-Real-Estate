@@ -1,0 +1,9 @@
+name = "junyang-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# 這些 secret 需要用 wrangler secret put 設定
+# SUPABASE_URL
+# SUPABASE_ANON_KEY
+# SUPABASE_SERVICE_ROLE_KEY
+# INTERNAL_API_BEARER
