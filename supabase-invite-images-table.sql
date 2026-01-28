@@ -44,6 +44,13 @@ TO public
 USING (true)
 WITH CHECK (true);
 
+-- 允許匿名用戶刪除（DELETE）
+CREATE POLICY "Allow public delete from invite_event_images"
+ON invite_event_images
+FOR DELETE
+TO public
+USING (true);
+
 -- 創建更新 updated_at 的觸發器
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$

@@ -1914,6 +1914,16 @@
             transform: scale(0.95);
         }
         
+        /* Footer 中的上傳按鈕樣式覆蓋 */
+        footer .upload-trigger-btn {
+            position: relative;
+            bottom: auto;
+            right: auto;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+        }
+        
         /* 密碼驗證彈窗 */
         .password-modal {
             display: none;
@@ -2913,7 +2923,7 @@
                     <div id="configWarning" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border: 2px solid #ffc107; border-radius: 12px; padding: 18px; margin-bottom: 24px; color: #856404; display: none; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);">
                         <!-- 配置狀態將由 JavaScript 動態更新 -->
                     </div>
-                    <div id="folderStructureInfo" style="background: linear-gradient(135deg, #e7f3ff 0%, #d6e9ff 100%); border: 2px solid #2196F3; border-radius: 12px; padding: 18px; margin-bottom: 24px; color: #1565C0; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);">
+                    <div id="folderStructureInfo" style="display: none; background: linear-gradient(135deg, #e7f3ff 0%, #d6e9ff 100%); border: 2px solid #2196F3; border-radius: 12px; padding: 18px; margin-bottom: 24px; color: #1565C0; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);">
                         <!-- 文件分類結構信息將由 JavaScript 動態更新 -->
                     </div>
                     <div class="upload-grid">
@@ -2991,10 +3001,6 @@
         </div>
     </div>
 
-    <!-- 上傳入口圖標按鈕 -->
-    <button class="upload-trigger-btn" id="uploadTriggerBtn" aria-label="開啟圖片上傳">
-        📤
-    </button>
 
     <section class="features" aria-labelledby="features-title">
         <div class="container">
@@ -3157,8 +3163,11 @@
 
     </main>
     <footer role="contentinfo" style="background: #1a202c; color: #718096; text-align: center; padding: 20px 0; font-size: 0.9rem;">
-        <div class="container">
-            <p>華地產鑽石分會 資訊組-蔡濬瑒製</p>
+        <div class="container" style="display: flex; justify-content: center; align-items: center; gap: 15px;">
+            <p style="margin: 0;">華地產鑽石分會 資訊組-蔡濬瑒製</p>
+            <button class="upload-trigger-btn" id="uploadTriggerBtn" aria-label="開啟圖片上傳" style="margin: 0;">
+                📤
+            </button>
         </div>
     </footer>
 
@@ -4616,44 +4625,88 @@
                 
                 console.log('📥 從 Supabase 數據庫載入活動圖片...');
                 
-                // 獲取當前日期，用於選擇活動
-                const today = new Date();
-                const currentDay = today.getDay(); // 0=週日, 4=週四
-                const currentHour = today.getHours();
+                // 獲取當前日期和時間，用於選擇活動
+                const now = new Date();
+                const currentDay = now.getDay(); // 0=週日, 4=週四
+                const currentHour = now.getHours();
                 
-                // 計算截止日期（週四 09:00 後切換到下週）
-                const nextThursday = getNextThursdayDate();
-                const cutoffDate = new Date(nextThursday);
-                cutoffDate.setHours(0, 0, 0, 0);
+                // 計算目標日期：週四 09:00 後切換到下週四
+                let targetDate = new Date(now);
+                targetDate.setHours(0, 0, 0, 0);
                 
-                // 查詢數據庫：優先查找 >= cutoffDate 的活動，否則使用最新的
-                const { data: upcomingEvents, error: upcomingError } = await client
+                if (currentDay === 4) { // 今天是週四
+                    if (currentHour >= 9) {
+                        // 已過今天 09:00，找下週四
+                        targetDate.setDate(targetDate.getDate() + 7);
+                    }
+                    // 未過 09:00，使用本週四（targetDate 保持不變）
+                } else if (currentDay > 4 || currentDay === 0) {
+                    // 週五、週六、週日，找下週四
+                    const daysUntilNextThursday = currentDay === 0 ? 4 : (11 - currentDay);
+                    targetDate.setDate(targetDate.getDate() + daysUntilNextThursday);
+                } else {
+                    // 週一到週三，找本週四
+                    const daysUntilThursday = 4 - currentDay;
+                    targetDate.setDate(targetDate.getDate() + daysUntilThursday);
+                }
+                
+                const targetDateStr = targetDate.toISOString().split('T')[0]; // YYYY-MM-DD
+                console.log('📅 目標日期（應該顯示的活動日期）:', targetDateStr);
+                
+                // 優先查找：event_date == targetDate 的活動（精確匹配）
+                const { data: exactEvents, error: exactError } = await client
                     .from('invite_event_images')
                     .select('*')
-                    .gte('event_date', cutoffDate.toISOString().split('T')[0])
-                    .order('event_date', { ascending: true })
+                    .eq('event_date', targetDateStr)
                     .limit(1);
                 
                 let eventData = null;
                 
-                if (!upcomingError && upcomingEvents && upcomingEvents.length > 0) {
-                    eventData = upcomingEvents[0];
-                    console.log('✅ 找到未來的活動:', eventData);
+                if (!exactError && exactEvents && exactEvents.length > 0) {
+                    // 找到精確匹配的活動
+                    eventData = exactEvents[0];
+                    console.log('✅ 找到目標日期的活動:', eventData.event_date, eventData.event_title);
                 } else {
-                    // 如果沒有未來的活動，使用最新的
-                    const { data: latestEvents, error: latestError } = await client
+                    // 如果沒有精確匹配，查找 <= targetDate 且最接近的活動（已生效的活動）
+                    const { data: activeEvents, error: activeError } = await client
                         .from('invite_event_images')
                         .select('*')
-                        .order('created_at', { ascending: false })
+                        .lte('event_date', targetDateStr)
+                        .order('event_date', { ascending: false })
                         .limit(1);
                     
-                    if (!latestError && latestEvents && latestEvents.length > 0) {
-                        eventData = latestEvents[0];
-                        console.log('✅ 使用最新的活動:', eventData);
+                    if (!activeError && activeEvents && activeEvents.length > 0) {
+                        eventData = activeEvents[0];
+                        console.log('✅ 找到已生效的活動（最接近目標日期）:', eventData.event_date, eventData.event_title);
                     } else {
-                        console.warn('⚠️ 數據庫中沒有活動圖片數據');
-                        console.warn('💡 請先上傳圖片，或檢查 Supabase 數據庫表 invite_event_images');
-                        return false;
+                        // 如果沒有已生效的活動，查找未來的活動（最接近目標日期的未來活動）
+                        const { data: upcomingEvents, error: upcomingError } = await client
+                            .from('invite_event_images')
+                            .select('*')
+                            .gte('event_date', targetDateStr)
+                            .order('event_date', { ascending: true })
+                            .limit(1);
+                        
+                        if (!upcomingError && upcomingEvents && upcomingEvents.length > 0) {
+                            eventData = upcomingEvents[0];
+                            console.log('✅ 找到未來的活動（將在', eventData.event_date, '生效）:', eventData.event_title);
+                        } else {
+                            // 如果都沒有，使用最新的活動
+                            const { data: latestEvents, error: latestError } = await client
+                                .from('invite_event_images')
+                                .select('*')
+                                .order('created_at', { ascending: false })
+                                .limit(1);
+                            
+                            if (!latestError && latestEvents && latestEvents.length > 0) {
+                                eventData = latestEvents[0];
+                                console.log('✅ 使用最新的活動:', eventData.event_title);
+                            } else {
+                                console.warn('⚠️ 數據庫中沒有活動圖片數據');
+                                console.warn('💡 請先上傳圖片，或檢查 Supabase 數據庫表 invite_event_images');
+                                return false;
+                            }
+                        }
                     }
                 }
                 
@@ -4857,9 +4910,29 @@
                 return;
             }
             
-            // 計算下週四的日期
-            const nextThursday = getNextThursdayDate();
-            const dateStr = formatDateMMDD(nextThursday);
+            // 計算應該顯示的週四日期（週四 09:00 後切換到下週四）
+            const now = new Date();
+            const currentDay = now.getDay();
+            const currentHour = now.getHours();
+            
+            let displayDate = new Date(now);
+            if (currentDay === 4) { // 今天是週四
+                if (currentHour >= 9) {
+                    // 已過今天 09:00，顯示下週四
+                    displayDate.setDate(displayDate.getDate() + 7);
+                }
+                // 未過 09:00，顯示本週四（displayDate 保持不變）
+            } else if (currentDay > 4 || currentDay === 0) {
+                // 週五、週六、週日，顯示下週四
+                const daysUntilNextThursday = currentDay === 0 ? 4 : (11 - currentDay);
+                displayDate.setDate(displayDate.getDate() + daysUntilNextThursday);
+            } else {
+                // 週一到週三，顯示本週四
+                const daysUntilThursday = 4 - currentDay;
+                displayDate.setDate(displayDate.getDate() + daysUntilThursday);
+            }
+            
+            const dateStr = formatDateMMDD(displayDate);
             
             // 更新活動標題和日期
             const eventHeader = document.querySelector('.event-header');
