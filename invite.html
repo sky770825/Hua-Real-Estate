@@ -2781,8 +2781,11 @@
                 (function() {
                     // 每次載入頁面時清除活動圖片暫存，確保重新整理後顯示最新資料
                     try { localStorage.removeItem('invite_event_images'); } catch (e) {}
-                    if (typeof window.supabaseClient === 'undefined') { window.supabaseClient = null; }
-                    
+                    // 確保 supabaseClient 變量已聲明（如果還沒聲明）
+                    if (typeof window.supabaseClient === 'undefined') {
+                        window.supabaseClient = null;
+                    }
+                   
                     // 從數據庫載入圖片（等待腳本加載完成）
                     (async function() {
                         // 等待一下確保所有腳本都已加載
