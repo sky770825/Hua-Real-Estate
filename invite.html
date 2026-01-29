@@ -52,6 +52,9 @@
     
     <!-- 🚀 優化：預連接 Google Forms（CTA按鈕） -->
     <link rel="preconnect" href="https://docs.google.com" crossorigin>
+    <!-- 🚀 優化：預連接 Supabase（活動圖片與資料庫） -->
+    <link rel="preconnect" href="https://sqgrnowrcvspxhuudrqc.supabase.co" crossorigin>
+    <link rel="dns-prefetch" href="https://sqgrnowrcvspxhuudrqc.supabase.co">
     
     <!-- 🚀 優化：設置資源提示優先級 -->
     <meta http-equiv="x-dns-prefetch-control" content="on">
@@ -2777,55 +2780,10 @@
             <script>
                 (function() {
                     // 每次載入頁面時清除活動圖片暫存，確保重新整理後顯示最新資料
-                    try {
-                        localStorage.removeItem('invite_event_images');
-                    } catch (e) {}
+                    try { localStorage.removeItem('invite_event_images'); } catch (e) {}
+                    if (typeof window.supabaseClient === 'undefined') { window.supabaseClient = null; }
                     
-                    // 確保 supabaseClient 變量已聲明（如果還沒聲明）
-                    if (typeof window.supabaseClient === 'undefined') {
-                        window.supabaseClient = null;
-                    }
-                    
-                    try {
-                        const cacheKey = 'invite_event_images';
-                        const cached = localStorage.getItem(cacheKey);
-                        if (cached) {
-                            const imageData = JSON.parse(cached);
-                            const cacheAge = Date.now() - imageData.timestamp;
-                            
-                            // 如果快取未過期（7天內）
-                            if (cacheAge < 7 * 24 * 60 * 60 * 1000 && imageData.image1 && imageData.image2) {
-                                const eventGrid = document.getElementById('event-grid');
-                                if (eventGrid) {
-                                    // 立即顯示快取的圖片
-                                    eventGrid.innerHTML = `
-                                        <div class="event-card" onclick="openModal('${imageData.image1.replace(/'/g, "\\'")}')">
-                                            <img src="${imageData.image1.replace(/"/g, '&quot;')}" alt="專講預告 1" class="event-image loaded" 
-                                                 fetchpriority="high" decoding="async" loading="eager">
-                                            <div class="event-overlay">
-                                                <span class="event-icon">🔍</span>
-                                                <p>點擊放大</p>
-                                            </div>
-                                        </div>
-                                        <div class="event-card" onclick="openModal('${imageData.image2.replace(/'/g, "\\'")}')">
-                                            <img src="${imageData.image2.replace(/"/g, '&quot;')}" alt="專講預告 2" class="event-image loaded" 
-                                                 fetchpriority="high" decoding="async" loading="eager">
-                                            <div class="event-overlay">
-                                                <span class="event-icon">🔍</span>
-                                                <p>點擊放大</p>
-                                            </div>
-                                        </div>
-                                    `;
-                                    eventGrid.classList.add('content-loaded');
-                                    console.log('⚡ 已立即顯示快取的活動圖片');
-                                }
-                            }
-                        }
-                    } catch (error) {
-                        // 忽略錯誤，繼續正常載入流程
-                    }
-                    
-                    // 立即從數據庫載入圖片（等待腳本加載完成）
+                    // 從數據庫載入圖片（等待腳本加載完成）
                     (async function() {
                         // 等待一下確保所有腳本都已加載
                         await new Promise(resolve => {
