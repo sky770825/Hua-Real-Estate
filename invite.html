@@ -2773,9 +2773,14 @@
                 <div class="skeleton skeleton-card" style="animation-delay: 0.1s; aspect-ratio: 4 / 3;"></div>
             </div>
             
-            <!-- 🚀 優化：立即嘗試從快取顯示圖片，然後從 Supabase 載入最新數據 -->
+            <!-- 每次重新整理都從 Supabase 載入最新活動圖片（不讀取暫存） -->
             <script>
                 (function() {
+                    // 每次載入頁面時清除活動圖片暫存，確保重新整理後顯示最新資料
+                    try {
+                        localStorage.removeItem('invite_event_images');
+                    } catch (e) {}
+                    
                     // 確保 supabaseClient 變量已聲明（如果還沒聲明）
                     if (typeof window.supabaseClient === 'undefined') {
                         window.supabaseClient = null;
