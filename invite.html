@@ -56,6 +56,9 @@
     <!-- 🚀 優化：設置資源提示優先級 -->
     <meta http-equiv="x-dns-prefetch-control" content="on">
     
+    <!-- 內嵌 favicon，避免 favicon.ico 404 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%234a69bd' width='32' height='32' rx='4'/%3E%3Ctext x='16' y='22' text-anchor='middle' fill='white' font-size='16' font-family='sans-serif'%3E華%3C/text%3E%3C/svg%3E">
+    
     <!-- 🚀 優化：預連接常見圖片CDN域名（如果圖片存放在CDN上） -->
     <!-- 如果您的圖片存放在特定CDN，可以在這裡添加預連接 -->
     <!-- <link rel="preconnect" href="https://your-cdn-domain.com" crossorigin> -->
@@ -457,6 +460,16 @@
             gap: 30px;
             max-width: 800px;
             margin: 0 auto;
+        }
+        
+        .event-grid-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: #666;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.6);
+            border-radius: 15px;
         }
         
         .event-card {
@@ -2760,9 +2773,14 @@
                 <div class="skeleton skeleton-card" style="animation-delay: 0.1s; aspect-ratio: 4 / 3;"></div>
             </div>
             
-            <!-- 🚀 優化：立即嘗試從快取顯示圖片，然後從 Supabase 載入最新數據 -->
+            <!-- 每次重新整理都從 Supabase 載入最新活動圖片（不讀取暫存） -->
             <script>
                 (function() {
+                    // 每次載入頁面時清除活動圖片暫存，確保重新整理後顯示最新資料
+                    try {
+                        localStorage.removeItem('invite_event_images');
+                    } catch (e) {}
+                    
                     // 確保 supabaseClient 變量已聲明（如果還沒聲明）
                     if (typeof window.supabaseClient === 'undefined') {
                         window.supabaseClient = null;
@@ -2857,10 +2875,15 @@
                                 });
                             }
                             
-                            // 如果超過最大重試次數，停止
+                            // 如果超過最大重試次數，顯示佔位並停止
                             if (retryCount >= maxRetries) {
                                 clearInterval(checkAndLoad);
                                 console.warn('⚠️ Supabase 初始化超時，請檢查配置');
+                                var eg = document.getElementById('event-grid');
+                                if (eg && !eg.classList.contains('content-loaded')) {
+                                    eg.innerHTML = '<div class="event-grid-empty">暫無活動預告</div>';
+                                    eg.classList.add('content-loaded');
+                                }
                             }
                         }, 100);
                     })();
@@ -3766,10 +3789,10 @@
                         const saveSuccess = await saveEventImagesToSupabase(image1Url, image2Url);
                         if (saveSuccess) {
                             console.log('✅ 圖片 URL 已保存到 Supabase 數據庫');
-                            // 重新載入圖片
-                            setTimeout(() => {
-                                loadEventImagesFromSupabase();
-                            }, 500);
+                            // 清除快取，避免下次載入仍顯示舊圖
+                            try { localStorage.removeItem('invite_event_images'); } catch (e) {}
+                            // 重新從資料庫載入並更新畫面
+                            loadEventImagesFromSupabase();
                         } else {
                             console.warn('⚠️ 保存到 Supabase 數據庫失敗，但圖片已上傳成功');
                         }
@@ -4574,9 +4597,9 @@
                     return false;
                 }
                 
-                // 計算下週四的日期（週四 09:00 後自動切換）
+                // 計算下週四的日期（週四 09:00 後自動切換），用本地日期字串與讀取邏輯一致
                 const nextThursday = getNextThursdayDate();
-                const eventDate = nextThursday.toISOString().split('T')[0]; // YYYY-MM-DD
+                const eventDate = `${nextThursday.getFullYear()}-${String(nextThursday.getMonth() + 1).padStart(2, '0')}-${String(nextThursday.getDate()).padStart(2, '0')}`;
                 
                 // 生成活動標題（格式：MM/DD華地產早會雙專講同台）
                 const dateStr = formatDateMMDD(nextThursday);
@@ -4620,6 +4643,7 @@
                 if (!client) {
                     console.warn('⚠️ Supabase 客戶端未初始化');
                     console.warn('💡 請檢查 Supabase 配置：SUPABASE_CONFIG 和 initSupabase() 函數');
+                    showEventGridFallback('暫無活動預告');
                     return false;
                 }
                 
@@ -4650,7 +4674,8 @@
                     targetDate.setDate(targetDate.getDate() + daysUntilThursday);
                 }
                 
-                const targetDateStr = targetDate.toISOString().split('T')[0]; // YYYY-MM-DD
+                // 使用本地日期字串，與 saveEventImagesToSupabase 一致，避免時區導致查不到剛上傳的資料
+                const targetDateStr = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`;
                 console.log('📅 目標日期（應該顯示的活動日期）:', targetDateStr);
                 
                 // 優先查找：event_date == targetDate 的活動（精確匹配）
@@ -4704,6 +4729,7 @@
                             } else {
                                 console.warn('⚠️ 數據庫中沒有活動圖片數據');
                                 console.warn('💡 請先上傳圖片，或檢查 Supabase 數據庫表 invite_event_images');
+                                showEventGridFallback('暫無活動預告');
                                 return false;
                             }
                         }
@@ -4727,11 +4753,13 @@
                 } else {
                     console.warn('⚠️ 活動數據不完整');
                     console.warn('💡 請檢查數據庫中的圖片 URL 是否完整');
+                    showEventGridFallback('暫無活動預告');
                     return false;
                 }
             } catch (error) {
                 console.error('❌ 從 Supabase 載入圖片時發生錯誤:', error);
                 console.warn('💡 請檢查 Supabase 配置和網絡連接');
+                showEventGridFallback('暫無活動預告');
                 return false;
             }
         }
@@ -4902,6 +4930,15 @@
             return `${month}/${day}`;
         }
         
+        // 活動區載入失敗時顯示佔位文案（隱藏骨架、避免無限載入）
+        function showEventGridFallback(message) {
+            message = message || '暫無活動預告';
+            const eventGrid = document.getElementById('event-grid');
+            if (!eventGrid || eventGrid.classList.contains('content-loaded')) return;
+            eventGrid.innerHTML = `<div class="event-grid-empty">${message}</div>`;
+            eventGrid.classList.add('content-loaded');
+        }
+        
         // 渲染活動圖片
         function renderEventImages(image1Url, image2Url, eventTitle) {
             const eventGrid = document.getElementById('event-grid');
@@ -4946,8 +4983,8 @@
                 // 更新日期顯示（可選，如果需要顯示完整日期）
                 const dateText = eventHeader.querySelector('.date-text');
                 if (dateText) {
-                    // 可以顯示完整日期或保持原樣
-                    // dateText.textContent = `每週四 09:00 | ${nextThursday.toLocaleDateString('zh-TW', { month: 'long', day: 'numeric', weekday: 'long' })}`;
+                    // 可以顯示完整日期或保持原樣（使用 displayDate 與本函數內變數一致）
+                    // dateText.textContent = `每週四 09:00 | ${displayDate.toLocaleDateString('zh-TW', { month: 'long', day: 'numeric', weekday: 'long' })}`;
                 }
             }
             
