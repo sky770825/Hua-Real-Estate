@@ -28,6 +28,20 @@ WITH CHECK (
   AND (storage.foldername(name))[1] = 'hua-real-estate'
 );
 
+-- 創建更新策略（允許覆蓋 image1/image2，網頁 📤 按鈕上傳才可成功）
+CREATE POLICY "Allow public update in hua-real-estate"
+ON storage.objects
+FOR UPDATE
+TO public
+USING (
+  bucket_id = 'hua-real-estate' 
+  AND (storage.foldername(name))[1] = 'hua-real-estate'
+)
+WITH CHECK (
+  bucket_id = 'hua-real-estate' 
+  AND (storage.foldername(name))[1] = 'hua-real-estate'
+);
+
 -- 創建刪除策略（允許刪除項目目錄下的文件）
 CREATE POLICY "Allow public delete in hua-real-estate"
 ON storage.objects

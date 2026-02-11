@@ -6,7 +6,8 @@
     "deploy": "wrangler deploy",
     "deploy:dev": "wrangler deploy --env dev",
     "login": "wrangler login",
-    "whoami": "wrangler whoami"
+    "whoami": "wrangler whoami",
+    "upload:invite": "node upload-invite-images.mjs"
   },
   "keywords": [
     "cloudflare",
@@ -18,5 +19,9 @@
   "license": "MIT",
   "devDependencies": {
     "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.48.0",
+    "dotenv": "^16.4.5"
   }
 }

@@ -2776,79 +2776,17 @@
                 <div class="skeleton skeleton-card" style="animation-delay: 0.1s; aspect-ratio: 4 / 3;"></div>
             </div>
             
-            <!-- 每次重新整理都從 Supabase 載入最新活動圖片（不讀取暫存） -->
+            <!-- 直接使用固定圖片 URL 顯示活動預告（不再依賴資料表或 Supabase REST API） -->
             <script>
-                (function() {
-                    // 每次載入頁面時清除活動圖片暫存，確保重新整理後顯示最新資料
-                    try { localStorage.removeItem('invite_event_images'); } catch (e) {}
-                    // 確保 supabaseClient 變量已聲明（如果還沒聲明）
-                    if (typeof window.supabaseClient === 'undefined') {
-                        window.supabaseClient = null;
+                window.addEventListener('load', function () {
+                    if (typeof renderEventImages === 'function') {
+                        renderEventImages(
+                            'https://sqgrnowrcvspxhuudrqc.supabase.co/storage/v1/object/public/hua-real-estate/hua-real-estate/invite-photo/image1',
+                            'https://sqgrnowrcvspxhuudrqc.supabase.co/storage/v1/object/public/hua-real-estate/hua-real-estate/invite-photo/image2',
+                            '華地產早會雙專講同台'
+                        );
                     }
-                   
-                    // 從數據庫載入圖片（等待腳本加載完成）
-                    (async function() {
-                        // 等待一下確保所有腳本都已加載
-                        await new Promise(resolve => {
-                            if (document.readyState === 'loading') {
-                                document.addEventListener('DOMContentLoaded', resolve);
-                            } else {
-                                setTimeout(resolve, 100);
-                            }
-                        });
-                        
-                        // 檢查 supabaseClient 是否已初始化（使用 window.supabaseClient 或全局變量）
-                        const client = window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
-                        
-                        if (client) {
-                            if (typeof loadEventImagesFromSupabase === 'function') {
-                                loadEventImagesFromSupabase();
-                            }
-                            return;
-                        }
-                        
-                        // 如果還沒初始化，等待初始化函數可用
-                        let retryCount = 0;
-                        const maxRetries = 50; // 最多等待 5 秒
-                        
-                        const checkAndLoad = setInterval(() => {
-                            retryCount++;
-                            
-                            // 檢查是否已初始化
-                            const currentClient = window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
-                            if (currentClient) {
-                                clearInterval(checkAndLoad);
-                                if (typeof loadEventImagesFromSupabase === 'function') {
-                                    loadEventImagesFromSupabase();
-                                }
-                                return;
-                            }
-                            
-                            // 如果初始化函數可用，嘗試初始化
-                            if (typeof initSupabase === 'function') {
-                                initSupabase().then(() => {
-                                    clearInterval(checkAndLoad);
-                                    if (typeof loadEventImagesFromSupabase === 'function') {
-                                        loadEventImagesFromSupabase();
-                                    }
-                                }).catch((error) => {
-                                    console.error('❌ Supabase 初始化失敗:', error);
-                                });
-                            }
-                            
-                            // 如果超過最大重試次數，顯示佔位並停止
-                            if (retryCount >= maxRetries) {
-                                clearInterval(checkAndLoad);
-                                console.warn('⚠️ Supabase 初始化超時，請檢查配置');
-                                var eg = document.getElementById('event-grid');
-                                if (eg && !eg.classList.contains('content-loaded')) {
-                                    eg.innerHTML = '<div class="event-grid-empty">暫無活動預告</div>';
-                                    eg.classList.add('content-loaded');
-                                }
-                            }
-                        }, 100);
-                    })();
-                })();
+                });
             </script>
         </div>
     </section>
@@ -3730,7 +3668,7 @@
             uploadButton.textContent = '上傳中...';
             
             try {
-                // 上傳兩張圖片到 Supabase Storage
+                // 上傳兩張圖片到 Supabase Storage，固定覆蓋 image1 / image2
                 const uploadPromises = [
                     uploadToSupabase(selectedFiles[1], 1),
                     uploadToSupabase(selectedFiles[2], 2)
@@ -3739,28 +3677,12 @@
                 const results = await Promise.all(uploadPromises);
                 
                 if (results.every(r => r.success)) {
-                    // 圖片上傳成功，保存到 Supabase 數據庫
-                    const image1Url = results[0].url;
-                    const image2Url = results[1].url;
-                    
-                    console.log('開始保存到 Supabase 數據庫:', { image1Url, image2Url });
-                    
-                    // 保存到 Supabase 數據庫
-                    try {
-                        const saveSuccess = await saveEventImagesToSupabase(image1Url, image2Url);
-                        if (saveSuccess) {
-                            console.log('✅ 圖片 URL 已保存到 Supabase 數據庫');
-                            // 清除快取，避免下次載入仍顯示舊圖
-                            try { localStorage.removeItem('invite_event_images'); } catch (e) {}
-                            // 重新從資料庫載入並更新畫面
-                            loadEventImagesFromSupabase();
-                        } else {
-                            console.warn('⚠️ 保存到 Supabase 數據庫失敗，但圖片已上傳成功');
-                        }
-                    } catch (saveError) {
-                        console.error('保存到 Supabase 數據庫時發生錯誤:', saveError);
+                    // 圖片上傳成功，直接用固定 URL 更新頁面（不再寫入資料表）
+                    const image1Url = 'https://sqgrnowrcvspxhuudrqc.supabase.co/storage/v1/object/public/hua-real-estate/hua-real-estate/invite-photo/image1';
+                    const image2Url = 'https://sqgrnowrcvspxhuudrqc.supabase.co/storage/v1/object/public/hua-real-estate/hua-real-estate/invite-photo/image2';
+                    if (typeof renderEventImages === 'function') {
+                        renderEventImages(image1Url, image2Url, '華地產早會雙專講同台');
                     }
-                    
                     // 顯示美觀的成功消息
                     const fileName1 = results[0].originalFileName || results[0].fileName || '圖片 1';
                     const fileName2 = results[1].originalFileName || results[1].fileName || '圖片 2';
@@ -3955,7 +3877,9 @@
                     const sanitizedModuleName = SUPABASE_CONFIG.moduleName.replace(/[^a-zA-Z0-9_-]/g, '');
                     const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '');
                     
-                    const filePath = `${sanitizedProjectName}/${sanitizedModuleName}/${sanitizedFileName}`;
+                    // 固定檔名為 image1 / image2，方便前端直接以固定 URL 顯示
+                    const fixedName = index === 1 ? 'image1' : 'image2';
+                    const filePath = `${sanitizedProjectName}/${sanitizedModuleName}/${fixedName}`;
                     
                     // 驗證路徑格式
                     if (!filePath || filePath.trim() === '' || filePath.includes('//') || filePath.startsWith('/')) {
@@ -3980,7 +3904,7 @@
                         .from(SUPABASE_CONFIG.bucketName)
                         .upload(filePath, file, {
                             cacheControl: '3600',
-                            upsert: false, // 不覆蓋已存在的文件
+                            upsert: true, // 允許覆蓋現有的 image1/image2
                             contentType: file.type || 'image/jpeg'
                         });
                     
