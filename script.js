@@ -49,9 +49,12 @@ function updateMeetingDate() {
     }
 }
 
-// 複製邀請文字到剪貼板
-function copyInviteText() {
-    const inviteText = `哈囉，我真的很想約你來我們華地產看看！
+// 當前選擇的邀請版本（1~3）
+let currentInviteVersion = 1;
+
+// 三個邀請文字版本內容（給複製 & 畫面預覽共用）
+const INVITE_TEXTS = {
+    1: `哈囉，我真的很想約你來我們華地產看看！
 
 這裡聚集了全台灣最專注在 包租代管、房地產產業的一群高手：
 
@@ -67,8 +70,77 @@ function copyInviteText() {
 真的推薦你來感受一下這裡的氛圍。
 
 📌 想參加的話，可以幫我填寫這份連結
-🔗https://sky770825.github.io/Hua-Real-Estate/invite
-我會幫你完成報名，並在線上等你一起來！`;
+🔗https://hua-real-estate.pages.dev/invite
+我會幫你完成報名，並在線上等你一起來！`,
+    2: `我一直很想邀請你來我們華地產鑽石分會走走。
+
+這裡聚集的是一群真正長期在房地產、包租代管第一線打仗的夥伴：
+
+▋專門帶客買房的實戰型KOL
+▋每個月都有成交案例的買房顧問
+▋長期穩定經營的包租代管團隊
+▋以及和建商、危老重建、房產行銷合作的專業夥伴
+
+我們是【線上分會】，不用早起開車、不用舟車勞頓，
+你只要在家打開電腦或手機，就可以一起進來交流、認識夥伴。
+
+如果你對房地產相關資源、人脈或合作有興趣，
+我真的很希望你可以來親自體驗一次。
+
+📌 想參加的話，先幫我填一下這個來賓表單
+🔗https://hua-real-estate.pages.dev/invite
+我會幫你完成報名，當天在線上等你，一起聊聊！`,
+    3: `最近很多人問我：「華地產在做什麼？真的有幫助嗎？」
+我乾脆直接約你來親自看看，感受會比我講一百次還清楚。
+
+在我們華地產鑽石分會裡，有：
+
+▋長期經營房地產自媒體的KOL
+▋實際幫客戶規劃買房、投資的顧問
+▋每月處理大量案件的包租代管團隊
+▋以及和建商、危老改建、行銷公司合作的專業夥伴
+
+重點是 —— 我們是【線上分會】，
+不用早起奔波，只要在家、開個鏡頭，就能參與整個例會。
+
+如果你希望多一個房地產圈的人脈、合作機會或資訊來源，
+這裡真的會對你很有幫助，我很希望你能來一次。
+
+📌 有興趣的話，先幫我填這個連結
+🔗https://hua-real-estate.pages.dev/invite
+我會幫你處理報名細節，到時候在線上接你進房間。`
+};
+
+// 切換邀請文字版本
+function selectInviteVersion(version) {
+    currentInviteVersion = version;
+
+    const buttons = document.querySelectorAll('.invite-version-btn');
+    buttons.forEach(btn => {
+        const v = Number(btn.getAttribute('data-version'));
+        if (v === version) {
+            btn.classList.add('invite-version-active');
+        } else {
+            btn.classList.remove('invite-version-active');
+        }
+    });
+
+    // 更新畫面上的預覽文字
+    const previewEl = document.getElementById('invitePreview');
+    if (previewEl && INVITE_TEXTS[version]) {
+        previewEl.textContent = INVITE_TEXTS[version];
+    }
+
+    showNotification(`已切換到邀請版本 ${version}，可以按下方按鈕複製。`, 'info');
+}
+
+// 複製邀請文字到剪貼板（支援三個版本）
+function copyInviteText(version) {
+    // 若沒有指定版本，使用目前選擇的版本
+    const useVersion = typeof version === 'number' ? version : currentInviteVersion;
+    let inviteText;
+
+    inviteText = INVITE_TEXTS[useVersion] || INVITE_TEXTS[1];
 
     // 使用現代瀏覽器的 Clipboard API
     if (navigator.clipboard && window.isSecureContext) {
